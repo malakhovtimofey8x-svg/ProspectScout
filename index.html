@@ -639,7 +639,7 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
 .rating-badge { display:inline-flex; align-items:center; gap:3px; font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px; background:rgba(255,176,32,0.1); color:var(--amber); border:1px solid rgba(255,176,32,0.25); margin-bottom:6px; margin-left:4px; }
 
 </style>
-<script src="/.netlify/functions/env"></script>
+<script src="/api/env"></script>
 </head>
 <body style="background:#08080D;">
 <div class="orb orb1"></div>
@@ -964,7 +964,7 @@ window.onerror = function(msg, src, line, col, err) {
 var OPENAI_KEY = '';
 (async function() {
   try {
-    var r = await fetch('/.netlify/functions/config');
+    var r = await fetch('/api/config');
     var cfg = await r.json();
     if (cfg.openaiKey) OPENAI_KEY = cfg.openaiKey;
   } catch(e) {}
@@ -2035,7 +2035,7 @@ async function fetchPlaces(location, target, count) {
   document.getElementById('loadingText').textContent = 'Searching Yelp for ' + query + ' near ' + location + '...';
 
   // Call our own Netlify serverless function — no CORS issues
-  var url = '/.netlify/functions/search'
+  var url = '/api/search'
     + '?location=' + encodeURIComponent(location)
     + '&term=' + encodeURIComponent(query)
     + '&limit=' + Math.min(count, 50);
@@ -2080,6 +2080,20 @@ async function fetchPlaces(location, target, count) {
 async function enrichWithAI(businesses, product, location) {
   if (!businesses.length) return [];
 
+  // Split into batches of 8 to avoid token limits on large result sets
+  var ENRICH_BATCH = 8;
+  if (businesses.length > ENRICH_BATCH) {
+    var allResults = [];
+    for (var bi = 0; bi < businesses.length; bi += ENRICH_BATCH) {
+      var batch = businesses.slice(bi, bi + ENRICH_BATCH);
+      document.getElementById('loadingText').textContent = 'Generating scripts ' + (bi+1) + '-' + Math.min(bi+ENRICH_BATCH, businesses.length) + ' of ' + businesses.length + '...';
+      var batchResults = await enrichWithAI(batch, product, location);
+      allResults = allResults.concat(batchResults);
+      updateLoadingProgress(allResults.length, businesses.length);
+    }
+    return allResults;
+  }
+
   var bizList = businesses.map(function(b, i) {
     return (i+1) + '. ' + b.name
       + (b.address ? ' at ' + b.address : '')
@@ -2088,7 +2102,7 @@ async function enrichWithAI(businesses, product, location) {
       + (b.rating  ? ', Google rating: ' + b.rating + '/5 (' + b.ratingCount + ' reviews)' : '');
   }).join('\n');
 
-  var prompt = 'You are an expert cold calling strategist. A salesperson is calling businesses in ' + location + '.' + (product ? ' They are selling: ' + product + '.' : '') + ' Here are REAL verified businesses from Google Maps. Generate sales intelligence for each one. ' + bizList + ' Return a JSON array with one object per business IN THE SAME ORDER. Each object must have: index (the number 1,2,3...), opportunity (High or Medium), score (1-10), reason (max 10 words), opener (2-sentence specific opener using their real name), decision_maker, best_time, pain_points (array of 3), talk_track (3 sentences), objections (array of 3 with objection+response), industry_notes, company_size, annual_revenue, buying_signals (2-3 signals). Return ONLY valid JSON array. No markdown. No backticks.';
+  var prompt = 'Cold calling strategist. Location: ' + location + '.' + (product ? ' Selling: ' + product + '.' : '') + ' Generate sales intelligence for these REAL businesses: ' + bizList + ' Return JSON array, one object per business, same order. Fields: index(1,2,3...), opportunity(High/Medium), score(1-10), reason(10 words max), opener(2 sentences using business name), decision_maker, best_time, pain_points(array of 3 short strings), talk_track(2-3 sentences), objections(array of 3 objects with objection+response keys), industry_notes(1 sentence), company_size, annual_revenue, buying_signals(array of 2 strings). ONLY valid JSON array.';
 
   var res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -2100,7 +2114,7 @@ async function enrichWithAI(businesses, product, location) {
         { role: 'user',   content: prompt }
       ],
       temperature: 0.3,
-      max_tokens: 2000
+      max_tokens: 4000
     })
   });
 
