@@ -35,7 +35,7 @@
   --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
 }
 html { scroll-behavior: smooth; }
-body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; -webkit-font-smoothing: antialiased; font-size: 15px; line-height: 1.55; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; -webkit-font-smoothing: antialiased; font-size: 15px; line-height: 1.55; padding-bottom: env(safe-area-inset-bottom); }
 body::after { content:''; position:fixed; top:0;right:0;bottom:0;left:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:999; opacity:0.4; }
 body::before { content:''; position:fixed; top:0;right:0;bottom:0;left:0; background-image:radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px); background-size:28px 28px; pointer-events:none; z-index:0; }
 .orb { position:fixed; border-radius:50%; filter:blur(100px); pointer-events:none; z-index:0; }
@@ -236,6 +236,9 @@ h1 em { font-style:normal; color:var(--accent); }
 .maps-btn:hover { background:rgba(0,229,160,0.13); }
 .contact-missing { background:transparent; color:var(--text4); border:1px dashed var(--border2); cursor:default; font-style:italic; }
 .biz-address { display:flex; align-items:center; gap:4px; font-size:11px; color:var(--text4); margin-top:7px; }
+.preview-opener { display:flex; align-items:flex-start; gap:7px; font-size:13px; color:var(--text2); line-height:1.55; margin:10px 0 6px; font-style:italic; padding:10px 14px; background:var(--bg3); border-left:2px solid var(--accent); border-radius:0 var(--r-md) var(--r-md) 0; }
+.preview-signal { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--accent); margin:8px 0 2px; font-weight:500; }
+.preview-industry { display:flex; align-items:flex-start; gap:6px; font-size:12px; color:var(--text3); margin:6px 0 2px; line-height:1.5; }
 .biz-divider { height:1px; background:var(--border); margin:18px 0; }
 .section-label { font-size:9px; font-weight:700; color:var(--text3); letter-spacing:1.8px; text-transform:uppercase; margin-bottom:6px; }
 .section-text { font-size:13px; color:var(--text2); line-height:1.6; }
@@ -536,6 +539,173 @@ button, a { -webkit-tap-highlight-color:transparent; touch-action:manipulation; 
 /* Prevent iOS zoom — all inputs must be 16px */
 input, textarea, select { font-size:16px; -webkit-appearance:none; appearance:none; }
 
+/* ── DASHBOARD SECTIONS ── */
+.dash-section { margin-top:28px; }
+.dash-section-title { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--text3); letter-spacing:1.2px; text-transform:uppercase; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; }
+.dash-section-title a { font-family:'Inter',sans-serif; font-size:12px; font-weight:500; color:var(--accent); cursor:pointer; letter-spacing:0; text-transform:none; }
+
+/* Pipeline snapshot */
+.snap-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+@media(max-width:600px) { .snap-grid { grid-template-columns:repeat(2,1fr); } }
+.snap-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-lg); padding:16px 14px; text-align:center; box-shadow:var(--shadow-sm); transition:border-color 0.2s,transform 0.2s; cursor:pointer; }
+.snap-card:hover { border-color:var(--border2); transform:translateY(-1px); }
+.snap-num { font-family:'Syne',sans-serif; font-size:26px; font-weight:800; line-height:1; margin-bottom:4px; }
+.snap-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:1px; font-weight:600; }
+
+/* Recent searches */
+.recent-list { display:flex; flex-direction:column; gap:8px; }
+.recent-item { display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-lg); padding:12px 16px; box-shadow:var(--shadow-sm); transition:border-color 0.2s,background 0.2s; }
+.recent-item:hover { border-color:var(--border2); background:var(--bg3); }
+.recent-info { flex:1; min-width:0; }
+.recent-location { font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.recent-meta { font-size:11px; color:var(--text4); margin-top:2px; }
+.recent-redo { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; padding:5px 12px; border-radius:var(--r-sm); background:var(--accent-dim); color:var(--accent); border:1px solid rgba(190,255,0,0.2); cursor:pointer; white-space:nowrap; transition:all 0.15s; flex-shrink:0; }
+.recent-redo:hover { background:rgba(190,255,0,0.14); }
+
+/* Top prospects preview */
+.top-prospects-list { display:flex; flex-direction:column; gap:8px; }
+.top-prospect-item { display:flex; align-items:center; gap:12px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-lg); padding:12px 16px; box-shadow:var(--shadow-sm); transition:border-color 0.2s,background 0.2s; cursor:pointer; }
+.top-prospect-item:hover { border-color:var(--border2); background:var(--bg3); }
+.top-prospect-rank { width:28px; height:28px; border-radius:var(--r-sm); background:var(--bg4); border:1px solid var(--border2); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-size:12px; font-weight:700; color:var(--text3); flex-shrink:0; }
+.top-prospect-rank.top { background:var(--accent-dim); border-color:rgba(190,255,0,0.25); color:var(--accent); }
+.top-prospect-info { flex:1; min-width:0; }
+.top-prospect-name { font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.top-prospect-meta { font-size:11px; color:var(--text3); margin-top:2px; }
+.top-prospect-score { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; flex-shrink:0; }
+.top-prospect-phone { font-size:11px; color:var(--teal); font-weight:500; flex-shrink:0; white-space:nowrap; }
+
+/* Quick tips */
+.tips-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+@media(max-width:600px) { .tips-grid { grid-template-columns:1fr; } }
+.tip-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-lg); padding:16px; box-shadow:var(--shadow-sm); cursor:pointer; transition:border-color 0.2s,background 0.2s,transform 0.15s; }
+.tip-card:hover { border-color:rgba(190,255,0,0.2); background:var(--bg3); transform:translateY(-1px); }
+.tip-icon { font-size:20px; margin-bottom:8px; }
+.tip-title { font-size:13px; font-weight:600; color:var(--text); margin-bottom:4px; }
+.tip-desc { font-size:12px; color:var(--text3); line-height:1.5; }
+.tip-try { font-size:11px; color:var(--accent); font-weight:600; margin-top:8px; cursor:pointer; }
+
+/* Streak */
+.streak-bar { display:flex; align-items:center; gap:14px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-lg); padding:14px 18px; box-shadow:var(--shadow-sm); margin-bottom:20px; }
+.streak-icon { font-size:22px; flex-shrink:0; }
+.streak-info { flex:1; }
+.streak-title { font-size:13px; font-weight:600; color:var(--text); }
+.streak-sub { font-size:11px; color:var(--text3); margin-top:2px; }
+.streak-num { font-family:'Syne',sans-serif; font-size:24px; font-weight:800; color:var(--amber); flex-shrink:0; }
+
+
+/* ── CALL TIMER ── */
+.call-timer-wrap { position:fixed; bottom:calc(80px + env(safe-area-inset-bottom)); right:24px; z-index:9990; display:none; }
+.call-timer-wrap.visible { display:block; }
+.call-timer { background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r-xl); padding:14px 18px; box-shadow:var(--shadow-lg); min-width:180px; }
+.call-timer-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.call-timer-label { font-size:10px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:1px; }
+.call-timer-close { background:none; border:none; color:var(--text4); cursor:pointer; padding:2px; }
+.call-timer-display { font-family:'Syne',sans-serif; font-size:32px; font-weight:800; color:var(--accent); text-align:center; letter-spacing:-1px; margin-bottom:10px; }
+.call-timer-btns { display:flex; gap:6px; }
+.timer-btn { flex:1; font-family:'Inter',sans-serif; font-size:12px; font-weight:600; padding:10px 7px; border-radius:var(--r-sm); border:none; cursor:pointer; transition:all 0.15s; min-height:40px; -webkit-tap-highlight-color:transparent; }
+.timer-btn-start { background:var(--accent); color:#08080D; }
+.timer-btn-stop  { background:rgba(255,80,80,0.15); color:#FF8080; border:1px solid rgba(255,80,80,0.2); }
+.timer-btn-reset { background:var(--bg4); color:var(--text3); border:1px solid var(--border2); }
+.timer-fab { position:fixed; bottom:calc(24px + env(safe-area-inset-bottom)); right:24px; z-index:9989; width:48px; height:48px; border-radius:50%; background:var(--bg2); border:1px solid var(--border2); box-shadow:var(--shadow-lg); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text3); transition:all 0.2s; }
+.timer-fab:hover { border-color:var(--accent); color:var(--accent); box-shadow:0 0 20px rgba(190,255,0,0.2); }
+.timer-fab.active { border-color:var(--accent); color:var(--accent); background:var(--accent-dim); }
+@media(max-width:640px) { .call-timer-wrap { bottom:70px; right:16px; } .timer-fab { bottom:16px; right:16px; } }
+
+/* ── DAILY GOAL TRACKER ── */
+.goal-bar-wrap { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-xl); padding:18px 22px; margin-bottom:20px; box-shadow:var(--shadow-sm); }
+.goal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.goal-title { font-size:13px; font-weight:600; color:var(--text2); display:flex; align-items:center; gap:8px; }
+.goal-edit { display:flex; align-items:center; gap:6px; }
+.goal-input { width:52px; background:var(--bg3); border:1px solid var(--border2); border-radius:var(--r-sm); padding:4px 8px; font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:var(--accent); text-align:center; outline:none; -webkit-appearance:none; }
+.goal-input:focus { border-color:rgba(190,255,0,0.3); }
+.goal-label { font-size:11px; color:var(--text3); }
+.goal-track { height:8px; background:var(--bg4); border-radius:4px; overflow:hidden; margin-bottom:8px; }
+.goal-fill { height:100%; border-radius:4px; transition:width 0.5s ease; background:linear-gradient(90deg, var(--accent), #8FFF00); }
+.goal-fill.done { background:linear-gradient(90deg, var(--teal), var(--accent)); }
+.goal-stats { display:flex; align-items:center; justify-content:space-between; }
+.goal-stat-txt { font-size:12px; color:var(--text3); }
+.goal-pct { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--accent); }
+
+/* ── SCORE FILTER ── */
+.score-filter-wrap { display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+.score-filter-label { font-size:12px; color:var(--text3); font-weight:600; white-space:nowrap; }
+.score-filter-btns { display:flex; gap:5px; }
+.score-filter-btn { font-size:11px; font-weight:700; padding:5px 10px; border-radius:20px; border:1px solid var(--border2); background:transparent; color:var(--text3); cursor:pointer; transition:all 0.15s; }
+.score-filter-btn:hover { border-color:var(--border3); color:var(--text2); }
+.score-filter-btn.active { background:var(--accent-dim); color:var(--accent); border-color:rgba(190,255,0,0.3); }
+
+/* ── DARK/LIGHT MODE ── */
+body.light-mode { --bg:#F4F4F8; --bg2:#FFFFFF; --bg3:#F0F0F5; --bg4:#E8E8EF; --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.12); --border3:rgba(0,0,0,0.2); --text:#0A0A14; --text2:rgba(10,10,20,0.72); --text3:rgba(10,10,20,0.46); --text4:rgba(10,10,20,0.28); }
+body.light-mode header { background:rgba(244,244,248,0.92); }
+body.light-mode .orb1 { background:rgba(190,255,0,0.12); }
+body.light-mode .orb2 { background:rgba(0,229,160,0.08); }
+.mode-toggle { display:flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:var(--r-sm); border:1px solid var(--border2); background:transparent; color:var(--text3); cursor:pointer; transition:all 0.15s; flex-shrink:0; }
+.mode-toggle:hover { border-color:var(--border3); color:var(--text2); background:var(--bg3); }
+
+/* ── NOTES TEMPLATES ── */
+.notes-template-btn { display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:600; padding:3px 8px; border-radius:var(--r-sm); border:1px solid var(--border2); background:transparent; color:var(--text4); cursor:pointer; transition:all 0.15s; margin-bottom:4px; margin-right:3px; }
+.notes-template-btn:hover { border-color:var(--border3); color:var(--text2); background:var(--bg4); }
+.notes-templates-row { display:flex; flex-wrap:wrap; gap:3px; margin-bottom:6px; }
+
+
+/* ── CONFETTI ── */
+.confetti-piece { position:fixed; width:10px; height:10px; top:-10px; z-index:99999; pointer-events:none; border-radius:2px; animation:confettiFall linear forwards; }
+@keyframes confettiFall { 0%{opacity:1;transform:translateY(0) rotate(0deg);} 100%{opacity:0;transform:translateY(100vh) rotate(720deg);} }
+
+/* ── ONBOARDING ── */
+.onboarding-overlay { position:fixed; top:0;left:0;right:0;bottom:0; background:rgba(0,0,0,0.85); z-index:9000; display:none; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(6px); }
+.onboarding-overlay.open { display:flex; }
+.onboarding-modal { background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r-xl); padding:36px; width:100%; max-width:480px; position:relative; box-shadow:var(--shadow-lg); animation:modalIn 0.3s cubic-bezier(0.16,1,0.3,1); }
+.onboarding-modal::before { content:''; position:absolute; top:-1px; left:15%; right:15%; height:1px; background:linear-gradient(90deg,transparent,var(--accent),transparent); }
+.onboarding-steps { display:flex; gap:6px; margin-bottom:28px; }
+.onboarding-step-dot { flex:1; height:3px; border-radius:2px; background:var(--bg4); transition:background 0.3s; }
+.onboarding-step-dot.done { background:var(--accent); }
+.onboarding-step-dot.active { background:var(--accent); opacity:0.5; }
+.onboarding-icon { font-size:40px; margin-bottom:16px; }
+.onboarding-title { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; letter-spacing:-0.5px; margin-bottom:10px; }
+.onboarding-desc { font-size:14px; color:var(--text2); line-height:1.65; margin-bottom:24px; }
+.onboarding-btns { display:flex; gap:10px; }
+.onboarding-btn-primary { flex:1; padding:13px; background:var(--accent); color:#08080D; font-family:'Syne',sans-serif; font-size:14px; font-weight:700; border:none; border-radius:var(--r-md); cursor:pointer; transition:all 0.15s; }
+.onboarding-btn-primary:hover { box-shadow:0 4px 20px rgba(190,255,0,0.3); transform:translateY(-1px); }
+.onboarding-btn-skip { padding:13px 18px; background:transparent; color:var(--text3); font-family:'Inter',sans-serif; font-size:13px; border:1px solid var(--border2); border-radius:var(--r-md); cursor:pointer; transition:all 0.15s; }
+.onboarding-btn-skip:hover { color:var(--text2); border-color:var(--border3); }
+@media(max-width:640px) { .onboarding-overlay { align-items:flex-end; padding:0; } .onboarding-modal { border-radius:24px 24px 0 0; max-width:100%; padding:28px 20px 44px; } }
+
+/* ── CALL STREAK CALENDAR ── */
+.streak-calendar { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-xl); padding:20px 22px; box-shadow:var(--shadow-sm); }
+.streak-cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.streak-cal-title { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; }
+.streak-cal-sub { font-size:12px; color:var(--text3); }
+.streak-cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
+.streak-cal-day { aspect-ratio:1; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; color:var(--text4); background:var(--bg4); border:1px solid var(--border); transition:all 0.15s; }
+.streak-cal-day.has-calls { background:var(--accent-dim); border-color:rgba(190,255,0,0.25); color:var(--accent); }
+.streak-cal-day.has-calls.many { background:rgba(190,255,0,0.2); color:var(--accent); }
+.streak-cal-day.today { border-color:var(--accent); color:var(--text); }
+.streak-cal-day.future { opacity:0.3; }
+.streak-cal-legend { display:flex; align-items:center; gap:12px; margin-top:12px; }
+.streak-cal-legend-item { display:flex; align-items:center; gap:5px; font-size:10px; color:var(--text3); }
+.streak-cal-legend-dot { width:10px; height:10px; border-radius:3px; }
+
+/* ── OVERDUE BADGE ── */
+.nav-badge { display:inline-flex; align-items:center; justify-content:center; min-width:16px; height:16px; border-radius:8px; background:#FF5050; color:#fff; font-size:9px; font-weight:700; padding:0 4px; margin-left:4px; animation:badgePulse 2s ease-in-out infinite; }
+@keyframes badgePulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+.pipeline-tab .nav-badge { margin-left:4px; }
+
+/* ── SEARCH HISTORY PAGE ── */
+.search-history-list { display:flex; flex-direction:column; gap:10px; }
+.search-history-item { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-xl); padding:18px 20px; box-shadow:var(--shadow-sm); transition:border-color 0.2s,background 0.2s; }
+.search-history-item:hover { border-color:var(--border2); background:var(--bg3); }
+.sh-top { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:10px; }
+.sh-location { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; }
+.sh-meta { font-size:12px; color:var(--text3); margin-top:3px; }
+.sh-actions { display:flex; gap:8px; flex-shrink:0; }
+.sh-redo-btn { display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; padding:7px 14px; border-radius:var(--r-sm); background:var(--accent-dim); color:var(--accent); border:1px solid rgba(190,255,0,0.2); cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+.sh-redo-btn:hover { background:rgba(190,255,0,0.14); }
+.sh-del-btn { display:inline-flex; align-items:center; padding:7px; border-radius:var(--r-sm); background:transparent; color:var(--text4); border:1px solid var(--border2); cursor:pointer; transition:all 0.15s; }
+.sh-del-btn:hover { color:#FF8080; border-color:rgba(255,80,80,0.3); }
+.sh-prospects-preview { display:flex; gap:6px; flex-wrap:wrap; }
+.sh-prospect-chip { font-size:11px; color:var(--text3); background:var(--bg4); border:1px solid var(--border); border-radius:20px; padding:3px 10px; white-space:nowrap; }
+
 footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; text-align:center; }
 .footer-text { font-size:12px; color:var(--text4); }
 .footer-text span { color:var(--accent); }
@@ -564,6 +734,39 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
 .mobile-menu-close { position:absolute; top:16px; right:16px; background:var(--bg3); border:1px solid var(--border2); border-radius:50%; width:38px; height:38px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text3); z-index:10; }
 
 @media(max-width:640px) {
+  /* Timer FAB — move up above bottom safe area */
+  .timer-fab { bottom:20px; right:16px; width:44px; height:44px; }
+  .call-timer-wrap { bottom:76px; right:16px; left:16px; }
+  .call-timer { width:100%; }
+
+  /* Goal tracker */
+  .goal-bar-wrap { padding:14px 16px; }
+  .goal-header { flex-wrap:wrap; gap:8px; }
+
+  /* Score filter — scrollable on small screens */
+  .score-filter-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; flex-wrap:nowrap; padding-bottom:4px; scrollbar-width:none; }
+  .score-filter-wrap::-webkit-scrollbar { display:none; }
+  .score-filter-btns { flex-wrap:nowrap; }
+  .score-filter-btn { flex-shrink:0; }
+
+  /* Note templates — scrollable row */
+  .notes-templates-row { overflow-x:auto; -webkit-overflow-scrolling:touch; flex-wrap:nowrap; padding-bottom:4px; scrollbar-width:none; }
+  .notes-templates-row::-webkit-scrollbar { display:none; }
+  .notes-template-btn { flex-shrink:0; font-size:11px; }
+
+  /* Dashboard snap grid */
+  .snap-grid { grid-template-columns:repeat(2,1fr); }
+
+  /* Dashboard recent items */
+  .recent-item { flex-direction:column; align-items:flex-start; gap:8px; }
+  .recent-redo { width:100%; justify-content:center; }
+
+  /* Top prospects */
+  .top-prospect-phone { display:none; }
+
+  /* Tips grid */
+  .tips-grid { grid-template-columns:1fr; }
+
   .hamburger { display:flex; }
   .nav-right { display:none !important; }
   .container { padding-left:16px; padding-right:16px; }
@@ -619,7 +822,7 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
 
 
 /* SCREEN LOCK WARNING */
-.screen-lock-banner { display:none; position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:var(--amber); color:#08080D; font-family:'Inter',sans-serif; font-size:13px; font-weight:700; padding:10px 18px; border-radius:20px; z-index:9998; white-space:nowrap; box-shadow:0 4px 20px rgba(255,176,32,0.4); animation:bannerPulse 2s ease-in-out infinite; }
+.screen-lock-banner { display:none; position:fixed; bottom:calc(80px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); background:var(--amber); color:#08080D; font-family:'Inter',sans-serif; font-size:13px; font-weight:700; padding:10px 18px; border-radius:20px; z-index:9998; white-space:nowrap; box-shadow:0 4px 20px rgba(255,176,32,0.4); animation:bannerPulse 2s ease-in-out infinite; }
 @keyframes bannerPulse { 0%,100%{opacity:1} 50%{opacity:0.75} }
 .screen-lock-banner.visible { display:block; }
 
@@ -763,6 +966,9 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
       </div>
     </div>
 
+    <!-- GOAL TRACKER -->
+    <div id="goalTracker" class="goal-bar-wrap" style="display:none;"></div>
+
     <!-- USAGE -->
     <div class="usage-bar-wrap">
       <div class="usage-info">
@@ -833,9 +1039,57 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
       <div class="stats-row" id="statsRow"></div>
       <div class="results-header">
         <div class="results-title">Top prospects</div>
-        <span class="results-count" id="resultsCount"></span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="export-btn" onclick="exportPDF()" style="font-size:11px;padding:6px 12px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> PDF</button>
+          <span class="results-count" id="resultsCount"></span>
+        </div>
+      </div>
+      <div class="score-filter-wrap" id="scoreFilterWrap" style="display:none;">
+        <span class="score-filter-label">Min score:</span>
+        <div class="score-filter-btns">
+          <button class="score-filter-btn active" onclick="setScoreFilter(0,this)">All</button>
+          <button class="score-filter-btn" onclick="setScoreFilter(6,this)">6+</button>
+          <button class="score-filter-btn" onclick="setScoreFilter(7,this)">7+</button>
+          <button class="score-filter-btn" onclick="setScoreFilter(8,this)">8+</button>
+          <button class="score-filter-btn" onclick="setScoreFilter(9,this)">9+</button>
+        </div>
       </div>
       <div id="bizList"></div>
+    </div>
+
+    <!-- DASHBOARD SECTIONS (shown when no search active) -->
+    <div id="dashSections">
+
+      <!-- Streak -->
+      <div id="dashStreak" style="display:none;" class="dash-section"></div>
+
+      <!-- Streak Calendar -->
+      <div id="dashCalendar" class="dash-section" style="display:none;"></div>
+
+      <!-- Pipeline Snapshot -->
+      <div id="dashSnapshot" class="dash-section">
+        <div class="dash-section-title">Pipeline snapshot <a onclick="openHistoryPage()">View all →</a></div>
+        <div class="snap-grid" id="snapGrid"></div>
+      </div>
+
+      <!-- Recent Searches -->
+      <div id="dashRecent" class="dash-section" style="display:none;">
+        <div class="dash-section-title">Recent searches <a onclick="openSearchHistory()">See all →</a></div>
+        <div class="recent-list" id="recentList"></div>
+      </div>
+
+      <!-- Top Prospects from Last Search -->
+      <div id="dashTopProspects" class="dash-section" style="display:none;">
+        <div class="dash-section-title">Last search results <a onclick="document.getElementById('dashSections').querySelector('#dashTopProspects a').click()">See all →</a></div>
+        <div class="top-prospects-list" id="topProspectsList"></div>
+      </div>
+
+      <!-- Quick Start Tips -->
+      <div id="dashTips" class="dash-section">
+        <div class="dash-section-title">Quick start</div>
+        <div class="tips-grid" id="tipsGrid"></div>
+      </div>
+
     </div>
 
   </div>
@@ -900,6 +1154,20 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
     <p class="footer-text">Built with <span>ProspectScout</span> — AI-powered cold call intelligence</p>
   </div>
 
+
+<!-- SEARCH HISTORY PAGE -->
+<div class="page" id="page-searchhistory">
+  <div class="container" style="padding-top:40px; padding-bottom:80px;">
+    <div class="dash-header">
+      <div>
+        <div class="dash-greeting">Search <em>History</em></div>
+        <div class="dash-sub" id="searchHistorySub">All your past searches</div>
+      </div>
+      <button class="nav-btn" onclick="showPage('dashboard')" style="font-size:13px;">← Back</button>
+    </div>
+    <div id="searchHistoryList" class="search-history-list"></div>
+  </div>
+</div>
 
 <!-- ADMIN PANEL — secret, access by tapping logo 5x -->
 <div class="page" id="page-admin">
@@ -1053,9 +1321,18 @@ function updateNav() {
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>'+
             'My Pipeline'+
           '</button>'+
+          '<button class="dropdown-item" onclick="closeProfileMenu();openSearchHistory()">'+
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'+
+            'Search History'+
+          '</button>'+
           '<button class="dropdown-item" onclick="closeProfileMenu();showPage(&quot;pricing&quot;)">'+
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>'+
             'Pricing'+
+          '</button>'+
+          '<div class="dropdown-divider"></div>'+
+          '<button class="dropdown-item" onclick="closeProfileMenu();toggleLightMode()" id="modeToggleBtn">'+
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'+
+            'Toggle light mode'+
           '</button>'+
           '<div class="dropdown-divider"></div>'+
           '<button class="dropdown-item danger" onclick="closeProfileMenu();doLogout()">'+
@@ -1099,7 +1376,7 @@ function handleLogoClick() {
   }
   _logoTimer = setTimeout(function(){ _logoTaps=0; goHome(); }, 400);
 }
-function enterDashboard(){ updateNav(); updateDashboard(); showPage('dashboard'); checkForResume(); }
+function enterDashboard(){ updateNav(); updateDashboard(); showPage('dashboard'); checkForResume(); renderDashSections(); renderGoalTracker(); renderStreakCalendar(); updateOverdueBadge(); setTimeout(checkOnboarding, 400); }
 
 // DASHBOARD STATE
 function updateEmptyHint() {
@@ -1107,6 +1384,178 @@ function updateEmptyHint() {
   if (!hint || !currentUser) return;
   var used = getUsage(currentUser.email);
   hint.style.display = used === 0 ? 'block' : 'none';
+}
+
+// ── DASHBOARD SECTIONS ──────────────────────────────────────────────────────
+function renderDashSections() {
+  if (!currentUser) return;
+  var history = getHistory(currentUser.email);
+  var tier = TIERS[currentUser.tier] || TIERS.free;
+  var allSearches = JSON.parse(localStorage.getItem('ps_searches_' + currentUser.email) || '[]');
+
+  // ── Streak ──
+  var streakEl = document.getElementById('dashStreak');
+  if (streakEl && allSearches.length > 0) {
+    var days = Math.min(allSearches.length, 7);
+    var msgs = ['Keep it up!', 'On a roll!', 'Stay consistent!', 'Building momentum!', 'Crushing it!'];
+    var msg = msgs[Math.min(days-1, msgs.length-1)];
+    var left = Math.max(0, tier.daily - getUsage(currentUser.email));
+    streakEl.style.display = 'block';
+    streakEl.innerHTML = '<div class="streak-bar"><div class="streak-icon">🔥</div><div class="streak-info"><div class="streak-title">' + msg + '</div><div class="streak-sub">' + days + ' search' + (days!==1?'es':'') + ' today · ' + left + ' prospects left</div></div><div class="streak-num">' + days + '</div></div>';
+  }
+
+  // ── Pipeline Snapshot ──
+  var snapGrid = document.getElementById('snapGrid');
+  if (snapGrid) {
+    var counts = {new:0, contacted:0, engaged:0, qualified:0, converted:0};
+    history.forEach(function(h){ var s=h.status||'new'; if(counts[s]!==undefined) counts[s]++; });
+    snapGrid.innerHTML =
+      '<div class="snap-card" onclick="openHistoryPage()"><div class="snap-num" style="color:var(--text2);">' + history.length + '</div><div class="snap-label">Total</div></div>' +
+      '<div class="snap-card" onclick="openHistoryPage()"><div class="snap-num" style="color:var(--accent);">' + counts.contacted + '</div><div class="snap-label">Contacted</div></div>' +
+      '<div class="snap-card" onclick="openHistoryPage()"><div class="snap-num" style="color:var(--amber);">' + counts.qualified + '</div><div class="snap-label">Meetings</div></div>' +
+      '<div class="snap-card" onclick="openHistoryPage()"><div class="snap-num" style="color:var(--purple);">' + counts.converted + '</div><div class="snap-label">Closed</div></div>';
+  }
+
+  // ── Recent Searches ──
+  var recentEl = document.getElementById('dashRecent');
+  var recentList = document.getElementById('recentList');
+  if (recentEl && recentList && allSearches.length) {
+    recentEl.style.display = 'block';
+    recentList.innerHTML = allSearches.slice(0, 4).map(function(s, idx) {
+      var date = new Date(s.ts).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      var meta = [s.product, s.target, date, s.count + ' prospects'].filter(Boolean).join(' · ');
+      return '<div class="recent-item">' +
+        '<div class="recent-info"><div class="recent-location">' + s.location + '</div><div class="recent-meta">' + meta + '</div></div>' +
+        '<button class="recent-redo" onclick="redoSearchByIndex(' + idx + ')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> Redo</button>' +
+      '</div>';
+    }).join('');
+  }
+
+  // ── Top Prospects from Last Search ──
+  var topEl = document.getElementById('dashTopProspects');
+  var topList = document.getElementById('topProspectsList');
+  var lastResults = null;
+  try { lastResults = JSON.parse(localStorage.getItem('ps_last_results_' + currentUser.email) || 'null'); } catch(e) {}
+  if (topEl && topList && lastResults && lastResults.length) {
+    topEl.style.display = 'block';
+    topList.innerHTML = lastResults.slice(0,4).map(function(b, i) {
+      var scoreColor = b.score>=8 ? 'var(--accent)' : b.score>=6 ? 'var(--amber)' : 'var(--text3)';
+      return '<div class="top-prospect-item">' +
+        '<div class="top-prospect-rank ' + (i<2?'top':'') + '">' + (i+1) + '</div>' +
+        '<div class="top-prospect-info"><div class="top-prospect-name">' + (b.name||'') + '</div><div class="top-prospect-meta">' + (b.type||'') + ' · ' + (b.opportunity||'') + '</div></div>' +
+        (b.phone ? '<div class="top-prospect-phone">' + b.phone + '</div>' : '') +
+        '<div class="top-prospect-score" style="color:' + scoreColor + ';">' + (b.score||'') + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // ── Streak Calendar ──
+  renderStreakCalendar();
+
+  // ── Overdue Badge ──
+  updateOverdueBadge();
+
+  // ── Quick Tips ──
+  var tipsGrid = document.getElementById('tipsGrid');
+  if (tipsGrid) {
+    var allTips = [
+      { icon:'🏪', title:'Local retail', desc:'Restaurants, salons, gyms — high volume, easy to reach owners directly.', loc:'downtown Austin TX', prod:'website redesign', target:'restaurants' },
+      { icon:'⚖️', title:'Professional services', desc:'Law firms, accountants — higher deal values, decision makers are accessible.', loc:'financial district Chicago IL', prod:'CRM software', target:'law firms' },
+      { icon:'🏗️', title:'Home services', desc:'Plumbers, electricians, contractors — always need more leads and bookings.', loc:'suburbs Phoenix AZ', prod:'lead generation', target:'contractors' },
+      { icon:'💆', title:'Wellness & beauty', desc:'Spas, clinics, studios — respond great to digital marketing pitches.', loc:'Beverly Hills CA', prod:'social media marketing', target:'spas' },
+      { icon:'🚗', title:'Auto services', desc:'Dealerships, mechanics, detailers — strong local presence, owner-run.', loc:'San Jose CA', prod:'reputation management', target:'auto shops' },
+      { icon:'🏥', title:'Medical & dental', desc:'Clinics and practices need patient acquisition and scheduling tools.', loc:'Scottsdale AZ', prod:'patient management software', target:'dental offices' },
+      { icon:'🍕', title:'Food & beverage', desc:'Cafes, bakeries, food trucks — active on social and hungry for customers.', loc:'Brooklyn NY', prod:'loyalty app', target:'cafes' },
+      { icon:'🎓', title:'Education & tutoring', desc:'Private schools, tutors, studios — growing demand for digital enrollment.', loc:'Palo Alto CA', prod:'online booking software', target:'tutoring centers' },
+      { icon:'🏨', title:'Hospitality', desc:'Hotels, B&Bs, event venues — great upsell opportunities year-round.', loc:'Nashville TN', prod:'booking software', target:'hotels' },
+      { icon:'🐾', title:'Pet services', desc:'Groomers, vets, pet stores — loyal customer base, often tech-averse.', loc:'Portland OR', prod:'appointment scheduling', target:'pet grooming' },
+      { icon:'🔑', title:'Real estate', desc:'Agents and brokers always need leads, CRM, and marketing tools.', loc:'Miami FL', prod:'CRM software', target:'real estate agents' },
+      { icon:'💪', title:'Fitness & gyms', desc:'Gyms, personal trainers, CrossFit boxes — membership and retention tools.', loc:'Denver CO', prod:'membership software', target:'gyms' },
+      { icon:'🏦', title:'Financial advisors', desc:'Wealth managers and advisors — always looking for client acquisition tools.', loc:'Hartford CT', prod:'client management software', target:'financial advisors' },
+      { icon:'🍷', title:'Bars & nightlife', desc:'Bars, lounges, clubs — event promotion and social media are key.', loc:'Las Vegas NV', prod:'event marketing software', target:'bars' },
+      { icon:'🎨', title:'Creative agencies', desc:'Design, video, photography studios — need project management and billing tools.', loc:'Los Angeles CA', prod:'project management software', target:'creative agencies' },
+      { icon:'🛒', title:'E-commerce stores', desc:'Local online sellers scaling up — need fulfillment, ads, and CRM.', loc:'Seattle WA', prod:'e-commerce software', target:'online stores' },
+      { icon:'🏠', title:'Property management', desc:'Landlords and managers — maintenance, tenant, and rent collection tools.', loc:'Atlanta GA', prod:'property management software', target:'property managers' },
+      { icon:'🌿', title:'Landscaping', desc:'Lawn care, tree service, landscapers — scheduling and quoting tools.', loc:'Dallas TX', prod:'field service software', target:'landscaping companies' },
+      { icon:'🧹', title:'Cleaning services', desc:'Residential and commercial cleaners — recurring revenue, needs scheduling.', loc:'Charlotte NC', prod:'scheduling software', target:'cleaning companies' },
+      { icon:'📦', title:'Logistics & moving', desc:'Moving companies, couriers — route planning and customer management.', loc:'Houston TX', prod:'logistics software', target:'moving companies' },
+      { icon:'🔒', title:'Security companies', desc:'Alarm installers, guards, monitoring — B2B contracts are high value.', loc:'Phoenix AZ', prod:'monitoring software', target:'security companies' },
+      { icon:'💻', title:'IT & tech support', desc:'MSPs, IT consultants — SMBs always need reliable tech support.', loc:'Austin TX', prod:'managed services', target:'IT companies' },
+      { icon:'📸', title:'Photography studios', desc:'Wedding, portrait, commercial photographers — booking and gallery tools.', loc:'San Francisco CA', prod:'studio management software', target:'photography studios' },
+      { icon:'🧘', title:'Yoga & meditation', desc:'Studios and instructors — class scheduling and member retention.', loc:'Santa Monica CA', prod:'class booking software', target:'yoga studios' },
+      { icon:'🍜', title:'Catering companies', desc:'Event caterers and meal prep — need quoting, scheduling, and CRM.', loc:'Chicago IL', prod:'catering software', target:'catering companies' },
+      { icon:'🚿', title:'Plumbing & HVAC', desc:'Essential services with high ticket jobs — lead gen and dispatch tools.', loc:'Tampa FL', prod:'field service software', target:'plumbing companies' },
+      { icon:'🎉', title:'Event planning', desc:'Wedding planners, event companies — client management is everything.', loc:'New York NY', prod:'event planning software', target:'event planners' },
+      { icon:'🛡️', title:'Insurance agents', desc:'Independent brokers — always looking for lead gen and quoting tools.', loc:'Columbus OH', prod:'insurance CRM', target:'insurance agents' },
+      { icon:'🚀', title:'Startups & coworking', desc:'Tech startups and coworking spaces — growth tools and community management.', loc:'San Francisco CA', prod:'growth software', target:'coworking spaces' },
+      { icon:'🌐', title:'Marketing agencies', desc:'Digital marketing firms — white label tools and client reporting.', loc:'Miami FL', prod:'agency software', target:'marketing agencies' },
+      { icon:'🏋️', title:'Personal trainers', desc:'Independent trainers and coaches — client tracking and payment tools.', loc:'Boston MA', prod:'coaching software', target:'personal trainers' },
+      { icon:'🎵', title:'Music & entertainment', desc:'Studios, venues, artists — booking, ticketing, and fan management.', loc:'Nashville TN', prod:'booking software', target:'music venues' },
+      { icon:'🧪', title:'Med spas & aesthetics', desc:'Botox, laser, skin clinics — high margin, need patient booking and retention.', loc:'Scottsdale AZ', prod:'medspa software', target:'med spas' },
+      { icon:'🚢', title:'Travel agencies', desc:'Boutique travel planners — CRM and itinerary tools for high-end clients.', loc:'New York NY', prod:'travel CRM', target:'travel agencies' },
+      { icon:'🐕', title:'Dog training', desc:'Trainers and boarding facilities — scheduling, waivers, and client comms.', loc:'Minneapolis MN', prod:'pet business software', target:'dog trainers' },
+      { icon:'🏗️', title:'General contractors', desc:'Remodeling, construction firms — estimating and project management tools.', loc:'Sacramento CA', prod:'construction software', target:'general contractors' }
+    ];
+    // Shuffle and pick 4 different ones each time
+    var shuffled = allTips.slice().sort(function(){ return Math.random() - 0.5; });
+    var tips = shuffled.slice(0, 4);
+    tipsGrid.innerHTML = tips.map(function(t) {
+      return [
+        '<div class="tip-card" onclick="fillSearch(this)" data-loc="' + t.loc + '" data-prod="' + t.prod + '" data-target="' + t.target + '">',
+        '<div class="tip-icon">' + t.icon + '</div>',
+        '<div class="tip-title">' + t.title + '</div>',
+        '<div class="tip-desc">' + t.desc + '</div>',
+        '<div class="tip-try">Try this search →</div>',
+        '</div>'
+      ].join('');
+    }).join('');
+  }
+}
+
+function fillSearch(locationOrEl, product, target) {
+  var location = locationOrEl;
+  if (locationOrEl && typeof locationOrEl === 'object') {
+    location = locationOrEl.dataset.loc || '';
+    product  = locationOrEl.dataset.prod || '';
+    target   = locationOrEl.dataset.target || '';
+  }
+  var li = document.getElementById('locationInput');
+  var pi = document.getElementById('productInput');
+  var ti = document.getElementById('targetInput');
+  if (li) li.value = location;
+  if (pi) pi.value = product;
+  if (ti) ti.value = target;
+  li.scrollIntoView({behavior:'smooth', block:'center'});
+  li.focus();
+}
+
+function redoSearchByIndex(idx) {
+  if (!currentUser) return;
+  var searches = JSON.parse(localStorage.getItem('ps_searches_' + currentUser.email) || '[]');
+  var s = searches[idx];
+  if (!s) return;
+  fillSearch(s.location||'', s.product||'', s.target||'');
+  setTimeout(function(){ analyze(); }, 150);
+}
+
+function redoSearch(s) {
+  fillSearch(s.location||'', s.product||'', s.target||'');
+  setTimeout(function(){ analyze(); }, 150);
+}
+
+function saveSearchRecord(location, product, target, count) {
+  if (!currentUser) return;
+  var key = 'ps_searches_' + currentUser.email;
+  var searches = JSON.parse(localStorage.getItem(key) || '[]');
+  searches = searches.filter(function(s){ return !(s.location===location && s.product===product && s.target===target); });
+  searches.unshift({ location:location, product:product, target:target, count:count, ts:Date.now() });
+  searches = searches.slice(0, 10);
+  localStorage.setItem(key, JSON.stringify(searches));
+}
+
+function saveLastResults(businesses) {
+  if (!currentUser) return;
+  try { localStorage.setItem('ps_last_results_' + currentUser.email, JSON.stringify(businesses.slice(0,8))); } catch(e) {}
 }
 
 function updateDashboard() {
@@ -1230,6 +1679,11 @@ function setStatus(id, newStatus) {
     }
   }
 
+  if (newStatus === 'converted') {
+    fireConfetti();
+    showToast('🎉 Deal closed! Amazing work!', 'success');
+  }
+  updateOverdueBadge();
   if (document.getElementById('page-history').classList.contains('active')) {
     renderHistoryStats(); renderHistoryList(currentHistoryFilter);
   }
@@ -1898,11 +2352,19 @@ function renderMobileMenu() {
         '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>' +
         'My Pipeline' +
       '</button>' +
+      '<button class="mobile-menu-item" onclick="closeMobileMenu();openSearchHistory()">' +
+        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
+        'Search History' +
+      '</button>' +
 
       '<button class="mobile-menu-item" onclick="closeMobileMenu();showPage(\'pricing\')">' +
         '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>' +
         'Pricing' +
       '</button>' +
+
+      '<div class="mobile-menu-divider"></div>' +
+
+      '<button class="mobile-menu-item" onclick="closeMobileMenu();toggleLightMode()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/></svg> Toggle light mode</button>' +
 
       '<div class="mobile-menu-divider"></div>' +
 
@@ -1981,12 +2443,14 @@ function resumeSearch() {
     renderResults(data.results);
     document.getElementById('inputSection').style.display = 'none';
     document.getElementById('results').style.display = 'block';
+  var sfWrap = document.getElementById('scoreFilterWrap'); if(sfWrap) sfWrap.style.display = 'flex'; setScoreFilter(0, document.querySelector('.score-filter-btn'));
     return;
   }
   // Otherwise show partial results and offer to continue
   renderResults(data.results);
   document.getElementById('inputSection').style.display = 'none';
   document.getElementById('results').style.display = 'block';
+  var sfWrap = document.getElementById('scoreFilterWrap'); if(sfWrap) sfWrap.style.display = 'flex'; setScoreFilter(0, document.querySelector('.score-filter-btn'));
   showToast('Showing ' + data.results.length + ' saved results — scroll down to see them', 'info');
 }
 
@@ -2023,9 +2487,12 @@ function stopLoading()  { clearInterval(loadingInterval); }
 
 function resetSearch() {
   document.getElementById('results').style.display='none';
+  var sfWrap = document.getElementById('scoreFilterWrap'); if(sfWrap) sfWrap.style.display='none';
   document.getElementById('inputSection').style.display='block';
   document.getElementById('errorMsg').innerHTML='';
+  var ds = document.getElementById('dashSections'); if(ds) ds.style.display='block';
   updateDashboard();
+  renderDashSections();
 }
 
 // ── STEP 1: YELP via Netlify Function (no CORS issues) ───────────────────────────
@@ -2217,6 +2684,7 @@ async function analyze() {
   document.getElementById('inputSection').style.display = 'none';
   document.getElementById('loadingState').style.display = 'block';
   document.getElementById('results').style.display = 'none';
+  var ds = document.getElementById('dashSections'); if(ds) ds.style.display='none';
   document.getElementById('errorMsg').innerHTML = '';
   updateLoadingProgress(0, count);
   startLoading();
@@ -2297,8 +2765,11 @@ async function analyze() {
     hideScreenLockWarning();
     clearResumeData();
     addUsage(currentUser.email, allBusinesses.length);
+    saveSearchRecord(location, product, target, allBusinesses.length);
+    saveLastResults(allBusinesses);
     stopLoading();
     document.getElementById('loadingState').style.display = 'none';
+    var ds = document.getElementById('dashSections'); if(ds) ds.style.display='none';
     renderResults(allBusinesses);
 
   } catch(err) {
@@ -2339,7 +2810,7 @@ function renderResults(businesses) {
     const oppClass   = b.opportunity==='High' ? 'opp-high' : 'opp-medium';
     const scoreColor = b.score>=8 ? 'var(--accent)' : b.score>=6 ? 'var(--amber)' : 'var(--text3)';
     const verifiedBadge = (b._yelpId || b._placeId) ? '<span class="verified-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Verified</span>' : '';
-    const ratingBadge = b.rating ? '<span class="rating-badge">★ ' + b.rating + '</span>' : '';
+    const ratingBadge = ''; // now rendered inline in biz-meta
 
     const phoneBtn = b.phone
       ? '<a href="tel:'+b.phone.replace(/\D/g,'')+'" class="contact-btn call-btn" onclick="event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>'+b.phone+'</a>'
@@ -2384,13 +2855,28 @@ function renderResults(businesses) {
       ? '<div class="industry-note" style="margin-top:14px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'+b.industry_notes+'</div>'
       : '';
 
+    // First buying signal for preview
+    var topSignal = (Array.isArray(b.buying_signals) && b.buying_signals.length) ? b.buying_signals[0] : '';
+    // First sentence of opener for preview
+    var openerPreview = b.opener ? b.opener.split(/\.\s+/)[0] + '.' : '';
+    // Industry notes for preview
+    var industryPreview = b.industry_notes ? b.industry_notes.split(/\.\s+/)[0] + '.' : '';
+
     return (
       '<div class="biz-card" id="card-'+i+'" style="animation-delay:'+(i*80)+'ms;" onclick="toggleCard('+i+')">'+
+
+        // ── TOP ROW: rank + name + score ──
         '<div class="biz-card-top">'+
           '<div class="rank-badge '+(isTop?'top':'')+'">'+( i+1)+'</div>'+
           '<div class="biz-info">'+
             '<div class="biz-name">'+b.name+'</div>'+
-            '<div class="biz-meta"><span class="type-tag">'+b.type+'</span><span class="sep">·</span><span class="opp-badge '+oppClass+'">'+b.opportunity+'</span></div>'+
+            '<div class="biz-meta">'+
+              '<span class="type-tag">'+b.type+'</span>'+
+              '<span class="sep">·</span>'+
+              '<span class="opp-badge '+oppClass+'">'+b.opportunity+'</span>'+
+              (b.rating ? '<span class="sep">·</span><span class="rating-badge">★ '+b.rating+'</span>' : '')+
+              (b._yelpId ? '<span class="sep">·</span><span class="verified-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Verified</span>' : '')+
+            '</div>'+
           '</div>'+
           '<div class="card-right">'+
             '<div class="score-block"><div class="score-num" style="color:'+scoreColor+';">'+b.score+'</div><div class="score-label">/ 10</div></div>'+
@@ -2398,9 +2884,25 @@ function renderResults(businesses) {
           '</div>'+
         '</div>'+
 
+        // ── CARD PREVIEW (collapsed) ──
         '<div class="card-preview">'+
+
+          // Reason to call
           '<div class="preview-reason">'+b.reason+'</div>'+
+
+          // Opener preview
+          (openerPreview ? '<div class="preview-opener"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;margin-top:1px;color:var(--accent);opacity:0.7;"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><em>'+openerPreview+'</em></div>' : '')+
+
+          // Top buying signal
+          (topSignal ? '<div class="preview-signal"><span class="signal-dot"></span>'+topSignal+'</div>' : '')+
+
+          // Industry note
+          (industryPreview ? '<div class="preview-industry"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;margin-top:1px;color:var(--text4);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'+industryPreview+'</div>' : '')+
+
+          // Meta chips
           (metaChips ? '<div class="info-chips-row">'+metaChips+'</div>' : '')+
+
+          // Contact row
           '<div class="contact-row">'+
             phoneBtn+websiteBtn+mapsBtn+
             '<button class="pipeline-add-btn" id="pipe-btn-'+i+'" onclick="event.stopPropagation();addToPipeline('+i+')">+ Add to pipeline</button>'+
@@ -2408,12 +2910,13 @@ function renderResults(businesses) {
           addressLine+
         '</div>'+
 
+        // ── EXPANDED DETAIL ──
         '<div class="card-expanded" id="expanded-'+i+'">'+
           '<div class="biz-divider"></div>'+
 
           (signals ? '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Buying signals</div><div class="signals-list">'+signals+'</div></div>' : '')+
 
-          '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Opening line</div><div class="opener-text">'+b.opener+'</div></div>'+
+          '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Full opening line</div><div class="opener-text">'+b.opener+'</div></div>'+
 
           '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Talk track</div><div class="talk-track-text">'+(b.talk_track||'')+'</div></div>'+
 
@@ -2429,6 +2932,7 @@ function renderResults(businesses) {
 
   document.getElementById('bizList').innerHTML = cards;
   document.getElementById('results').style.display = 'block';
+  var sfWrap = document.getElementById('scoreFilterWrap'); if(sfWrap) sfWrap.style.display = 'flex'; setScoreFilter(0, document.querySelector('.score-filter-btn'));
   document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
   updateDashboard();
 }
@@ -2477,19 +2981,504 @@ function toggleCard(i) {
   exp.classList.toggle('open',!open); chev.classList.toggle('rotated',!open); card.classList.toggle('active',!open);
 }
 
-// INIT
+// ── LIGHT/DARK MODE ──────────────────────────────────────────────────────────
+function toggleLightMode() {
+  var isLight = document.body.classList.toggle('light-mode');
+  localStorage.setItem('ps_light_mode', isLight ? '1' : '0');
+  var btn = document.getElementById('modeToggleBtn');
+  if (btn) btn.innerHTML = isLight
+    ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>'
+    : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+}
+function initLightMode() {
+  if (localStorage.getItem('ps_light_mode') === '1') {
+    document.body.classList.add('light-mode');
+  }
+}
+
+// ── CALL TIMER ────────────────────────────────────────────────────────────────
+var _timerInterval = null;
+var _timerSeconds  = 0;
+var _timerRunning  = false;
+
+function toggleTimer() {
+  var wrap = document.getElementById('callTimerWrap');
+  var fab  = document.getElementById('timerFab');
+  if (!wrap) return;
+  var visible = wrap.classList.toggle('visible');
+  if (fab) fab.classList.toggle('active', visible);
+}
+
+function startTimer() {
+  if (_timerRunning) return;
+  _timerRunning = true;
+  document.getElementById('timerStartBtn').style.display = 'none';
+  document.getElementById('timerStopBtn').style.display  = '';
+  _timerInterval = setInterval(function() {
+    _timerSeconds++;
+    var m = Math.floor(_timerSeconds / 60);
+    var s = _timerSeconds % 60;
+    var el = document.getElementById('timerDisplay');
+    if (el) el.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(_timerInterval);
+  _timerRunning = false;
+  document.getElementById('timerStartBtn').style.display = '';
+  document.getElementById('timerStopBtn').style.display  = 'none';
+  var m = Math.floor(_timerSeconds / 60);
+  var s = _timerSeconds % 60;
+  showToast('Call duration: ' + m + ':' + (s<10?'0':'') + s, 'info');
+}
+
+function resetTimer() {
+  clearInterval(_timerInterval);
+  _timerRunning  = false;
+  _timerSeconds  = 0;
+  var el = document.getElementById('timerDisplay');
+  if (el) el.textContent = '0:00';
+  document.getElementById('timerStartBtn').style.display = '';
+  document.getElementById('timerStopBtn').style.display  = 'none';
+}
+
+// ── DAILY GOAL TRACKER ────────────────────────────────────────────────────────
+function getGoal() {
+  if (!currentUser) return 10;
+  return parseInt(localStorage.getItem('ps_goal_' + currentUser.email) || '10');
+}
+function setGoal(val) {
+  if (!currentUser) return;
+  var n = Math.max(1, parseInt(val) || 10);
+  localStorage.setItem('ps_goal_' + currentUser.email, n);
+  renderGoalTracker();
+}
+function getCallsToday() {
+  if (!currentUser) return 0;
+  var history = getHistory(currentUser.email);
+  var today = new Date().toDateString();
+  return history.filter(function(h) {
+    return h.callLog && h.callLog.some(function(c) {
+      return new Date(c.ts).toDateString() === today;
+    });
+  }).length;
+}
+function renderGoalTracker() {
+  var el = document.getElementById('goalTracker');
+  if (!el || !currentUser) return;
+  var goal  = getGoal();
+  var calls = getCallsToday();
+  var pct   = Math.min(100, Math.round(calls / goal * 100));
+  var done  = calls >= goal;
+  el.style.display = 'block';
+  el.innerHTML =
+    '<div class="goal-header">' +
+      '<div class="goal-title">' +
+        (done ? '🎯' : '📞') + ' Daily call goal' +
+      '</div>' +
+      '<div class="goal-edit">' +
+        '<input class="goal-input" type="number" id="goalInput" value="' + goal + '" min="1" max="200" onchange="setGoal(this.value)" onblur="setGoal(this.value)" />' +
+        '<span class="goal-label">calls/day</span>' +
+      '</div>' +
+    '</div>' +
+    '<div class="goal-track"><div class="goal-fill ' + (done?'done':'') + '" style="width:' + pct + '%"></div></div>' +
+    '<div class="goal-stats">' +
+      '<span class="goal-stat-txt">' + calls + ' of ' + goal + ' calls logged today' + (done?' · Goal reached! 🎉':'') + '</span>' +
+      '<span class="goal-pct">' + pct + '%</span>' +
+    '</div>';
+}
+
+// ── SCORE FILTER ──────────────────────────────────────────────────────────────
+var _scoreFilter = 0;
+function setScoreFilter(min, btn) {
+  _scoreFilter = min;
+  document.querySelectorAll('.score-filter-btn').forEach(function(b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  var cards = document.querySelectorAll('.biz-card');
+  var visible = 0;
+  cards.forEach(function(card, i) {
+    var b = window._currentBusinesses && window._currentBusinesses[i];
+    var show = !b || (b.score || 0) >= min;
+    card.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  var countEl = document.getElementById('resultsCount');
+  if (countEl) {
+    var total = (window._currentBusinesses || []).length;
+    countEl.textContent = (min > 0 ? visible + ' of ' + total : total) + ' businesses';
+  }
+}
+
+// ── NOTES TEMPLATES ───────────────────────────────────────────────────────────
+var NOTE_TEMPLATES = {
+  no_answer:  function(d){ return d + ' — No answer, tried calling.'; },
+  voicemail:  function(d){ return d + ' — Left voicemail, follow up in 2 days.'; },
+  gatekeeper: function(d){ return d + ' — Spoke to gatekeeper. Need to reach decision maker directly.'; },
+  interested: function(d){ return d + ' — Interested! Send follow-up email and call back ' + followUpDate(3) + '.'; },
+  callback:   function(d){ return d + ' — Requested callback on ' + followUpDate(2) + '.'; },
+  not_now:    function(d){ return d + ' — Not interested right now. Try again next quarter.'; }
+};
+function followUpDate(days) {
+  var d = new Date(Date.now() + days * 86400000);
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+function applyTemplate(id, tpl) {
+  var dateStr = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  var text = NOTE_TEMPLATES[tpl] ? NOTE_TEMPLATES[tpl](dateStr) : dateStr;
+  var ta = document.getElementById('notes-' + id);
+  if (!ta) return;
+  ta.value = ta.value ? text + '\n' + ta.value : text;
+  saveNote(id, ta.value);
+  ta.focus();
+  renderGoalTracker();
+}
+
+// ── PDF EXPORT ────────────────────────────────────────────────────────────────
+function exportPDF() {
+  if (!currentUser) return;
+  var businesses = window._currentBusinesses;
+  if (!businesses || !businesses.length) { showToast('Run a search first to export as PDF', 'info'); return; }
+
+  var rows = businesses.map(function(b, i) {
+    return '<tr style="border-bottom:1px solid #eee;">' +
+      '<td style="padding:10px 8px;font-weight:700;width:24px;color:#666;">' + (i+1) + '</td>' +
+      '<td style="padding:10px 8px;">' +
+        '<div style="font-weight:700;font-size:14px;margin-bottom:3px;">' + (b.name||'') + '</div>' +
+        '<div style="font-size:11px;color:#888;margin-bottom:4px;">' + (b.type||'') + (b.address?' · '+b.address:'') + '</div>' +
+        (b.phone ? '<div style="font-size:12px;color:#0066CC;margin-bottom:3px;">📞 ' + b.phone + '</div>' : '') +
+        (b.opener ? '<div style="font-size:12px;color:#333;font-style:italic;margin-top:4px;padding:6px 8px;background:#f8f8f8;border-left:3px solid #BEFF00;border-radius:0 4px 4px 0;">' + b.opener + '</div>' : '') +
+      '</td>' +
+      '<td style="padding:10px 8px;text-align:center;width:40px;">' +
+        '<div style="font-size:20px;font-weight:800;color:' + (b.score>=8?'#4CAF50':b.score>=6?'#FF9800':'#999') + ';">' + (b.score||'') + '</div>' +
+        '<div style="font-size:9px;color:#aaa;">/10</div>' +
+      '</td>' +
+      '<td style="padding:10px 8px;width:80px;">' +
+        '<div style="font-size:10px;font-weight:700;padding:3px 7px;border-radius:12px;display:inline-block;background:' + (b.opportunity==='High'?'#e8f5e9':'#fff8e1') + ';color:' + (b.opportunity==='High'?'#2e7d32':'#e65100') + ';">' + (b.opportunity||'') + '</div>' +
+        (b.decision_maker ? '<div style="font-size:10px;color:#888;margin-top:4px;">' + b.decision_maker + '</div>' : '') +
+        (b.best_time ? '<div style="font-size:10px;color:#888;">' + b.best_time + '</div>' : '') +
+      '</td>' +
+    '</tr>';
+  }).join('');
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>ProspectScout — Call Sheet</title>' +
+    '<style>body{font-family:Arial,sans-serif;margin:0;padding:20px;color:#1a1a1a;}' +
+    'h1{font-size:22px;margin-bottom:4px;}' +
+    '.meta{font-size:12px;color:#888;margin-bottom:20px;}' +
+    'table{width:100%;border-collapse:collapse;font-size:13px;}' +
+    'th{background:#f4f4f8;padding:10px 8px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#666;border-bottom:2px solid #ddd;}' +
+    '@media print{body{padding:10px;}}</style></head><body>' +
+    '<h1>🎯 ProspectScout — Call Sheet</h1>' +
+    '<div class="meta">Generated ' + new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) + ' · ' + businesses.length + ' prospects</div>' +
+    '<table><thead><tr><th>#</th><th>Business</th><th>Score</th><th>Priority</th></tr></thead><tbody>' +
+    rows + '</tbody></table></body></html>';
+
+  var blob = new Blob([html], {type:'text/html'});
+  var url  = URL.createObjectURL(blob);
+  var w = window.open(url, '_blank');
+  setTimeout(function(){ if(w) w.print(); URL.revokeObjectURL(url); }, 800);
+  showToast('Call sheet opened — use Print to save as PDF', 'success');
+}
+
+// ── CONFETTI ─────────────────────────────────────────────────────────────────
+function fireConfetti() {
+  var colors = ['#BEFF00','#00E5A0','#FFB020','#A78BFA','#FF6B6B','#60D0FF'];
+  for (var i = 0; i < 80; i++) {
+    (function(i) {
+      setTimeout(function() {
+        var piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + 'vw';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.width = (Math.random() * 8 + 6) + 'px';
+        piece.style.height = (Math.random() * 8 + 6) + 'px';
+        piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        piece.style.animationDelay = (Math.random() * 0.5) + 's';
+        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        document.body.appendChild(piece);
+        setTimeout(function() { piece.remove(); }, 4000);
+      }, i * 20);
+    })(i);
+  }
+}
+
+// confetti and overdue badge are called directly inside setStatus below
+
+// ── ONBOARDING ────────────────────────────────────────────────────────────────
+var _onboardingStep = 0;
+var ONBOARDING_STEPS = [
+  { icon:"🎯", title:"Welcome to ProspectScout!", desc:"Your AI-powered cold calling sidekick. Find real local businesses and get personalized call scripts, talk tracks and objection handlers for each one." },
+  { icon:"📍", title:"Step 1 — Enter a location", desc:"Type any city, neighborhood or area. Be specific for better results — try downtown Austin TX or Walnut Creek CA rather than just a state." },
+  { icon:"💼", title:"Step 2 — What are you selling?", desc:"Enter your product or service — website design, solar panels, CRM software. The AI tailors every opener and talk track to your exact pitch." },
+  { icon:"🏢", title:"Step 3 — Target business type", desc:"Optional but powerful. Add restaurants, law firms, or contractors to filter results to exactly the businesses you want to call." },
+  { icon:"📞", title:"Your call script is ready", desc:"Each card shows a real phone number, personalized opener, full talk track, objection handlers and buying signals. Tap any card to expand it." },
+  { icon:"🚀", title:"Track everything in Pipeline", desc:"Add prospects to your pipeline, log call outcomes, set follow-up reminders and track deal values. Your win rate and streak are tracked automatically." }
+];
+
+function startOnboarding() {
+  _onboardingStep = 0;
+  renderOnboardingStep();
+  document.getElementById('onboardingOverlay').classList.add('open');
+}
+
+function renderOnboardingStep() {
+  var steps = ONBOARDING_STEPS;
+  var s = steps[_onboardingStep];
+  var stepsEl = document.getElementById('onboardingSteps');
+  var nextBtn = document.getElementById('onboardingNext');
+  var skipBtn = document.getElementById('onboardingSkip');
+  if (!s) return;
+  stepsEl.innerHTML = steps.map(function(_, i) {
+    var cls = i < _onboardingStep ? 'done' : i === _onboardingStep ? 'active' : '';
+    return '<div class="onboarding-step-dot ' + cls + '"></div>';
+  }).join('');
+  document.getElementById('onboardingIcon').textContent  = s.icon;
+  document.getElementById('onboardingTitle').textContent = s.title;
+  document.getElementById('onboardingDesc').textContent  = s.desc;
+  var isLast = _onboardingStep === steps.length - 1;
+  nextBtn.textContent = isLast ? 'Scout now! 🎯' : 'Next →';
+  skipBtn.style.display = isLast ? 'none' : '';
+}
+
+function nextOnboarding() {
+  _onboardingStep++;
+  if (_onboardingStep >= ONBOARDING_STEPS.length) {
+    skipOnboarding();
+  } else {
+    renderOnboardingStep();
+  }
+}
+
+function skipOnboarding() {
+  document.getElementById('onboardingOverlay').classList.remove('open');
+  if (currentUser) localStorage.setItem('ps_onboarded_' + currentUser.email, '1');
+}
+
+function checkOnboarding() {
+  if (!currentUser) return;
+  var done = localStorage.getItem('ps_onboarded_' + currentUser.email);
+  if (!done) setTimeout(startOnboarding, 600);
+}
+
+// ── STREAK CALENDAR ───────────────────────────────────────────────────────────
+function renderStreakCalendar() {
+  var el = document.getElementById('dashCalendar');
+  if (!el || !currentUser) return;
+  var history = getHistory(currentUser.email);
+
+  // Build map of date → call count
+  var callMap = {};
+  history.forEach(function(h) {
+    if (!h.callLog) return;
+    h.callLog.forEach(function(c) {
+      var d = new Date(c.ts).toDateString();
+      callMap[d] = (callMap[d] || 0) + 1;
+    });
+  });
+
+  if (!Object.keys(callMap).length) return;
+  el.style.display = 'block';
+
+  // Show last 28 days
+  var days = [];
+  var now = new Date();
+  for (var i = 27; i >= 0; i--) {
+    var d = new Date(now);
+    d.setDate(d.getDate() - i);
+    days.push(d);
+  }
+
+  var totalCallDays = 0;
+  var streak = 0;
+  var checkDate = new Date(now);
+  while (callMap[checkDate.toDateString()]) {
+    streak++;
+    checkDate.setDate(checkDate.getDate() - 1);
+  }
+
+  var dayNames = ['S','M','T','W','T','F','S'];
+  var headerRow = dayNames.map(function(d) {
+    return '<div style="font-size:9px;font-weight:700;color:var(--text4);text-align:center;padding-bottom:4px;">' + d + '</div>';
+  }).join('');
+
+  var grid = days.map(function(d) {
+    var ds = d.toDateString();
+    var calls = callMap[ds] || 0;
+    var isToday = ds === now.toDateString();
+    var isFuture = d > now;
+    if (calls > 0) totalCallDays++;
+    var cls = 'streak-cal-day' +
+      (calls > 5 ? ' has-calls many' : calls > 0 ? ' has-calls' : '') +
+      (isToday ? ' today' : '') +
+      (isFuture ? ' future' : '');
+    return '<div class="' + cls + '" title="' + d.toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ': ' + calls + ' calls">' + d.getDate() + '</div>';
+  }).join('');
+
+  el.innerHTML =
+    '<div class="streak-calendar">' +
+      '<div class="streak-cal-header">' +
+        '<div>' +
+          '<div class="streak-cal-title">📅 Call activity</div>' +
+          '<div class="streak-cal-sub">' + totalCallDays + ' active days · ' + streak + '-day streak</div>' +
+        '</div>' +
+        (streak >= 3 ? '<div style="font-size:22px;">🔥</div>' : '') +
+      '</div>' +
+      '<div class="streak-cal-grid">' + headerRow + grid + '</div>' +
+      '<div class="streak-cal-legend">' +
+        '<div class="streak-cal-legend-item"><div class="streak-cal-legend-dot" style="background:var(--bg4);border:1px solid var(--border);"></div>No calls</div>' +
+        '<div class="streak-cal-legend-item"><div class="streak-cal-legend-dot" style="background:var(--accent-dim);border:1px solid rgba(190,255,0,0.25);"></div>Called</div>' +
+        '<div class="streak-cal-legend-item"><div class="streak-cal-legend-dot" style="background:rgba(190,255,0,0.2);"></div>Active day</div>' +
+      '</div>' +
+    '</div>';
+}
+
+// ── OVERDUE BADGE ─────────────────────────────────────────────────────────────
+function updateOverdueBadge() {
+  if (!currentUser) return;
+  var overdue = getHistory(currentUser.email).filter(isOverdue).length;
+  // Update pipeline tab badge
+  var tab = document.getElementById('tab-all');
+  var existing = document.getElementById('overdue-nav-badge');
+  if (existing) existing.remove();
+  if (overdue > 0) {
+    // Add to pipeline nav item in dropdown
+    var pipelineItems = document.querySelectorAll('.dropdown-item');
+    pipelineItems.forEach(function(item) {
+      if (item.textContent.includes('Pipeline')) {
+        var badge = document.createElement('span');
+        badge.id = 'overdue-nav-badge';
+        badge.className = 'nav-badge';
+        badge.textContent = overdue;
+        item.appendChild(badge);
+      }
+    });
+  }
+  // Also update pipeline tab
+  var cntAll = document.getElementById('cnt-all');
+  if (cntAll && overdue > 0) {
+    var tabBadge = document.getElementById('overdue-tab-badge');
+    if (!tabBadge) {
+      tabBadge = document.createElement('span');
+      tabBadge.id = 'overdue-tab-badge';
+      tabBadge.className = 'nav-badge';
+      tabBadge.style.marginLeft = '4px';
+      var allTab = document.getElementById('tab-all');
+      if (allTab) allTab.appendChild(tabBadge);
+    }
+    tabBadge.textContent = overdue;
+  } else {
+    var old = document.getElementById('overdue-tab-badge');
+    if (old) old.remove();
+  }
+}
+
+// ── SEARCH HISTORY PAGE ───────────────────────────────────────────────────────
+function openSearchHistory() {
+  renderSearchHistoryPage();
+  showPage('searchhistory');
+}
+
+function renderSearchHistoryPage() {
+  if (!currentUser) return;
+  var searches = JSON.parse(localStorage.getItem('ps_searches_' + currentUser.email) || '[]');
+  var el = document.getElementById('searchHistoryList');
+  var sub = document.getElementById('searchHistorySub');
+  if (!el) return;
+  if (sub) sub.textContent = searches.length + ' past search' + (searches.length !== 1 ? 'es' : '');
+  if (!searches.length) {
+    el.innerHTML = '<div class="pipeline-empty"><div class="pipeline-empty-icon">🔍</div><div class="pipeline-empty-text">No searches yet. Scout an area to get started.</div></div>';
+    return;
+  }
+  el.innerHTML = searches.map(function(s, idx) {
+    var date = new Date(s.ts).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    var meta = [s.product, s.target].filter(Boolean).join(' · ');
+    var lastResults = null;
+    try { lastResults = JSON.parse(localStorage.getItem('ps_last_results_' + currentUser.email) || 'null'); } catch(e) {}
+    return '<div class="search-history-item">' +
+      '<div class="sh-top">' +
+        '<div>' +
+          '<div class="sh-location">' + s.location + '</div>' +
+          '<div class="sh-meta">' + (meta ? meta + ' · ' : '') + date + ' · ' + s.count + ' prospects found</div>' +
+        '</div>' +
+        '<div class="sh-actions">' +
+          '<button class="sh-redo-btn" onclick="redoAndGo(' + idx + ')">' +
+            '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> Run again' +
+          '</button>' +
+          '<button class="sh-del-btn" onclick="deleteSearchHistory(' + idx + ')" title="Delete">' +
+            '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>' +
+          '</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function redoAndGo(idx) {
+  redoSearchByIndex(idx);
+  showPage('dashboard');
+}
+
+function deleteSearchHistory(idx) {
+  if (!currentUser) return;
+  var key = 'ps_searches_' + currentUser.email;
+  var searches = JSON.parse(localStorage.getItem(key) || '[]');
+  searches.splice(idx, 1);
+  localStorage.setItem(key, JSON.stringify(searches));
+  renderSearchHistoryPage();
+  renderDashSections();
+}
+
+// ── INIT
 // Re-check for resume when user returns to the tab
 document.addEventListener('visibilitychange', function() {
   if (!document.hidden && currentUser) { checkForResume(); }
 });
+initLightMode();
 restoreSession();
 updateNav();
 renderPricingGrid('homePricingGrid');
 renderPricingGrid('pricingGrid');
-if (currentUser) { showPage('dashboard'); updateDashboard(); } else { showPage('home'); }
+if (currentUser) { showPage('dashboard'); updateDashboard(); renderDashSections(); renderGoalTracker(); renderStreakCalendar(); updateOverdueBadge(); setTimeout(checkOnboarding, 600); } else { showPage('home'); }
 
 document.getElementById('authModal').addEventListener('click',e=>{ if(e.target===document.getElementById('authModal')) closeModal(); });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); if((e.ctrlKey||e.metaKey)&&e.key==='Enter') analyze(); });
 </script>
+<!-- ONBOARDING OVERLAY -->
+<div class="onboarding-overlay" id="onboardingOverlay">
+  <div class="onboarding-modal" id="onboardingModal">
+    <div class="onboarding-steps" id="onboardingSteps"></div>
+    <div class="onboarding-icon" id="onboardingIcon"></div>
+    <div class="onboarding-title" id="onboardingTitle"></div>
+    <div class="onboarding-desc" id="onboardingDesc"></div>
+    <div class="onboarding-btns">
+      <button class="onboarding-btn-skip" id="onboardingSkip" onclick="skipOnboarding()">Skip</button>
+      <button class="onboarding-btn-primary" id="onboardingNext" onclick="nextOnboarding()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- CALL TIMER FAB -->
+<button class="timer-fab" id="timerFab" onclick="toggleTimer()" title="Call timer">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+</button>
+
+<!-- CALL TIMER PANEL -->
+<div class="call-timer-wrap" id="callTimerWrap">
+  <div class="call-timer">
+    <div class="call-timer-header">
+      <span class="call-timer-label">📞 Call Timer</span>
+      <button class="call-timer-close" onclick="toggleTimer()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="call-timer-display" id="timerDisplay">0:00</div>
+    <div class="call-timer-btns">
+      <button class="timer-btn timer-btn-start" id="timerStartBtn" onclick="startTimer()">Start</button>
+      <button class="timer-btn timer-btn-stop"  id="timerStopBtn"  onclick="stopTimer()" style="display:none;">Stop</button>
+      <button class="timer-btn timer-btn-reset" onclick="resetTimer()">Reset</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
