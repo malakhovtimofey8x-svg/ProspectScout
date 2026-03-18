@@ -3494,7 +3494,8 @@ function renderCalendarPage() {
     var textColor = isToday ? 'var(--accent)' : calls>0 ? 'var(--text)' : 'var(--text3)';
     var opa = isFuture ? '0.35' : '1';
     var cur = isFuture ? 'default' : 'pointer';
-    var clickFn = isFuture ? '' : 'showCalDay('+JSON.stringify(key)+')';
+    var safeKey = key.replace(/'/g, '');
+    var clickFn = isFuture ? '' : 'showCalDay(\'' + safeKey + '\')'  ;
     var tip = calls>0 ? calls+' call'+(calls!==1?'s':'')+(data.prospects.length?' - '+data.prospects.slice(0,2).join(', '):'') : 'No calls';
 
     cells += '<div onclick="'+clickFn+'" title="'+tip+'" style="aspect-ratio:1;border-radius:var(--r-md);border:'+borderStyle+';background:'+bg+';display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:'+cur+';opacity:'+opa+';transition:opacity 0.15s;position:relative;">' +
