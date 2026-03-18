@@ -2539,7 +2539,7 @@ async function fetchPlaces(location, target, count) {
   document.getElementById('loadingText').textContent = 'Searching Yelp for ' + query + ' near ' + location + '...';
 
   // Call our own Netlify serverless function — no CORS issues
-  var url = '/api/search'
+  var url = '/.netlify/functions/search'
     + '?location=' + encodeURIComponent(location)
     + '&term=' + encodeURIComponent(query)
     + '&limit=' + Math.min(count, 50);
