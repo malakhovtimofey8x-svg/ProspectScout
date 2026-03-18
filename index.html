@@ -1269,7 +1269,7 @@ window.onerror = function(msg, src, line, col, err) {
 var OPENAI_KEY = '';
 (async function() {
   try {
-    var r = await fetch('/api/config');
+    var r = await fetch('/.netlify/functions/config');
     var cfg = await r.json();
     if (cfg.openaiKey) OPENAI_KEY = cfg.openaiKey;
   } catch(e) {}
