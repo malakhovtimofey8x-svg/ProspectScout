@@ -4160,25 +4160,25 @@ function openCampaignDetail(id) {
 
   el.innerHTML =
     '<div style="margin-bottom:24px;">' +
-      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px;">' +
-        '<div style="min-width:0;flex:1;">' +
-          '<input id="cedit-name-'+c.id+'" value="'+c.name.replace(/"/g,'&quot;')+'" readonly style="font-family:Syne,sans-serif;font-size:clamp(18px,5vw,22px);font-weight:800;letter-spacing:-0.5px;word-break:break-word;background:transparent;border:1px solid transparent;color:var(--text);width:100%;outline:none;border-radius:var(--r-sm);padding:2px 4px;cursor:default;transition:all 0.15s;" />' +
-          '<div style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;">' +
-            '<input id="cedit-product-'+c.id+'" value="'+c.product.replace(/"/g,'&quot;')+'" readonly style="font-size:13px;color:var(--text3);background:transparent;border:1px solid transparent;outline:none;border-radius:var(--r-sm);padding:2px 4px;cursor:default;transition:all 0.15s;flex:1;min-width:100px;" />' +
-            '<span style="color:var(--border2);font-size:13px;line-height:2;">·</span>' +
-            '<input id="cedit-target-'+c.id+'" value="'+(c.target||'').replace(/"/g,'&quot;')+'" placeholder="target type" readonly style="font-size:13px;color:var(--text3);background:transparent;border:1px solid transparent;outline:none;border-radius:var(--r-sm);padding:2px 4px;cursor:default;transition:all 0.15s;flex:1;min-width:80px;" />' +
-          '</div>' +
-          '<input id="cedit-areas-'+c.id+'" value="'+c.areas.join(', ').replace(/"/g,'&quot;')+'" readonly style="font-size:12px;color:var(--text4);background:transparent;border:1px solid transparent;outline:none;border-radius:var(--r-sm);padding:2px 4px;cursor:default;transition:all 0.15s;width:100%;margin-top:3px;" />' +
-          '<div style="font-size:10px;color:var(--text4);padding:2px 4px;margin-top:2px;display:none;" id="cedit-areas-hint-'+c.id+'">Separate areas with commas</div>' +
+      '<div style="margin-bottom:16px;">' +
+        '<input id="cedit-name-'+c.id+'" value="'+c.name.replace(/"/g,'&quot;')+'" readonly style="font-family:Syne,sans-serif;font-size:clamp(18px,5vw,24px);font-weight:800;letter-spacing:-0.5px;word-break:break-word;background:transparent;border:1px solid transparent;color:var(--text);width:100%;outline:none;border-radius:var(--r-sm);padding:2px 6px;cursor:default;transition:all 0.2s;display:block;margin-bottom:6px;" />' +
+        '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px;">' +
+          '<input id="cedit-product-'+c.id+'" value="'+c.product.replace(/"/g,'&quot;')+'" readonly style="font-size:13px;color:var(--text3);background:transparent;border:1px solid transparent;outline:none;border-radius:var(--r-sm);padding:2px 6px;cursor:default;transition:all 0.2s;min-width:80px;max-width:200px;" />' +
+          '<span style="color:var(--border2);">·</span>' +
+          '<input id="cedit-target-'+c.id+'" value="'+(c.target||'').replace(/"/g,'&quot;')+'" placeholder="target type" readonly style="font-size:13px;color:var(--text3);background:transparent;border:1px solid transparent;outline:none;border-radius:var(--r-sm);padding:2px 6px;cursor:default;transition:all 0.2s;min-width:60px;max-width:180px;" />' +
         '</div>' +
-      '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
-        '<button onclick="exportCampaignPDF(this.dataset.id)" data-id="'+c.id+'" style="padding:8px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text2);cursor:pointer;font-size:12px;">PDF</button>' +
-        '<button onclick="duplicateCampaign(this.dataset.id)" data-id="'+c.id+'" style="padding:8px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text2);cursor:pointer;font-size:12px;">Copy</button>' +
-        '<button onclick="cycleCampaignStatus(this.dataset.id)" data-id="'+c.id+'" style="padding:8px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--accent);cursor:pointer;font-size:12px;">'+c.status+'</button>' +
-        '<button onclick="deleteCampaign(this.dataset.id)" data-id="'+c.id+'" style="padding:8px 14px;background:none;border:1px solid rgba(255,80,80,0.2);border-radius:var(--r-sm);color:#FF8080;cursor:pointer;font-size:12px;">Delete</button>' +
-        '<button onclick="document.getElementById(\'campaignDetail\').style.display=\'none\'" style="padding:8px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text3);cursor:pointer;font-size:12px;">Close</button>' +
+        '<input id="cedit-areas-'+c.id+'" value="'+c.areas.join(', ').replace(/"/g,'&quot;')+'" readonly style="font-size:12px;color:var(--text4);background:transparent;border:1px solid transparent;outline:none;border-radius:var(--r-sm);padding:2px 6px;cursor:default;transition:all 0.2s;width:100%;display:block;" />' +
+        '<div style="font-size:10px;color:var(--accent);padding:2px 6px;margin-top:2px;display:none;" id="cedit-areas-hint-'+c.id+'">Separate areas with commas</div>' +
       '</div>' +
-    '</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center;">' +
+        '<button id="cedit-save-'+c.id+'" onclick="saveCampaignEdits(this.dataset.id)" data-id="'+c.id+'" style="display:none;padding:10px 20px;background:var(--accent);color:#08080D;font-weight:700;border:none;border-radius:var(--r-md);cursor:pointer;font-size:13px;">✓ Save</button>' +
+        '<button id="cedit-edit-'+c.id+'" onclick="makeCampaignEditable(this.dataset.id)" data-id="'+c.id+'" style="padding:9px 16px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-md);color:var(--text2);cursor:pointer;font-size:13px;font-weight:600;">✏️ Edit</button>' +
+        '<button onclick="exportCampaignPDF(this.dataset.id)" data-id="'+c.id+'" style="padding:9px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-md);color:var(--text2);cursor:pointer;font-size:12px;">PDF</button>' +
+        '<button onclick="duplicateCampaign(this.dataset.id)" data-id="'+c.id+'" style="padding:9px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-md);color:var(--text2);cursor:pointer;font-size:12px;">Copy</button>' +
+        '<button onclick="cycleCampaignStatus(this.dataset.id)" data-id="'+c.id+'" style="padding:9px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-md);color:var(--accent);cursor:pointer;font-size:12px;font-weight:600;text-transform:capitalize;">'+c.status+'</button>' +
+        '<button onclick="deleteCampaign(this.dataset.id)" data-id="'+c.id+'" style="padding:9px 14px;background:none;border:1px solid rgba(255,80,80,0.2);border-radius:var(--r-md);color:#FF8080;cursor:pointer;font-size:12px;">Delete</button>' +
+        '<button onclick="document.getElementById(\'campaignDetail\').style.display=\'none\'" style="padding:9px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-md);color:var(--text3);cursor:pointer;font-size:12px;">Close</button>' +
+      '</div>' +
 
     // Projections + actual progress
     buildProjectionsSection(c) +
@@ -4350,7 +4350,27 @@ function buildProjectionsSection(c) {
   var pct = totalCalls>0 ? Math.min(100,Math.round(actualCalls/totalCalls*100)) : 0;
 
   return '<div class="campaign-detail" style="width:100%;">' +
-    '<div class="campaign-detail-title">📊 Projections &amp; progress</div>' +
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">' +
+      '<div class="campaign-detail-title" style="margin:0;font-size:15px;">📊 Projections &amp; progress</div>' +
+      '<div id="projEditWrap-'+c.id+'" style="display:flex;gap:8px;align-items:center;">' +
+        '<button onclick="toggleProjEdit(\''+c.id+'\')" id="projEditBtn-'+c.id+'" style="padding:6px 12px;background:var(--accent-dim);color:var(--accent);border:1px solid rgba(190,255,0,0.2);border-radius:var(--r-sm);cursor:pointer;font-size:11px;font-weight:700;">✏️ Edit goals</button>' +
+      '</div>' +
+    '</div>' +
+    '<div id="projEditForm-'+c.id+'" style="display:none;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-md);padding:14px 16px;margin-bottom:16px;">' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">' +
+        '<div><label style="font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">Daily call goal</label>' +
+          '<input type="number" id="projGoal-'+c.id+'" value="'+c.dailyGoal+'" style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:7px 10px;color:var(--text);font-size:15px;outline:none;" /></div>' +
+        '<div><label style="font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">Conversion % goal</label>' +
+          '<input type="number" id="projConv-'+c.id+'" value="'+c.convGoal+'" style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:7px 10px;color:var(--text);font-size:15px;outline:none;" /></div>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">' +
+        '<div><label style="font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">Start date</label>' +
+          '<input type="date" id="projStart-'+c.id+'" value="'+c.startDate+'" style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:7px 10px;color:var(--text);font-size:15px;outline:none;" /></div>' +
+        '<div><label style="font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">End date</label>' +
+          '<input type="date" id="projEnd-'+c.id+'" value="'+c.endDate+'" style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:7px 10px;color:var(--text);font-size:15px;outline:none;" /></div>' +
+      '</div>' +
+      '<button onclick="saveProjEdit(\''+c.id+'\')" style="padding:8px 20px;background:var(--accent);color:#08080D;font-weight:700;border:none;border-radius:var(--r-sm);cursor:pointer;font-size:13px;">Update projections</button>' +
+    '</div>' +
 
     // Projected vs actual header - responsive 2-col
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">' +
@@ -4965,6 +4985,45 @@ function saveCampaignEdits(id) {
   if (areasDisplay) areasDisplay.value = newAreas.join(', ');
 
   showToast('Campaign updated', 'success');
+}
+
+
+function toggleProjEdit(id) {
+  var form = document.getElementById('projEditForm-' + id);
+  var btn  = document.getElementById('projEditBtn-' + id);
+  if (!form) return;
+  var isOpen = form.style.display !== 'none';
+  form.style.display = isOpen ? 'none' : 'block';
+  if (btn) btn.textContent = isOpen ? '✏️ Edit goals' : '✕ Cancel';
+  if (!isOpen) form.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function saveProjEdit(id) {
+  var campaigns = getCampaigns();
+  var c = campaigns.find(function(x){ return x.id===id; });
+  if (!c) return;
+  var goal  = parseInt(document.getElementById('projGoal-'+id).value)  || c.dailyGoal;
+  var conv  = parseInt(document.getElementById('projConv-'+id).value)  || c.convGoal;
+  var start = document.getElementById('projStart-'+id).value || c.startDate;
+  var end   = document.getElementById('projEnd-'+id).value   || c.endDate;
+  if (new Date(end) <= new Date(start)) { showToast('End date must be after start date','info'); return; }
+  c.dailyGoal  = goal;
+  c.convGoal   = conv;
+  c.startDate  = start;
+  c.endDate    = end;
+  // Recalculate projections
+  var days  = Math.max(1, Math.round((new Date(end)-new Date(start))/86400000));
+  var total = goal * days;
+  var conn  = Math.round(total * 0.25);
+  var meet  = Math.round(conn * (conv/100) * 2);
+  var cls   = Math.round(meet * 0.3);
+  if (!c.plan) c.plan = {};
+  c.plan.projections = { totalCalls:total, expectedConnects:conn, expectedMeetings:meet, expectedCloses:cls };
+  saveCampaigns(campaigns);
+  toggleProjEdit(id);
+  renderCampaignList();
+  openCampaignDetail(id);
+  showToast('Projections updated!', 'success');
 }
 
 
