@@ -973,6 +973,13 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
 .rating-badge { display:inline-flex; align-items:center; gap:3px; font-size:10px; font-weight:700; padding:3px 9px; border-radius:20px; background:rgba(255,176,32,0.08); color:var(--amber); border:1px solid rgba(255,176,32,0.2); margin-bottom:6px; margin-left:4px; }
 
 
+/* ── CAMPAIGN FILTER BAR ── */
+.camp-filter-chip { display:inline-flex;align-items:center;gap:5px;padding:6px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;transition:all 0.15s;white-space:nowrap; }
+.camp-filter-chip:hover { border-color:rgba(190,255,0,0.2);color:var(--text); }
+.camp-filter-chip.active { background:rgba(190,255,0,0.08);border-color:rgba(190,255,0,0.3);color:var(--accent); }
+.camp-filter-dot { width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0; }
+@media(max-width:600px) { .stats-4-grid { grid-template-columns:repeat(2,1fr); } }
+
 /* ── SLIM STATUS BAR ── */
 #statusExpanded { animation:fadeSlideIn 0.2s ease both; }
 #slimStatusBar:hover { background:var(--bg3) !important; }
@@ -1134,6 +1141,16 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
         <span class="tier-chip" id="dashTierChip">Free</span>
         <button class="upgrade-nudge" onclick="showPage('pricing')" id="dashUpgradeBtn">Upgrade plan →</button>
       </div>
+    </div>
+
+    <!-- CAMPAIGN CONTEXT BANNER -->
+    <div id="campaignContextBanner" style="display:none;align-items:center;justify-content:space-between;gap:10px;background:rgba(190,255,0,0.06);border:1px solid rgba(190,255,0,0.2);border-radius:var(--r-lg);padding:10px 16px;margin-bottom:12px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span style="font-size:13px;font-weight:600;color:var(--accent);">Scouting for campaign:</span>
+        <span id="campaignContextName" style="font-size:13px;color:var(--text2);font-weight:700;"></span>
+      </div>
+      <button onclick="clearActiveCampaign()" style="font-size:11px;color:var(--text4);background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:var(--r-sm);">✕ Clear</button>
     </div>
 
     <!-- SLIM STATUS BAR (collapsed goal + usage) -->
@@ -1321,6 +1338,12 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
     <div id="pipelineValueBar" style="display:none; margin-bottom:20px;"></div>
 
     <!-- SEARCH + SORT ROW -->
+    <!-- CAMPAIGN PIPELINE STATS -->
+    <div id="campaignPipelineStats"></div>
+
+    <!-- CAMPAIGN FILTER BAR -->
+    <div id="campaignFilterBar"></div>
+
     <div class="pipeline-controls">
       <div class="pipeline-search-wrap">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -1982,7 +2005,9 @@ function saveProspectsToHistory(email, businesses, searchMeta) {
       searchLocation: searchMeta.location,
       savedAt: timestamp,
       status: 'new', statusUpdatedAt: null,
-      reachedOut: false, reachedOutAt: null
+      reachedOut: false, reachedOutAt: null,
+      campaignId:   _activeCampaignId   || null,
+      campaignName: _activeCampaignName || null
     });
   });
   saveHistory(email, history);
@@ -2191,6 +2216,8 @@ function openHistoryPage() {
   renderLocationWins();
   renderOverdueAlert();
   renderPipelineValueBar();
+  _pipelineCampaignFilter = 'all';
+  renderCampaignFilterBar();
   renderHistoryList('all');
   showPage('history');
 }
@@ -2325,6 +2352,14 @@ function renderHistoryList(filter) {
   let history = getHistory(currentUser.email);
 
   if (filter !== 'all') history = history.filter(function(h){ return (h.status||'new')===filter; });
+  window._currentHistoryFilter = filter;
+
+  // Campaign filter
+  if (_pipelineCampaignFilter === 'untagged') {
+    history = history.filter(function(h){ return !h.campaignId; });
+  } else if (_pipelineCampaignFilter && _pipelineCampaignFilter !== 'all') {
+    history = history.filter(function(h){ return h.campaignId === _pipelineCampaignFilter; });
+  }
 
   const q = ((document.getElementById('pipelineSearch')||{}).value||'').toLowerCase().trim();
   if (q) history = history.filter(function(h){
@@ -2411,6 +2446,7 @@ function renderHistoryList(filter) {
       '<div class="pipeline-card-top">'+
         '<div class="pipeline-card-body" style="min-width:0;overflow:hidden;">'+
           '<div class="pipeline-biz-name" title="'+h.name+'">'+h.name+'</div>'+
+          (h.campaignName ? '<span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:2px 7px;background:rgba(190,255,0,0.06);color:var(--accent);border:1px solid rgba(190,255,0,0.15);border-radius:10px;margin-bottom:3px;"><svg width=\"8\" height=\"8\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\"><polygon points=\"13 2 3 14 12 14 11 22 21 10 12 10 13 2\"/></svg>'+h.campaignName+'</span>' : '')+
           '<div class="pipeline-meta">'+
             '<span class="pipeline-type">'+h.type+'</span>'+
             '<span class="sep">·</span>'+
@@ -2780,6 +2816,7 @@ function resumeSearch() {
     renderResults(data.results);
     document.getElementById('inputSection').style.display = 'none';
     document.getElementById('results').style.display = 'block';
+  renderCampaignResultsBanner();
   var sfWrap = document.getElementById('scoreFilterWrap'); if(sfWrap) sfWrap.style.display = 'flex'; setScoreFilter(0, document.querySelector('.score-filter-btn'));
     return;
   }
@@ -2787,6 +2824,7 @@ function resumeSearch() {
   renderResults(data.results);
   document.getElementById('inputSection').style.display = 'none';
   document.getElementById('results').style.display = 'block';
+  renderCampaignResultsBanner();
   var sfWrap = document.getElementById('scoreFilterWrap'); if(sfWrap) sfWrap.style.display = 'flex'; setScoreFilter(0, document.querySelector('.score-filter-btn'));
   showToast('Showing ' + data.results.length + ' saved results — scroll down to see them', 'info');
 }
@@ -3269,6 +3307,7 @@ function renderResults(businesses) {
 
   document.getElementById('bizList').innerHTML = cards;
   document.getElementById('results').style.display = 'block';
+  renderCampaignResultsBanner();
   var sfWrap = document.getElementById('scoreFilterWrap'); if(sfWrap) sfWrap.style.display = 'flex'; setScoreFilter(0, document.querySelector('.score-filter-btn'));
   document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
   updateDashboard();
@@ -3295,9 +3334,11 @@ function addToPipeline(i) {
     reason: b.reason, opener: b.opener,
     company_size: b.company_size||'', annual_revenue: b.annual_revenue||'',
     decision_maker: b.decision_maker||'', best_time: b.best_time||'',
-    searchLocation: '', savedAt: Date.now(),
+    searchLocation: window._lastSearchLocation||'', savedAt: Date.now(),
     status: 'new', statusUpdatedAt: null,
-    reachedOut: false, reachedOutAt: null
+    reachedOut: false, reachedOutAt: null,
+    campaignId:   _activeCampaignId   || null,
+    campaignName: _activeCampaignName || null
   });
   saveHistory(currentUser.email, history);
 
@@ -4227,9 +4268,11 @@ function openCampaignDetail(id) {
     '</div>';
   }).join('');
 
-  // Scout buttons
+  // Scout buttons — pass campaign context
   var scoutBtns = c.areas.map(function(area) {
-    return '<button onclick="scoutFromCampaign(\''+area.replace(/'/g,"'")+'\',\''+c.product.replace(/'/g,"'")+'\',\''+c.target.replace(/'/g,"")+'\')" ' +
+    var sa = area.replace(/['"]/g,''), sp = c.product.replace(/['"]/g,'');
+    var st = (c.target||'').replace(/['"]/g,''), si = c.id, sn = c.name.replace(/['"]/g,'');
+    return '<button onclick="scoutFromCampaign(\''+sa+'\',\''+sp+'\',\''+st+'\',\''+si+'\',\''+sn+'\')" ' +
       'style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--accent-dim);color:var(--accent);border:1px solid rgba(190,255,0,0.2);border-radius:var(--r-sm);cursor:pointer;font-size:12px;font-weight:600;white-space:nowrap;">' +
       '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
       'Scout '+area+
@@ -4308,7 +4351,9 @@ function _campStat(val, label, color) {
   '</div>';
 }
 
-function scoutFromCampaign(area, product, target) {
+function scoutFromCampaign(area, product, target, campaignId, campaignName) {
+  setActiveCampaign(campaignId, campaignName);
+  _pipelineCampaignFilter = campaignId; // Pre-set pipeline filter
   showPage('dashboard');
   setTimeout(function() {
     fillSearch(area, product, target);
@@ -4423,7 +4468,13 @@ function buildProjectionsSection(c) {
 
   // Progress from pipeline
   var history = getHistory(currentUser.email);
-  var campProspects = history.filter(function(h){ return h.searchLocation && c.areas.some(function(a){ return h.searchLocation.toLowerCase().includes(a.toLowerCase().split(' ')[0]); }); });
+  var campProspects = history.filter(function(h){
+    // Exact campaign ID match (new) or fallback to location match (legacy)
+    if (h.campaignId) return h.campaignId === c.id;
+    return h.searchLocation && c.areas.some(function(a){
+      return h.searchLocation.toLowerCase().includes(a.toLowerCase().split(' ')[0]);
+    });
+  });
   var _autoCalls    = 0;
   campProspects.forEach(function(h){ _autoCalls += (h.callLog||[]).length; });
   var _autoMeetings  = campProspects.filter(function(h){ return h.status==='qualified'; }).length;
@@ -5190,6 +5241,154 @@ function updateSlimBar() {
   if (goalEl) goalEl.style.color = goalPct >= 100 ? 'var(--accent)' : goalPct >= 50 ? 'var(--amber)' : 'var(--text2)';
 
   bar.style.display = 'block';
+}
+
+
+// ── CAMPAIGN PIPELINE TAGGING ─────────────────────────────────────────────────
+
+// Track active campaign context
+var _activeCampaignId = null;
+var _activeCampaignName = null;
+
+function setActiveCampaign(id, name) {
+  _activeCampaignId = id || null;
+  _activeCampaignName = name || null;
+  // Show banner on dashboard if campaign is active
+  updateCampaignContextBanner();
+}
+
+function clearActiveCampaign() {
+  _activeCampaignId = null;
+  _activeCampaignName = null;
+  updateCampaignContextBanner();
+}
+
+function updateCampaignContextBanner() {
+  var banner = document.getElementById('campaignContextBanner');
+  if (!banner) return;
+  if (_activeCampaignId && _activeCampaignName) {
+    banner.style.display = 'flex';
+    var nameEl = document.getElementById('campaignContextName');
+    if (nameEl) nameEl.textContent = _activeCampaignName;
+  } else {
+    banner.style.display = 'none';
+  }
+}
+
+// ── PIPELINE CAMPAIGN FILTER ──────────────────────────────────────────────────
+var _pipelineCampaignFilter = 'all';
+
+function setPipelineCampaignFilter(val) {
+  _pipelineCampaignFilter = val;
+  // Update button states
+  document.querySelectorAll('.camp-filter-btn').forEach(function(btn) {
+    var active = btn.dataset.camp === val;
+    btn.style.background    = active ? 'var(--accent-dim)' : 'var(--bg3)';
+    btn.style.color         = active ? 'var(--accent)'     : 'var(--text3)';
+    btn.style.borderColor   = active ? 'rgba(190,255,0,0.25)' : 'var(--border2)';
+  });
+  renderHistoryList(window._currentHistoryFilter || 'all');
+}
+
+function renderCampaignFilterBar() {
+  if (!currentUser) return;
+  var el = document.getElementById('campaignFilterBar');
+  if (!el) return;
+  // Update campaign stats panel
+  var statsEl = document.getElementById('campaignPipelineStats');
+  if (statsEl) statsEl.innerHTML = renderCampaignPipelineStats(_pipelineCampaignFilter);
+  var campaigns = getCampaigns();
+  if (!campaigns.length) { el.innerHTML = ''; return; }
+
+  var btns = [{ id:'all', name:'All prospects' }].concat(
+    campaigns.map(function(c){ return { id:c.id, name:c.name }; })
+  ).concat([{ id:'untagged', name:'No campaign' }]);
+
+  el.innerHTML = '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px;">' +
+    '<span style="font-size:11px;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:1px;flex-shrink:0;">Campaign:</span>' +
+    btns.map(function(b) {
+      var active = b.id === _pipelineCampaignFilter;
+      return '<button class="camp-filter-btn" data-camp="'+b.id+'" onclick="setPipelineCampaignFilter(\''+b.id+'\')" style="padding:5px 12px;font-size:12px;font-weight:600;border-radius:20px;border:1px solid '+(active?'rgba(190,255,0,0.25)':'var(--border2)')+';background:'+(active?'var(--accent-dim)':'var(--bg3)')+';color:'+(active?'var(--accent)':'var(--text3)')+';cursor:pointer;white-space:nowrap;transition:all 0.15s;">'+b.name+'</button>';
+    }).join('') +
+  '</div>';
+}
+
+
+// ── CAMPAIGN PIPELINE: MISSING PIECES ────────────────────────────────────────
+
+// When opening pipeline, auto-filter to active campaign if one is set
+function openHistoryPageFromCampaign(campaignId, campaignName) {
+  _pipelineCampaignFilter = campaignId || 'all';
+  openHistoryPage();
+}
+
+// Auto-filter pipeline when navigating from campaign scout
+var _originalOpenHistoryPage = null;
+
+// Campaign active context — show on search results
+function renderCampaignResultsBanner() {
+  var banner = document.getElementById('campaignResultsBanner');
+  if (!banner) return;
+  if (_activeCampaignId && _activeCampaignName) {
+    banner.style.display = 'flex';
+    var nameEl = document.getElementById('campaignResultsName');
+    if (nameEl) nameEl.textContent = _activeCampaignName;
+  } else {
+    banner.style.display = 'none';
+  }
+}
+
+// Clear active campaign context
+function clearActiveCampaign() {
+  _activeCampaignId = null;
+  _activeCampaignName = null;
+  updateCampaignContextBanner();
+  var banner = document.getElementById('campaignResultsBanner');
+  if (banner) banner.style.display = 'none';
+}
+
+// Campaign stats summary for pipeline page
+function renderCampaignPipelineStats(campaignId) {
+  if (!currentUser || !campaignId || campaignId === 'all') return '';
+  var history = getHistory(currentUser.email);
+  var tagged = history.filter(function(h){ return h.campaignId === campaignId; });
+  if (!tagged.length) return '';
+  var campaigns = getCampaigns();
+  var camp = campaigns.find(function(c){ return c.id === campaignId; });
+  if (!camp) return '';
+
+  var total     = tagged.length;
+  var contacted = tagged.filter(function(h){ return h.status !== 'new'; }).length;
+  var meetings  = tagged.filter(function(h){ return h.status === 'qualified'; }).length;
+  var closed    = tagged.filter(function(h){ return h.status === 'converted'; }).length;
+  var calls     = 0; tagged.forEach(function(h){ calls += (h.callLog||[]).length; });
+  var proj      = (camp.plan||{}).projections || {};
+  var projCalls = proj.totalCalls || 0;
+  var pct       = projCalls > 0 ? Math.min(100, Math.round(calls/projCalls*100)) : 0;
+
+  return '<div style="background:rgba(190,255,0,0.04);border:1px solid rgba(190,255,0,0.15);border-radius:var(--r-xl);padding:16px 20px;margin-bottom:20px;">' +
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">' +
+      '<div style="font-size:13px;font-weight:700;color:var(--accent);">📊 ' + camp.name + ' — Pipeline progress</div>' +
+      '<button onclick="openCampaignsPage();setTimeout(function(){openCampaignDetail(\''+campaignId+'\')},200)" style="font-size:11px;padding:5px 10px;background:var(--accent-dim);color:var(--accent);border:1px solid rgba(190,255,0,0.2);border-radius:var(--r-sm);cursor:pointer;">View campaign →</button>' +
+    '</div>' +
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;">' +
+      _campPipeStat(total,    'Prospects', 'var(--text2)') +
+      _campPipeStat(contacted,'Contacted', 'var(--accent)') +
+      _campPipeStat(meetings, 'Meetings',  'var(--amber)') +
+      _campPipeStat(closed,   'Closed',    'var(--purple)') +
+    '</div>' +
+    '<div style="font-size:11px;color:var(--text3);margin-bottom:5px;">Calls logged: ' + calls + ' / ' + projCalls + ' projected</div>' +
+    '<div style="height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;">' +
+      '<div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,var(--accent),#8FFF00);border-radius:3px;transition:width 0.5s;"></div>' +
+    '</div>' +
+  '</div>';
+}
+
+function _campPipeStat(val, label, color) {
+  return '<div style="text-align:center;background:var(--bg3);border-radius:var(--r-md);padding:10px 8px;">' +
+    '<div style="font-size:20px;font-weight:800;color:'+color+';line-height:1;margin-bottom:3px;">'+val+'</div>' +
+    '<div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text4);font-weight:600;">'+label+'</div>' +
+  '</div>';
 }
 
 
