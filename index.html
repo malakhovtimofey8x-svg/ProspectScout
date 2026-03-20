@@ -2446,7 +2446,7 @@ function renderHistoryList(filter) {
       '<div class="pipeline-card-top">'+
         '<div class="pipeline-card-body" style="min-width:0;overflow:hidden;">'+
           '<div class="pipeline-biz-name" title="'+h.name+'">'+h.name+'</div>'+
-          (h.campaignName ? '<span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:2px 7px;background:rgba(190,255,0,0.06);color:var(--accent);border:1px solid rgba(190,255,0,0.15);border-radius:10px;margin-bottom:3px;"><svg width=\"8\" height=\"8\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\"><polygon points=\"13 2 3 14 12 14 11 22 21 10 12 10 13 2\"/></svg>'+h.campaignName+'</span>' : '')+
+          (h.campaignName ? '<span id="campbadge-'+h.id+'" style="display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:2px 7px;background:rgba(190,255,0,0.06);color:var(--accent);border:1px solid rgba(190,255,0,0.15);border-radius:10px;margin-bottom:3px;"><svg width=\"8\" height=\"8\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\"><polygon points=\"13 2 3 14 12 14 11 22 21 10 12 10 13 2\"/></svg>'+h.campaignName+'</span>' : '')+
           '<div class="pipeline-meta">'+
             '<span class="pipeline-type">'+h.type+'</span>'+
             '<span class="sep">·</span>'+
@@ -2494,6 +2494,7 @@ function renderHistoryList(filter) {
               '<input class="deal-value-input" type="text" placeholder="Deal value" value="'+(h.dealValue?'$'+h.dealValue:'')+'" onblur="saveDealValue(\''+h.id+'\',this.value)" onkeydown="if(event.key===\'Enter\')this.blur()" />'+
             '</div>'+
             '<div class="reminder-btn-wrap" id="rbwrap-'+h.id+'">'+buildReminderBtn(h)+'</div>'+
+            buildCampaignAssignRow(h)+
           '</div>'+
         '</div>'+
 
@@ -3280,7 +3281,7 @@ function renderResults(businesses) {
           // Contact row
           '<div class="contact-row">'+
             phoneBtn+websiteBtn+mapsBtn+
-            '<button class="pipeline-add-btn" id="pipe-btn-'+i+'" onclick="event.stopPropagation();addToPipeline('+i+')">+ Add to pipeline</button>'+
+            '<button class="pipeline-add-btn" id="pipe-btn-'+i+'" onclick="event.stopPropagation();showCampaignPicker('+i+')">+ Add to pipeline</button>'+
           '</div>'+
           addressLine+
         '</div>'+
@@ -5389,6 +5390,102 @@ function _campPipeStat(val, label, color) {
     '<div style="font-size:20px;font-weight:800;color:'+color+';line-height:1;margin-bottom:3px;">'+val+'</div>' +
     '<div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text4);font-weight:600;">'+label+'</div>' +
   '</div>';
+}
+
+
+// ── CAMPAIGN ASSIGNMENT ───────────────────────────────────────────────────────
+
+function buildCampaignAssignRow(h) {
+  var campaigns = getCampaigns();
+  if (!campaigns.length) return '';
+  var opts = '<option value="">No campaign</option>' +
+    campaigns.map(function(c) {
+      return '<option value="'+c.id+'"'+(h.campaignId===c.id?' selected':'')+'>'+c.name+'</option>';
+    }).join('');
+  return '<div style="display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">' +
+    '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text4)" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>' +
+    '<span style="font-size:11px;color:var(--text4);font-weight:600;white-space:nowrap;">Campaign:</span>' +
+    '<select onchange="assignProspectToCampaign(\''+h.id+'\',this.value)" onclick="event.stopPropagation()" style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-sm);padding:4px 8px;font-size:12px;color:var(--text2);outline:none;cursor:pointer;">'+opts+'</select>' +
+  '</div>';
+}
+
+function assignProspectToCampaign(prospectId, campaignId) {
+  if (!currentUser) return;
+  var history = getHistory(currentUser.email);
+  var item = history.find(function(h){ return h.id === prospectId; });
+  if (!item) return;
+
+  var campaigns = getCampaigns();
+  var camp = campaigns.find(function(c){ return c.id === campaignId; });
+
+  item.campaignId   = campaignId || null;
+  item.campaignName = camp ? camp.name : null;
+  saveHistory(currentUser.email, history);
+
+  // Update the campaign badge on the card without full re-render
+  var badge = document.getElementById('campbadge-' + prospectId);
+  if (badge) {
+    if (camp) {
+      badge.style.display = 'inline-flex';
+      badge.textContent   = camp.name;
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  showToast(camp ? 'Tagged to ' + camp.name : 'Removed from campaign', 'success');
+
+  // Refresh stats if we're on pipeline page
+  var statsEl = document.getElementById('campaignPipelineStats');
+  if (statsEl && _pipelineCampaignFilter) {
+    statsEl.innerHTML = renderCampaignPipelineStats(_pipelineCampaignFilter);
+  }
+}
+
+// ── CAMPAIGN PICKER ON ADD TO PIPELINE ───────────────────────────────────────
+function showCampaignPicker(bizIndex) {
+  var campaigns = getCampaigns();
+  if (!campaigns.length || _activeCampaignId) {
+    // No campaigns or already in campaign context — add directly
+    addToPipeline(bizIndex);
+    return;
+  }
+
+  // Show a small picker modal
+  var existing = document.getElementById('campaignPickerModal');
+  if (existing) existing.remove();
+
+  var opts = campaigns.map(function(c) {
+    return '<button onclick="pickCampaignAndAdd(\''+bizIndex+'\',\''+c.id+'\',\''+c.name.replace(/'/g,'')+'\')" style="display:block;width:100%;text-align:left;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text2);cursor:pointer;font-size:13px;font-weight:600;margin-bottom:6px;transition:border-color 0.15s;" onmouseover="this.style.borderColor=\'rgba(190,255,0,0.2)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'+
+      '<span style="color:var(--accent);margin-right:6px;">⚡</span>'+c.name+'</button>';
+  }).join('');
+
+  var modal = document.createElement('div');
+  modal.id = 'campaignPickerModal';
+  modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:9998;display:flex;align-items:center;justify-content:center;padding:20px;';
+  modal.innerHTML = '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r-xl);padding:24px;width:100%;max-width:360px;box-shadow:var(--shadow-md);animation:modalIn 0.2s ease;">' +
+    '<div style="font-family:Syne,sans-serif;font-size:16px;font-weight:800;margin-bottom:6px;">Add to which campaign?</div>' +
+    '<div style="font-size:12px;color:var(--text3);margin-bottom:16px;">This prospect will be tagged and tracked in that campaign\'s pipeline.</div>' +
+    opts +
+    '<button onclick="pickCampaignAndAdd(\''+bizIndex+'\',\'\',\'\')" style="display:block;width:100%;text-align:left;padding:10px 14px;background:none;border:1px solid var(--border);border-radius:var(--r-md);color:var(--text3);cursor:pointer;font-size:13px;margin-bottom:6px;">No campaign — just add to pipeline</button>' +
+    '<button onclick="document.getElementById(\'campaignPickerModal\').remove()" style="display:block;width:100%;text-align:center;padding:8px;background:none;border:none;color:var(--text4);cursor:pointer;font-size:12px;margin-top:4px;">Cancel</button>' +
+  '</div>';
+  modal.addEventListener('click', function(e){ if(e.target===modal) modal.remove(); });
+  document.body.appendChild(modal);
+}
+
+function pickCampaignAndAdd(bizIndex, campaignId, campaignName) {
+  var modal = document.getElementById('campaignPickerModal');
+  if (modal) modal.remove();
+  // Temporarily set active campaign context
+  var prevId   = _activeCampaignId;
+  var prevName = _activeCampaignName;
+  _activeCampaignId   = campaignId   || null;
+  _activeCampaignName = campaignName || null;
+  addToPipeline(bizIndex);
+  // Restore previous context
+  _activeCampaignId   = prevId;
+  _activeCampaignName = prevName;
 }
 
 
