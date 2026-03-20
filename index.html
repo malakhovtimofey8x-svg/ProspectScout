@@ -1294,8 +1294,9 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
         <div class="dash-greeting">My <em>Campaigns</em></div>
         <div class="dash-sub" id="campaignsSub">Plan and track your outreach campaigns</div>
       </div>
-      <div style="display:flex;gap:8px;">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <button class="nav-btn" onclick="showPage('dashboard')" style="font-size:13px;">← Back</button>
+        <button class="nav-btn" onclick="openCampaignComparison()" style="font-size:13px;">⚖️ Compare</button>
         <button class="nav-btn primary" onclick="showNewCampaignForm()" style="font-size:13px;">+ New campaign</button>
       </div>
     </div>
@@ -1317,7 +1318,11 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
         <div class="fields-row" style="margin-bottom:14px;">
           <div>
             <label class="form-label">Target business type</label>
-            <input class="text-input" id="campTarget" placeholder="e.g. restaurants, law firms" />
+            <div style="display:flex;gap:6px;align-items:center;">
+              <input class="text-input" id="campTarget" placeholder="e.g. restaurants, law firms" style="flex:1;" />
+              <button type="button" onclick="suggestTargets()" id="suggestTargetsBtn" style="padding:10px 12px;background:var(--accent-dim);color:var(--accent);border:1px solid rgba(190,255,0,0.2);border-radius:var(--r-md);cursor:pointer;font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0;">✦ Suggest</button>
+            </div>
+            <div id="targetSuggestions" style="display:none;margin-top:6px;display:none;flex-wrap:wrap;gap:4px;"></div>
           </div>
           <div>
             <label class="form-label">Deal size target</label>
@@ -1326,6 +1331,11 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
         </div>
 
         <div class="campaign-section-title">📍 Target areas</div>
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
+          <button type="button" onclick="suggestAreas()" id="suggestAreasBtn" style="padding:8px 12px;background:var(--accent-dim);color:var(--accent);border:1px solid rgba(190,255,0,0.2);border-radius:var(--r-md);cursor:pointer;font-size:11px;font-weight:700;white-space:nowrap;">✦ Suggest areas for me</button>
+          <span style="font-size:11px;color:var(--text4);">or type below</span>
+        </div>
+        <div id="areaSuggestions" style="display:none;flex-wrap:wrap;gap:4px;margin-bottom:8px;"></div>
         <div class="areas-wrap" id="areasWrap" onclick="document.getElementById('areaInput').focus()">
           <input class="areas-input" id="areaInput" placeholder="Type a city and press Enter..." onkeydown="handleAreaInput(event)" />
         </div>
@@ -4061,14 +4071,6 @@ function openCampaignDetail(id) {
   var days = Math.max(1, Math.round((new Date(c.endDate)-new Date(c.startDate))/86400000));
   var proj = p.projections || {};
 
-  // Projections grid
-  var projHtml = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;">' +
-    _campStat(proj.totalCalls||0, 'Total calls', 'var(--text2)') +
-    _campStat(proj.expectedConnects||0, 'Connects', 'var(--accent)') +
-    _campStat(proj.expectedMeetings||0, 'Meetings', 'var(--amber)') +
-    _campStat(proj.expectedCloses||0, 'Closes', 'var(--purple)') +
-  '</div>';
-
   // Weekly plan
   var weeklyHtml = (p.weeklyPlan||[]).map(function(w) {
     return '<div class="week-row">' +
@@ -4118,17 +4120,16 @@ function openCampaignDetail(id) {
         '<div style="font-size:22px;font-weight:800;letter-spacing:-0.5px;">'+c.name+'</div>' +
         '<div style="font-size:13px;color:var(--text3);margin-top:3px;">'+c.product+' · '+c.areas.join(', ')+'</div>' +
       '</div>' +
-      '<div style="display:flex;gap:8px;">' +
-        '<button onclick="deleteCampaign(\''+c.id+'\')" style="padding:8px 14px;background:none;border:1px solid rgba(255,80,80,0.2);border-radius:var(--r-sm);color:#FF8080;cursor:pointer;font-size:12px;">Delete</button>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+        '<button onclick="exportCampaignPDF(this.dataset.id)" data-id="'+c.id+'" style="padding:8px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text2);cursor:pointer;font-size:12px;">PDF</button>' +
+        '<button onclick="duplicateCampaign(this.dataset.id)" data-id="'+c.id+'" style="padding:8px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text2);cursor:pointer;font-size:12px;">Copy</button>' +
+        '<button onclick="cycleCampaignStatus(this.dataset.id)" data-id="'+c.id+'" style="padding:8px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--accent);cursor:pointer;font-size:12px;">'+c.status+'</button>' +
+        '<button onclick="deleteCampaign(this.dataset.id)" data-id="'+c.id+'" style="padding:8px 14px;background:none;border:1px solid rgba(255,80,80,0.2);border-radius:var(--r-sm);color:#FF8080;cursor:pointer;font-size:12px;">Delete</button>' +
         '<button onclick="document.getElementById(\'campaignDetail\').style.display=\'none\'" style="padding:8px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text3);cursor:pointer;font-size:12px;">Close</button>' +
       '</div>' +
-    '</div>' +
 
-    // Projections
-    '<div class="campaign-detail">' +
-      '<div class="campaign-detail-title">📊 Projected results <span style="font-size:11px;color:var(--text4);font-weight:400;">based on '+days+'-day campaign at '+c.dailyGoal+' calls/day</span></div>' +
-      projHtml +
-    '</div>' +
+    // Projections + actual progress
+    buildProjectionsSection(c) +
 
     // Strategy
     '<div class="campaign-detail">' +
@@ -4154,7 +4155,16 @@ function openCampaignDetail(id) {
       '<div class="campaign-detail-title">🔍 Scout your areas</div>' +
       '<div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Click an area to auto-fill the search form and find prospects</div>' +
       '<div style="display:flex;flex-wrap:wrap;gap:8px;">' + scoutBtns + '</div>' +
-    '</div>';
+    '</div>' +
+
+    // Scripts
+    buildScriptsSection(c) +
+
+    // Best time heatmap
+    buildHeatmapSection(c) +
+
+    // Journal/notes
+    buildNotesSection(c);
 }
 
 function _campStat(val, label, color) {
@@ -4179,6 +4189,629 @@ function deleteCampaign(id) {
   document.getElementById('campaignDetail').style.display = 'none';
   renderCampaignList();
   showToast('Campaign deleted', 'info');
+}
+
+
+async function suggestTargets() {
+  var product = document.getElementById('campProduct').value.trim();
+  if (!product) { showToast('Enter what you are selling first', 'info'); return; }
+  var btn = document.getElementById('suggestTargetsBtn');
+  btn.textContent = '...'; btn.disabled = true;
+  try {
+    var res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+OPENAI_KEY},
+      body: JSON.stringify({
+        model:'gpt-4o-mini',
+        messages:[
+          {role:'system',content:'Return ONLY a JSON array of strings. No markdown.'},
+          {role:'user',content:'What are the 6 best business types to cold call when selling "'+product+'"? Return a JSON array of short business type names like ["restaurants","law firms","dental offices"]. Only the array.'}
+        ],
+        temperature:0.4, max_tokens:150
+      })
+    });
+    var data = await res.json();
+    var text = (data.choices[0].message.content||'').replace(/```json|```/g,'').trim();
+    var suggestions = JSON.parse(text.match(/\[[\s\S]*\]/)[0]);
+    var el = document.getElementById('targetSuggestions');
+    el.style.display = 'flex';
+    el.innerHTML = suggestions.map(function(s) {
+      return '<button type="button" onclick="applyTargetSuggestion(\''+s+'\')" style="padding:5px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;color:var(--text2);cursor:pointer;font-size:12px;font-weight:500;transition:all 0.15s;" onmouseover="this.style.borderColor=\'rgba(190,255,0,0.3)\';this.style.color=\'var(--accent)\'" onmouseout="this.style.borderColor=\'var(--border2)\';this.style.color=\'var(--text2)\'">'+s+'</button>';
+    }).join('');
+  } catch(e) {
+    showToast('Could not get suggestions — check OpenAI key', 'info');
+  }
+  btn.textContent = '✦ Suggest'; btn.disabled = false;
+}
+
+function applyTargetSuggestion(val) {
+  var input = document.getElementById('campTarget');
+  if (input) input.value = val;
+  document.getElementById('targetSuggestions').style.display = 'none';
+}
+
+async function suggestAreas() {
+  var product = document.getElementById('campProduct').value.trim();
+  var target  = document.getElementById('campTarget').value.trim();
+  if (!product) { showToast('Enter what you are selling first', 'info'); return; }
+  var btn = document.getElementById('suggestAreasBtn');
+  btn.textContent = 'Finding best areas...'; btn.disabled = true;
+  try {
+    var res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+OPENAI_KEY},
+      body: JSON.stringify({
+        model:'gpt-4o-mini',
+        messages:[
+          {role:'system',content:'Return ONLY a JSON array of strings. No markdown.'},
+          {role:'user',content:'Suggest 8 specific US cities or neighborhoods that would be great areas to cold call selling "'+product+'"'+(target?' to '+target:'')+'. Return a JSON array like ["downtown Austin TX","Scottsdale AZ","Brooklyn NY"]. Be specific with city and state. Only the array.'}
+        ],
+        temperature:0.5, max_tokens:200
+      })
+    });
+    var data = await res.json();
+    var text = (data.choices[0].message.content||'').replace(/```json|```/g,'').trim();
+    var suggestions = JSON.parse(text.match(/\[[\s\S]*\]/)[0]);
+    var el = document.getElementById('areaSuggestions');
+    el.style.display = 'flex';
+    el.innerHTML = suggestions.map(function(s) {
+      var already = _campaignAreas.includes(s);
+      return '<button type="button" onclick="applyAreaSuggestion(\''+s.replace(/'/g,'')+'\')" id="areasugg-'+s.replace(/[^a-z]/gi,'').toLowerCase()+'" style="padding:5px 12px;background:'+(already?'var(--accent-dim)':'var(--bg3)')+';border:1px solid '+(already?'rgba(190,255,0,0.3)':'var(--border2)')+';border-radius:20px;color:'+(already?'var(--accent)':'var(--text2)')+';cursor:pointer;font-size:12px;font-weight:500;transition:all 0.15s;">'+s+'</button>';
+    }).join('');
+  } catch(e) {
+    showToast('Could not get suggestions — check OpenAI key', 'info');
+  }
+  btn.textContent = '✦ Suggest areas for me'; btn.disabled = false;
+}
+
+function applyAreaSuggestion(val) {
+  if (!_campaignAreas.includes(val)) {
+    _campaignAreas.push(val);
+    renderAreasWrap();
+  }
+  // refresh the suggestion buttons to show selected state
+  suggestAreas();
+}
+
+function buildProjectionsSection(c) {
+  var p = c.plan || {};
+  var proj = p.projections || {};
+  var days  = Math.max(1, Math.round((new Date(c.endDate)-new Date(c.startDate))/86400000));
+  var weeks = Math.ceil(days/7);
+
+  var totalCalls    = proj.totalCalls    || (c.dailyGoal * days);
+  var connects      = proj.expectedConnects || Math.round(totalCalls * 0.25);
+  var meetings      = proj.expectedMeetings || Math.round(connects * (c.convGoal/100) * 2);
+  var closes        = proj.expectedCloses   || Math.round(meetings * 0.3);
+  var connectRate   = Math.round(connects/totalCalls*100);
+  var meetingRate   = connects>0 ? Math.round(meetings/connects*100) : 0;
+  var closeRate     = meetings>0 ? Math.round(closes/meetings*100)   : 0;
+
+  // Progress from pipeline
+  var history = getHistory(currentUser.email);
+  var campProspects = history.filter(function(h){ return h.searchLocation && c.areas.some(function(a){ return h.searchLocation.toLowerCase().includes(a.toLowerCase().split(' ')[0]); }); });
+  var actualCalls    = 0;
+  campProspects.forEach(function(h){ actualCalls += (h.callLog||[]).length; });
+  var actualMeetings = campProspects.filter(function(h){ return h.status==='qualified'; }).length;
+  var actualCloses   = campProspects.filter(function(h){ return h.status==='converted'; }).length;
+  var actualContacted= campProspects.filter(function(h){ return h.status!=='new'; }).length;
+  var pct = totalCalls>0 ? Math.min(100,Math.round(actualCalls/totalCalls*100)) : 0;
+
+  return '<div class="campaign-detail">' +
+    '<div class="campaign-detail-title">📊 Projections &amp; progress</div>' +
+
+    // Projected vs actual header
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">' +
+      '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;">' +
+        '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">🎯 Projected</div>' +
+        '<div style="display:flex;flex-direction:column;gap:8px;">' +
+          _projRow('Total calls', totalCalls, '', 'var(--text2)') +
+          _projRow('Connects (25%)', connects, '', 'var(--accent)') +
+          _projRow('Meetings ('+meetingRate+'%)', meetings, '', 'var(--amber)') +
+          _projRow('Closes ('+closeRate+'%)', closes, '', 'var(--purple)') +
+        '</div>' +
+      '</div>' +
+      '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;">' +
+        '<div style="font-size:10px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">✅ Actual (so far)</div>' +
+        '<div style="display:flex;flex-direction:column;gap:8px;">' +
+          _projRow('Calls logged', actualCalls, totalCalls, 'var(--text2)') +
+          _projRow('Contacted', actualContacted, connects, 'var(--accent)') +
+          _projRow('Meetings set', actualMeetings, meetings, 'var(--amber)') +
+          _projRow('Closed', actualCloses, closes, 'var(--purple)') +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    // Progress bar
+    '<div style="margin-bottom:14px;">' +
+      '<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text3);margin-bottom:6px;">' +
+        '<span>Campaign progress</span><span style="color:var(--accent);font-weight:600;">'+pct+'%</span>' +
+      '</div>' +
+      '<div style="height:8px;background:var(--bg4);border-radius:4px;overflow:hidden;">' +
+        '<div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,var(--accent),#8FFF00);border-radius:4px;transition:width 0.5s;"></div>' +
+      '</div>' +
+    '</div>' +
+
+    // Weekly pace
+    '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:12px;">' +
+      '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Weekly pace needed</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">' +
+        _miniStat(Math.round(totalCalls/weeks)+'/wk','Calls','var(--text2)') +
+        _miniStat(Math.round(connects/weeks)+'/wk','Connects','var(--accent)') +
+        _miniStat(Math.round(meetings/weeks)+'/wk','Meetings','var(--amber)') +
+      '</div>' +
+    '</div>' +
+
+    // Funnel visualization
+    '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Funnel</div>' +
+    _funnelBar('Calls', totalCalls, totalCalls, 'var(--bg4)', '#555') +
+    _funnelBar('Connects', connects, totalCalls, 'rgba(190,255,0,0.3)', 'var(--accent)') +
+    _funnelBar('Meetings', meetings, totalCalls, 'rgba(255,176,32,0.3)', 'var(--amber)') +
+    _funnelBar('Closes', closes, totalCalls, 'rgba(167,139,250,0.3)', 'var(--purple)') +
+
+  '</div>';
+}
+
+function _projRow(label, val, total, color) {
+  var txt = total ? val + ' / ' + total : String(val);
+  return '<div style="display:flex;justify-content:space-between;font-size:12px;">' +
+    '<span style="color:var(--text3);">'+label+'</span>' +
+    '<span style="font-weight:700;color:'+color+';">'+txt+'</span>' +
+  '</div>';
+}
+
+function _miniStat(val, label, color) {
+  return '<div style="text-align:center;">' +
+    '<div style="font-size:15px;font-weight:800;color:'+color+';">'+val+'</div>' +
+    '<div style="font-size:10px;color:var(--text4);">'+label+'</div>' +
+  '</div>';
+}
+
+function _funnelBar(label, val, max, bg, color) {
+  var pct = max>0 ? Math.max(4, Math.round(val/max*100)) : 4;
+  return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">' +
+    '<div style="width:70px;font-size:11px;color:var(--text3);text-align:right;flex-shrink:0;">'+label+'</div>' +
+    '<div style="flex:1;height:18px;background:var(--bg4);border-radius:3px;overflow:hidden;">' +
+      '<div style="height:100%;width:'+pct+'%;background:'+bg+';border-radius:3px;display:flex;align-items:center;padding-left:6px;">' +
+        '<span style="font-size:10px;font-weight:700;color:'+color+';">'+val+'</span>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+
+function exportCampaignPDF(id) {
+  var campaigns = getCampaigns();
+  var c = campaigns.find(function(x){ return x.id===id; });
+  if (!c) return;
+  var p = c.plan || {};
+  var proj = p.projections || {};
+  var days  = Math.max(1, Math.round((new Date(c.endDate)-new Date(c.startDate))/86400000));
+  var weeks = Math.ceil(days/7);
+  var totalCalls = proj.totalCalls || (c.dailyGoal * days);
+  var connects   = proj.expectedConnects || Math.round(totalCalls*0.25);
+  var meetings   = proj.expectedMeetings || Math.round(connects*0.1);
+  var closes     = proj.expectedCloses   || Math.round(meetings*0.3);
+  var start = new Date(c.startDate).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  var end   = new Date(c.endDate).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+
+  var weeklyRows = (p.weeklyPlan||[]).map(function(w,i) {
+    return '<tr style="background:'+(i%2===0?'#f9f9fc':'#fff')+';">' +
+      '<td style="padding:10px 12px;font-weight:700;color:#3A8C00;">Week '+w.week+'</td>' +
+      '<td style="padding:10px 12px;">'+w.focus+'</td>' +
+      '<td style="padding:10px 12px;color:#888;">'+w.goal+'</td>' +
+      '<td style="padding:10px 12px;text-align:center;font-weight:700;">'+w.callTarget+'</td>' +
+    '</tr>';
+  }).join('');
+
+  var seqRows = (p.sequence||[]).map(function(s) {
+    return '<tr><td style="padding:8px 12px;font-weight:700;color:#3A8C00;white-space:nowrap;">'+s.day+'</td>' +
+      '<td style="padding:8px 12px;font-weight:600;">'+s.action+'</td>' +
+      '<td style="padding:8px 12px;color:#888;font-style:italic;">'+s.note+'</td></tr>';
+  }).join('');
+
+  var tipsHtml = (p.tips||[]).map(function(t){ return '<li style="margin-bottom:6px;">'+t+'</li>'; }).join('');
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+    '<title>'+c.name+' — Campaign Plan</title>' +
+    '<style>' +
+      'body{font-family:Arial,sans-serif;margin:0;padding:0;color:#1a1a1a;font-size:13px;}' +
+      '.header{background:#08080D;color:#fff;padding:24px 32px;display:flex;justify-content:space-between;align-items:center;}' +
+      '.logo{font-size:20px;font-weight:800;color:#BEFF00;letter-spacing:-0.5px;}' +
+      '.header-meta{text-align:right;font-size:11px;color:rgba(255,255,255,0.5);}' +
+      '.hero{background:linear-gradient(135deg,#0E0E18,#161622);color:#fff;padding:28px 32px;}' +
+      '.campaign-title{font-size:26px;font-weight:800;letter-spacing:-0.5px;margin-bottom:6px;}' +
+      '.campaign-sub{font-size:13px;color:rgba(255,255,255,0.55);}' +
+      '.section{padding:20px 32px;border-bottom:1px solid #eee;}' +
+      '.section-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:#3A8C00;margin-bottom:14px;}' +
+      '.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:0;}' +
+      '.stat-box{background:#f4f4f8;border-radius:8px;padding:14px;text-align:center;}' +
+      '.stat-num{font-size:24px;font-weight:800;line-height:1;margin-bottom:4px;}' +
+      '.stat-label{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#888;font-weight:600;}' +
+      'table{width:100%;border-collapse:collapse;font-size:12px;}' +
+      'th{background:#f4f4f8;padding:8px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#666;border-bottom:2px solid #ddd;}' +
+      '.strategy-box{background:#f9fdf0;border-left:3px solid #3A8C00;padding:12px 16px;border-radius:0 6px 6px 0;font-size:13px;line-height:1.6;margin-bottom:10px;}' +
+      '.opener-box{background:#f0f4f9;border-left:3px solid #3366CC;padding:12px 16px;border-radius:0 6px 6px 0;font-size:13px;font-style:italic;line-height:1.6;}' +
+      '.info-row{display:flex;gap:24px;flex-wrap:wrap;font-size:12px;color:#555;}' +
+      '.info-item{display:flex;flex-direction:column;gap:2px;}' +
+      '.info-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#aaa;font-weight:700;}' +
+      '.info-val{font-size:13px;font-weight:600;color:#1a1a1a;}' +
+      '.funnel-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;}' +
+      '.funnel-label{width:70px;font-size:11px;color:#888;text-align:right;}' +
+      '.funnel-bar-wrap{flex:1;height:20px;background:#f0f0f5;border-radius:3px;overflow:hidden;}' +
+      '.funnel-bar{height:100%;display:flex;align-items:center;padding-left:8px;font-size:10px;font-weight:700;border-radius:3px;}' +
+      '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}' +
+    '</style></head><body>' +
+
+    '<div class="header">' +
+      '<div class="logo">ProspectScout</div>' +
+      '<div class="header-meta">Campaign Plan · Generated '+new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})+'</div>' +
+    '</div>' +
+
+    '<div class="hero">' +
+      '<div class="campaign-title">'+c.name+'</div>' +
+      '<div class="campaign-sub">'+c.product+(c.target?' · '+c.target:'')+'</div>' +
+    '</div>' +
+
+    '<div class="section">' +
+      '<div class="info-row">' +
+        '<div class="info-item"><div class="info-label">Timeline</div><div class="info-val">'+start+' – '+end+' ('+days+' days)</div></div>' +
+        '<div class="info-item"><div class="info-label">Target areas</div><div class="info-val">'+c.areas.join(', ')+'</div></div>' +
+        '<div class="info-item"><div class="info-label">Daily goal</div><div class="info-val">'+c.dailyGoal+' calls/day</div></div>' +
+        (c.dealSize?'<div class="info-item"><div class="info-label">Deal size</div><div class="info-val">'+c.dealSize+'</div></div>':'') +
+      '</div>' +
+    '</div>' +
+
+    '<div class="section">' +
+      '<div class="section-title">Projected results</div>' +
+      '<div class="stats-grid">' +
+        '<div class="stat-box"><div class="stat-num" style="color:#333;">'+totalCalls+'</div><div class="stat-label">Total calls</div></div>' +
+        '<div class="stat-box"><div class="stat-num" style="color:#3A8C00;">'+connects+'</div><div class="stat-label">Est. connects</div></div>' +
+        '<div class="stat-box"><div class="stat-num" style="color:#B87000;">'+meetings+'</div><div class="stat-label">Est. meetings</div></div>' +
+        '<div class="stat-box"><div class="stat-num" style="color:#6B4FBF;">'+closes+'</div><div class="stat-label">Est. closes</div></div>' +
+      '</div>' +
+      '<br>' +
+      '<div class="funnel-row"><div class="funnel-label">Calls</div><div class="funnel-bar-wrap"><div class="funnel-bar" style="width:100%;background:#e8e8ef;color:#555;">'+totalCalls+'</div></div></div>' +
+      '<div class="funnel-row"><div class="funnel-label">Connects</div><div class="funnel-bar-wrap"><div class="funnel-bar" style="width:'+Math.max(4,Math.round(connects/totalCalls*100))+'%;background:#c8f0a0;color:#3A8C00;">'+connects+'</div></div></div>' +
+      '<div class="funnel-row"><div class="funnel-label">Meetings</div><div class="funnel-bar-wrap"><div class="funnel-bar" style="width:'+Math.max(4,Math.round(meetings/totalCalls*100))+'%;background:#ffe0a0;color:#B87000;">'+meetings+'</div></div></div>' +
+      '<div class="funnel-row"><div class="funnel-label">Closes</div><div class="funnel-bar-wrap"><div class="funnel-bar" style="width:'+Math.max(4,Math.round(closes/totalCalls*100))+'%;background:#d8ccf8;color:#6B4FBF;">'+closes+'</div></div></div>' +
+    '</div>' +
+
+    (p.summary||p.approach||p.opener ? '<div class="section"><div class="section-title">Strategy</div>' +
+      (p.summary?'<div class="strategy-box">'+p.summary+'</div>':'') +
+      (p.approach?'<div class="strategy-box">'+p.approach+'</div>':'') +
+      (p.opener?'<div style="margin-top:8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:5px;">Opening line</div><div class="opener-box">'+p.opener+'</div>':'') +
+      (p.bestDays?'<div style="margin-top:10px;font-size:12px;"><strong>Best times:</strong> '+p.bestDays+'</div>':'') +
+      (p.topObjection?'<div style="margin-top:10px;font-size:12px;"><strong>Top objection:</strong> '+p.topObjection+'</div>':'') +
+    '</div>' : '') +
+
+    (weeklyRows ? '<div class="section"><div class="section-title">Weekly plan</div><table><thead><tr><th>Week</th><th>Focus</th><th>Goal</th><th>Calls</th></tr></thead><tbody>'+weeklyRows+'</tbody></table></div>' : '') +
+
+    (seqRows ? '<div class="section"><div class="section-title">Follow-up sequence</div><table><thead><tr><th>Day</th><th>Action</th><th>Why</th></tr></thead><tbody>'+seqRows+'</tbody></table></div>' : '') +
+
+    (tipsHtml ? '<div class="section"><div class="section-title">Campaign tips</div><ul style="margin:0;padding-left:18px;line-height:1.8;">'+tipsHtml+'</ul></div>' : '') +
+
+    '<div style="padding:20px 32px;text-align:center;font-size:11px;color:#aaa;">Generated by ProspectScout — AI Cold Call Intelligence</div>' +
+  '</body></html>';
+
+  var blob = new Blob([html], {type:'text/html'});
+  var url  = URL.createObjectURL(blob);
+  var w = window.open(url, '_blank');
+  setTimeout(function(){ if(w) w.print(); URL.revokeObjectURL(url); }, 800);
+  showToast('Campaign plan opened — use Print to save as PDF', 'success');
+}
+
+
+// ── CAMPAIGN: STATUS TOGGLE ───────────────────────────────────────────────────
+function cycleCampaignStatus(id) {
+  var campaigns = getCampaigns();
+  var c = campaigns.find(function(x){ return x.id===id; });
+  if (!c) return;
+  var cycle = {planned:'active',active:'paused',paused:'complete',complete:'planned'};
+  setCampaignStatus(id, cycle[c.status]||'active');
+}
+
+function setCampaignStatus(id, status) {
+  var campaigns = getCampaigns();
+  var c = campaigns.find(function(x){ return x.id===id; });
+  if (!c) return;
+  c.status = status;
+  saveCampaigns(campaigns);
+  renderCampaignList();
+  openCampaignDetail(id);
+  showToast('Status updated to ' + status, 'success');
+}
+
+// ── CAMPAIGN: DUPLICATE ───────────────────────────────────────────────────────
+function duplicateCampaign(id) {
+  var campaigns = getCampaigns();
+  var c = campaigns.find(function(x){ return x.id===id; });
+  if (!c) return;
+  var clone = JSON.parse(JSON.stringify(c));
+  clone.id = 'camp_' + Date.now();
+  clone.name = c.name + ' (Copy)';
+  clone.status = 'planned';
+  clone.createdAt = Date.now();
+  clone.notes = '';
+  // Set new dates starting today
+  var now = new Date();
+  var dur = Math.round((new Date(c.endDate) - new Date(c.startDate)) / 86400000);
+  var newEnd = new Date(now); newEnd.setDate(newEnd.getDate() + dur);
+  clone.startDate = now.toISOString().slice(0,10);
+  clone.endDate   = newEnd.toISOString().slice(0,10);
+  campaigns.unshift(clone);
+  saveCampaigns(campaigns);
+  renderCampaignList();
+  openCampaignDetail(clone.id);
+  showToast('Campaign duplicated!', 'success');
+}
+
+// ── CAMPAIGN: NOTES/JOURNAL ───────────────────────────────────────────────────
+function saveCampaignNote(id, text) {
+  var campaigns = getCampaigns();
+  var c = campaigns.find(function(x){ return x.id===id; });
+  if (!c) return;
+  c.notes = text;
+  c.notesUpdatedAt = Date.now();
+  saveCampaigns(campaigns);
+}
+
+function buildNotesSection(c) {
+  var updated = c.notesUpdatedAt ? 'Last updated ' + new Date(c.notesUpdatedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
+  return '<div class="campaign-detail">' +
+    '<div class="campaign-detail-title">📓 Campaign journal' +
+      (updated ? '<span style="font-size:11px;color:var(--text4);font-weight:400;margin-left:8px;">' + updated + '</span>' : '') +
+    '</div>' +
+    '<div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Log what\'s working, what isn\'t, and weekly reflections.</div>' +
+    '<textarea id="campNotes-'+c.id+'" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px;font-family:Inter,sans-serif;font-size:13px;color:var(--text2);resize:vertical;outline:none;min-height:120px;line-height:1.6;transition:border-color 0.2s;" placeholder="Week 1: Restaurants in Austin are responding well to the website angle. Best time seems to be Tuesday mornings..." onblur="saveCampaignNote(\''+c.id+'\',this.value)">' + (c.notes||'') + '</textarea>' +
+    '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">' +
+      '<button onclick="insertJournalTemplate(\''+c.id+'\',\'weekly\')" style="font-size:11px;padding:5px 10px;background:var(--bg4);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text3);cursor:pointer;">+ Weekly reflection</button>' +
+      '<button onclick="insertJournalTemplate(\''+c.id+'\',\'win\')" style="font-size:11px;padding:5px 10px;background:var(--bg4);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--accent);cursor:pointer;">+ Log a win</button>' +
+      '<button onclick="insertJournalTemplate(\''+c.id+'\',\'block\')" style="font-size:11px;padding:5px 10px;background:var(--bg4);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--amber);cursor:pointer;">+ Log a blocker</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function insertJournalTemplate(id, type) {
+  var ta = document.getElementById('campNotes-' + id);
+  if (!ta) return;
+  var date = new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+  var templates = {
+    weekly: '\n\n--- Week of ' + date + ' ---\nWhat worked: \nWhat didn\'t: \nKey learnings: \nNext week focus: ',
+    win:    '\n\n✅ WIN [' + date + ']: ',
+    block:  '\n\n⚠️ BLOCKER [' + date + ']: '
+  };
+  ta.value = ta.value + (templates[type]||'');
+  ta.focus();
+  ta.scrollTop = ta.scrollHeight;
+}
+
+// ── CAMPAIGN: COMPARISON ─────────────────────────────────────────────────────
+var _compareIds = [];
+
+function openCampaignComparison() {
+  var campaigns = getCampaigns();
+  if (campaigns.length < 2) { showToast('You need at least 2 campaigns to compare', 'info'); return; }
+  var el = document.getElementById('campaignDetail');
+  if (!el) return;
+  el.style.display = 'block';
+
+  var selects = ['A','B'].map(function(label, i) {
+    var opts = campaigns.map(function(c) {
+      return '<option value="'+c.id+'"'+(i<campaigns.length&&campaigns[i]&&campaigns[i].id===c.id?' selected':'')+'>'+c.name+'</option>';
+    }).join('');
+    return '<div style="flex:1;"><label style="font-size:11px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">Campaign '+label+'</label>' +
+      '<select onchange="renderComparison()" id="compare'+label+'" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-md);padding:10px 14px;font-size:14px;color:var(--text);outline:none;">'+opts+'</select></div>';
+  }).join('');
+
+  el.innerHTML = '<div class="campaign-detail">' +
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">' +
+      '<div class="campaign-detail-title" style="margin:0;">⚖️ Campaign comparison</div>' +
+      '<button onclick="document.getElementById(\'campaignDetail\').style.display=\'none\'" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px;">×</button>' +
+    '</div>' +
+    '<div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;">' + selects + '</div>' +
+    '<div id="comparisonContent"></div>' +
+  '</div>';
+
+  renderComparison();
+}
+
+function renderComparison() {
+  var aEl = document.getElementById('compareA');
+  var bEl = document.getElementById('compareB');
+  if (!aEl || !bEl) return;
+  var campaigns = getCampaigns();
+  var a = campaigns.find(function(x){ return x.id===aEl.value; });
+  var b = campaigns.find(function(x){ return x.id===bEl.value; });
+  if (!a || !b) return;
+
+  function getStats(c) {
+    var days = Math.max(1,Math.round((new Date(c.endDate)-new Date(c.startDate))/86400000));
+    var proj = (c.plan||{}).projections || {};
+    var totalCalls = proj.totalCalls || (c.dailyGoal*days);
+    var connects   = proj.expectedConnects || Math.round(totalCalls*0.25);
+    var meetings   = proj.expectedMeetings || Math.round(connects*0.1);
+    var closes     = proj.expectedCloses   || Math.round(meetings*0.3);
+    var history    = getHistory(currentUser.email);
+    var mine = history.filter(function(h){ return h.searchLocation && c.areas.some(function(ar){ return h.searchLocation.toLowerCase().includes(ar.toLowerCase().split(' ')[0]); }); });
+    var actualCalls = 0; mine.forEach(function(h){ actualCalls+=(h.callLog||[]).length; });
+    return { name:c.name, product:c.product, areas:c.areas.slice(0,2).join(', '), days:days,
+      totalCalls:totalCalls, connects:connects, meetings:meetings, closes:closes,
+      actualCalls:actualCalls, actualMeetings:mine.filter(function(h){return h.status==='qualified';}).length,
+      actualCloses:mine.filter(function(h){return h.status==='converted';}).length,
+      status:c.status, dailyGoal:c.dailyGoal };
+  }
+
+  var sa = getStats(a), sb = getStats(b);
+
+  function row(label, va, vb, higherIsBetter) {
+    var aWins = higherIsBetter ? va > vb : va < vb;
+    var bWins = higherIsBetter ? vb > va : vb < va;
+    return '<tr style="border-bottom:1px solid var(--border);">' +
+      '<td style="padding:10px 12px;font-size:12px;color:var(--text3);width:140px;">'+label+'</td>' +
+      '<td style="padding:10px 12px;font-size:13px;font-weight:600;text-align:center;color:'+(aWins?'var(--accent)':'var(--text2)')+';">'+va+(aWins?' ✓':'')+'</td>' +
+      '<td style="padding:10px 12px;font-size:13px;font-weight:600;text-align:center;color:'+(bWins?'var(--accent)':'var(--text2)')+';">'+vb+(bWins?' ✓':'')+'</td>' +
+    '</tr>';
+  }
+
+  var html = '<table style="width:100%;border-collapse:collapse;">' +
+    '<thead><tr style="background:var(--bg4);">' +
+      '<th style="padding:10px 12px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);text-align:left;">Metric</th>' +
+      '<th style="padding:10px 12px;font-size:12px;font-weight:700;text-align:center;color:var(--text);">'+sa.name+'</th>' +
+      '<th style="padding:10px 12px;font-size:12px;font-weight:700;text-align:center;color:var(--text);">'+sb.name+'</th>' +
+    '</tr></thead><tbody>' +
+    row('Duration (days)', sa.days, sb.days, false) +
+    row('Daily call goal', sa.dailyGoal, sb.dailyGoal, true) +
+    row('Projected calls', sa.totalCalls, sb.totalCalls, true) +
+    row('Projected meetings', sa.meetings, sb.meetings, true) +
+    row('Projected closes', sa.closes, sb.closes, true) +
+    row('Actual calls logged', sa.actualCalls, sb.actualCalls, true) +
+    row('Actual meetings', sa.actualMeetings, sb.actualMeetings, true) +
+    row('Actual closes', sa.actualCloses, sb.actualCloses, true) +
+    '</tbody></table>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;">' +
+      '<div style="background:var(--bg3);border-radius:var(--r-lg);padding:14px;"><div style="font-size:11px;color:var(--text4);margin-bottom:6px;">Areas</div><div style="font-size:12px;color:var(--text2);">'+sa.areas+'</div></div>' +
+      '<div style="background:var(--bg3);border-radius:var(--r-lg);padding:14px;"><div style="font-size:11px;color:var(--text4);margin-bottom:6px;">Areas</div><div style="font-size:12px;color:var(--text2);">'+sb.areas+'</div></div>' +
+    '</div>';
+
+  var content = document.getElementById('comparisonContent');
+  if (content) content.innerHTML = html;
+}
+
+// ── CAMPAIGN: EMAIL/SMS SCRIPT GENERATOR ─────────────────────────────────────
+async function generateScripts(id) {
+  var campaigns = getCampaigns();
+  var c = campaigns.find(function(x){ return x.id===id; });
+  if (!c) return;
+  var el = document.getElementById('campScripts-'+id);
+  if (!el) return;
+  el.innerHTML = '<div style="text-align:center;padding:20px;"><div style="width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 12px;"></div><div style="font-size:12px;color:var(--text3);">Generating scripts...</div></div>';
+
+  try {
+    var res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+OPENAI_KEY},
+      body: JSON.stringify({
+        model:'gpt-4o-mini',
+        messages:[
+          {role:'system',content:'Return ONLY valid JSON. No markdown. No backticks.'},
+          {role:'user',content:'Generate follow-up scripts for a cold calling campaign. Selling: "'+c.product+'". Target: "'+(c.target||'local businesses')+'". Opener used: "'+(((c.plan||{}).opener)||'')+'". Return JSON: {"followUpEmail":{"subject":"...","body":"..."},"smsDay3":"short SMS follow-up (max 160 chars)","smsDay7":"SMS follow-up if no reply (max 160 chars)","linkedinMsg":"LinkedIn connection message (max 300 chars)","voicemailScript":"30-second voicemail script"}'}
+        ],
+        temperature:0.4, max_tokens:1000
+      })
+    });
+    var data = await res.json();
+    var text = (data.choices[0].message.content||'').replace(/```json|```/g,'').trim();
+    var scripts = JSON.parse(text.match(/\{[\s\S]*\}/)[0]);
+
+    // Save to campaign
+    c.scripts = scripts;
+    saveCampaigns(campaigns);
+
+    el.innerHTML = _renderScripts(scripts, id);
+  } catch(e) {
+    el.innerHTML = '<div style="font-size:13px;color:#FF8080;">Failed to generate — check OpenAI key.</div>';
+  }
+}
+
+function _renderScripts(scripts, id) {
+  function scriptBox(title, icon, content, isCode) {
+    return '<div style="margin-bottom:14px;">' +
+      '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;">'+icon+' '+title+'</div>' +
+      '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px;font-size:13px;color:var(--text2);line-height:1.65;position:relative;">' +
+        (typeof content === 'object' ? '<div style="font-size:11px;color:var(--accent);font-weight:600;margin-bottom:6px;">Subject: '+content.subject+'</div><div>'+content.body+'</div>' : content) +
+        '<button onclick="copyScript(this)" data-text="'+(typeof content==='object'?(content.subject+'\n\n'+content.body):content).replace(/"/g,'&quot;')+'" style="position:absolute;top:8px;right:8px;background:var(--bg4);border:1px solid var(--border2);border-radius:var(--r-sm);padding:3px 8px;font-size:10px;color:var(--text3);cursor:pointer;">Copy</button>' +
+      '</div>' +
+    '</div>';
+  }
+  return (scripts.followUpEmail ? scriptBox('Follow-up email','📧',scripts.followUpEmail) : '') +
+    (scripts.smsDay3 ? scriptBox('SMS — Day 3','💬',scripts.smsDay3) : '') +
+    (scripts.smsDay7 ? scriptBox('SMS — Day 7 (no reply)','💬',scripts.smsDay7) : '') +
+    (scripts.linkedinMsg ? scriptBox('LinkedIn message','💼',scripts.linkedinMsg) : '') +
+    (scripts.voicemailScript ? scriptBox('Voicemail script','📞',scripts.voicemailScript) : '');
+}
+
+function copyScript(btn) {
+  var text = btn.dataset.text;
+  navigator.clipboard.writeText(text).then(function(){ btn.textContent='Copied!'; setTimeout(function(){ btn.textContent='Copy'; },2000); });
+}
+
+function buildScriptsSection(c) {
+  var hasScripts = c.scripts;
+  return '<div class="campaign-detail">' +
+    '<div class="campaign-detail-title">✉️ Follow-up scripts</div>' +
+    '<div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Email, SMS, LinkedIn, and voicemail scripts tailored to this campaign.</div>' +
+    '<div id="campScripts-'+c.id+'">' +
+      (hasScripts ? _renderScripts(c.scripts, c.id) : '<div style="text-align:center;padding:16px 0;"><button onclick="generateScripts(\''+c.id+'\')" style="padding:10px 20px;background:var(--accent);color:#08080D;font-weight:700;font-size:13px;border:none;border-radius:var(--r-md);cursor:pointer;">Generate scripts with AI</button></div>') +
+    '</div>' +
+    (hasScripts ? '<button onclick="generateScripts(\''+c.id+'\')" style="margin-top:8px;font-size:11px;padding:5px 12px;background:none;border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text3);cursor:pointer;">Regenerate</button>' : '') +
+  '</div>';
+}
+
+// ── CAMPAIGN: BEST TIME HEATMAP ───────────────────────────────────────────────
+function buildHeatmapSection(c) {
+  var history = getHistory(currentUser.email);
+  var DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var HOURS = ['8am','9am','10am','11am','12pm','1pm','2pm','3pm','4pm','5pm'];
+  var HOUR_VALS = [8,9,10,11,12,13,14,15,16,17];
+
+  // Build matrix: day[0-6] x hour[8-17] → {calls, connects}
+  var matrix = {};
+  DAYS.forEach(function(d,di){ HOUR_VALS.forEach(function(h){ matrix[di+'-'+h]={calls:0,connects:0}; }); });
+
+  history.forEach(function(h) {
+    if (!h.callLog) return;
+    // Only count if in this campaign's areas
+    var inCamp = !c.areas.length || c.areas.some(function(a){ return (h.searchLocation||'').toLowerCase().includes(a.toLowerCase().split(' ')[0]); });
+    if (!inCamp) return;
+    h.callLog.forEach(function(cl) {
+      var d = new Date(cl.ts);
+      var dow = d.getDay();
+      var hr  = d.getHours();
+      if (hr >= 8 && hr <= 17) {
+        var key = dow+'-'+hr;
+        if (!matrix[key]) matrix[key] = {calls:0,connects:0};
+        matrix[key].calls++;
+        if (cl.outcome === 'conversation' || cl.outcome === 'callback') matrix[key].connects++;
+      }
+    });
+  });
+
+  var maxCalls = Math.max.apply(null, Object.values(matrix).map(function(v){return v.calls;}).concat([1]));
+
+  if (maxCalls <= 1) {
+    return '<div class="campaign-detail"><div class="campaign-detail-title">🕐 Best time heatmap</div>' +
+      '<div style="font-size:13px;color:var(--text3);text-align:center;padding:20px;">Log more call outcomes in your pipeline to see when you get the best results.</div></div>';
+  }
+
+  var dayHeaders = '<div></div>' + HOURS.map(function(h){ return '<div style="font-size:9px;font-weight:700;color:var(--text4);text-align:center;">'+h+'</div>'; }).join('');
+
+  var rows = DAYS.map(function(day, di) {
+    var cells = HOUR_VALS.map(function(hr) {
+      var d = matrix[di+'-'+hr] || {calls:0,connects:0};
+      var intensity = d.calls===0 ? 0 : Math.ceil(d.calls/maxCalls*5);
+      var connectRate = d.calls>0 ? Math.round(d.connects/d.calls*100) : 0;
+      var bg = d.calls===0 ? 'var(--bg4)' :
+        connectRate>=50 ? 'rgba(0,229,160,0.6)' :
+        connectRate>=25 ? 'rgba(190,255,0,0.5)' :
+        intensity>=4    ? 'rgba(190,255,0,0.3)' :
+        intensity>=2    ? 'rgba(190,255,0,0.15)' : 'rgba(190,255,0,0.07)';
+      var tip = d.calls>0 ? d.calls+' calls, '+connectRate+'% connect rate' : 'No data';
+      return '<div style="aspect-ratio:1.2;background:'+bg+';border-radius:4px;border:1px solid var(--border);cursor:default;" title="'+day+' '+hr+':00 — '+tip+'"></div>';
+    }).join('');
+    return '<div style="font-size:10px;font-weight:700;color:var(--text4);display:flex;align-items:center;">'+day+'</div>' + cells;
+  }).join('');
+
+  return '<div class="campaign-detail">' +
+    '<div class="campaign-detail-title">🕐 Best time heatmap</div>' +
+    '<div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Based on your actual call outcomes — green = high connect rate, yellow = high volume.</div>' +
+    '<div style="display:grid;grid-template-columns:32px repeat(10,1fr);gap:4px;margin-bottom:10px;">' + dayHeaders + rows + '</div>' +
+    '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">' +
+      '<div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3);"><div style="width:10px;height:10px;border-radius:3px;background:rgba(190,255,0,0.15);"></div>Some calls</div>' +
+      '<div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3);"><div style="width:10px;height:10px;border-radius:3px;background:rgba(190,255,0,0.5);"></div>High volume</div>' +
+      '<div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--teal);"><div style="width:10px;height:10px;border-radius:3px;background:rgba(0,229,160,0.6);"></div>High connect rate</div>' +
+    '</div>' +
+  '</div>';
 }
 
 
