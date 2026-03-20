@@ -737,6 +737,61 @@ body.light-mode .logo-icon svg path, body.light-mode .logo-icon svg circle, body
 .sh-prospects-preview { display:flex; gap:6px; flex-wrap:wrap; }
 .sh-prospect-chip { font-size:11px; color:var(--text3); background:var(--bg4); border:1px solid var(--border); border-radius:20px; padding:3px 10px; white-space:nowrap; }
 
+
+/* ── CAMPAIGN PAGE ── */
+.campaign-list { display:flex; flex-direction:column; gap:12px; }
+.campaign-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-xl); padding:20px 22px; cursor:pointer; transition:border-color 0.2s,background 0.2s,box-shadow 0.2s; box-shadow:var(--shadow-sm); }
+.campaign-card:hover { border-color:var(--border2); background:var(--bg3); box-shadow:var(--shadow-md); }
+.campaign-card.active-campaign { border-color:rgba(190,255,0,0.25); }
+.campaign-card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:10px; }
+.campaign-name { font-family:'Syne',sans-serif; font-size:17px; font-weight:800; letter-spacing:-0.3px; }
+.campaign-status { font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px; letter-spacing:0.5px; text-transform:uppercase; flex-shrink:0; }
+.cstatus-active   { background:rgba(190,255,0,0.1); color:var(--accent); border:1px solid rgba(190,255,0,0.2); }
+.cstatus-planned  { background:rgba(167,139,250,0.1); color:var(--purple); border:1px solid rgba(167,139,250,0.2); }
+.cstatus-complete { background:rgba(0,229,160,0.08); color:var(--teal); border:1px solid rgba(0,229,160,0.2); }
+.campaign-meta { display:flex; gap:14px; flex-wrap:wrap; font-size:12px; color:var(--text3); margin-bottom:10px; }
+.campaign-meta span { display:flex; align-items:center; gap:5px; }
+.campaign-progress-wrap { height:5px; background:var(--bg4); border-radius:3px; overflow:hidden; }
+.campaign-progress-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--accent),#8FFF00); transition:width 0.5s; }
+
+/* Campaign form */
+.campaign-form { background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r-xl); padding:28px; box-shadow:var(--shadow-md); position:relative; }
+.campaign-form::before { content:''; position:absolute; top:-1px; left:20%; right:20%; height:1px; background:linear-gradient(90deg,transparent,var(--accent),transparent); }
+.campaign-section-title { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--text3); letter-spacing:1.2px; text-transform:uppercase; margin:20px 0 12px; display:flex; align-items:center; gap:8px; }
+.campaign-section-title:first-of-type { margin-top:0; }
+.area-tag { display:inline-flex; align-items:center; gap:6px; background:var(--bg3); border:1px solid var(--border2); border-radius:20px; padding:4px 10px; font-size:12px; color:var(--text2); margin:3px; }
+.area-tag button { background:none; border:none; color:var(--text4); cursor:pointer; padding:0; font-size:14px; line-height:1; }
+.area-tag button:hover { color:#FF8080; }
+.areas-wrap { display:flex; flex-wrap:wrap; gap:4px; padding:8px; background:var(--bg3); border:1px solid var(--border2); border-radius:var(--r-md); min-height:44px; align-items:center; }
+.areas-input { background:none; border:none; outline:none; font-family:'Inter',sans-serif; font-size:14px; color:var(--text); flex:1; min-width:120px; padding:2px 4px; }
+.areas-input::placeholder { color:var(--text4); }
+
+/* Campaign detail */
+.campaign-detail { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-xl); padding:24px; box-shadow:var(--shadow-sm); margin-bottom:16px; }
+.campaign-detail-title { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+.week-row { display:flex; gap:10px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--border); }
+.week-row:last-child { border-bottom:none; }
+.week-num { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; color:var(--accent); background:var(--accent-dim); border:1px solid rgba(190,255,0,0.2); border-radius:var(--r-sm); padding:4px 8px; flex-shrink:0; white-space:nowrap; }
+.week-content { flex:1; font-size:13px; color:var(--text2); line-height:1.6; }
+.week-targets { display:flex; gap:10px; margin-top:6px; flex-wrap:wrap; }
+.week-target-chip { font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px; background:var(--bg4); border:1px solid var(--border2); color:var(--text3); }
+.strategy-block { background:var(--bg3); border-left:3px solid var(--accent); border-radius:0 var(--r-md) var(--r-md) 0; padding:12px 16px; font-size:13px; color:var(--text2); line-height:1.65; margin-bottom:10px; }
+.sequence-step { display:flex; align-items:flex-start; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
+.sequence-step:last-child { border-bottom:none; }
+.sequence-day { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; color:var(--accent); background:var(--accent-dim); border-radius:var(--r-sm); padding:3px 8px; flex-shrink:0; }
+.sequence-text { font-size:13px; color:var(--text2); line-height:1.5; }
+.projection-stat { background:var(--bg3); border:1px solid var(--border); border-radius:var(--r-lg); padding:14px 12px; text-align:center; }
+.projection-num { font-family:'Syne',sans-serif; font-size:24px; font-weight:800; line-height:1; margin-bottom:4px; }
+.projection-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:1px; font-weight:600; }
+.campaign-generating { text-align:center; padding:40px 20px; }
+.campaign-gen-ring { width:36px; height:36px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; margin:0 auto 16px; animation:spin 0.7s linear infinite; }
+
+@media(max-width:640px) {
+  .campaign-form { padding:20px 16px; }
+  .week-row { flex-direction:column; gap:6px; }
+}
+
+
 footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; text-align:center; }
 .footer-text { font-size:12px; color:var(--text4); }
 .footer-text span { color:var(--accent); }
@@ -1098,41 +1153,41 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
     <!-- DASHBOARD SECTIONS (shown when no search active) -->
     <div id="dashSections">
 
-      <!-- Streak -->
-      <div id="dashStreak" style="display:none;" class="dash-section"></div>
-
-      <!-- Streak Calendar — now on its own page, not shown on dashboard -->
+      <!-- Streak (hidden element, kept for JS compat) -->
+      <div id="dashStreak" style="display:none;"></div>
       <div id="dashCalendar" style="display:none;"></div>
 
-      <!-- Pipeline Snapshot -->
+      <!-- 1. Pipeline Snapshot -->
       <div id="dashSnapshot" class="dash-section">
         <div class="dash-section-title">Pipeline snapshot <a onclick="openHistoryPage()">View all →</a></div>
         <div class="snap-grid" id="snapGrid"></div>
-        <div style="margin-top:10px;">
-          <button onclick="openCalendarPage()" style="display:flex;align-items:center;gap:8px;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 18px;cursor:pointer;transition:all 0.2s;text-align:left;" onmouseover="this.style.borderColor='rgba(190,255,0,0.2)'" onmouseout="this.style.borderColor='var(--border)'">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" style="flex-shrink:0;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <div>
-              <div style="font-size:13px;font-weight:600;color:var(--text);">Call Activity Calendar</div>
-              <div style="font-size:11px;color:var(--text3);margin-top:2px;">View your 90-day calling streak and monthly breakdown</div>
-            </div>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text4)" stroke-width="2.5" style="margin-left:auto;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
-          </button>
-        </div>
       </div>
 
-      <!-- Recent Searches -->
+      <!-- 2. Call Activity Calendar entry point -->
+      <div class="dash-section" style="margin-top:12px;">
+        <button onclick="openCalendarPage()" style="display:flex;align-items:center;gap:12px;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 18px;cursor:pointer;transition:border-color 0.2s;text-align:left;" onmouseover="this.style.borderColor='rgba(190,255,0,0.2)'" onmouseout="this.style.borderColor='var(--border)'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" style="flex-shrink:0;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:600;color:var(--text);">Call Activity Calendar</div>
+            <div id="dashCalendarStreak" style="font-size:11px;color:var(--text3);margin-top:2px;">Track your calling streak and monthly breakdown</div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text4)" stroke-width="2.5" style="flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+      <!-- 3. Recent Searches -->
       <div id="dashRecent" class="dash-section" style="display:none;">
         <div class="dash-section-title">Recent searches <a onclick="openSearchHistory()">See all →</a></div>
         <div class="recent-list" id="recentList"></div>
       </div>
 
-      <!-- Top Prospects from Last Search -->
+      <!-- 4. Top Prospects from Last Search -->
       <div id="dashTopProspects" class="dash-section" style="display:none;">
         <div class="dash-section-title">Last search results <a onclick="openSearchHistory()">See all →</a></div>
         <div class="top-prospects-list" id="topProspectsList"></div>
       </div>
 
-      <!-- Quick Start Tips -->
+      <!-- 5. Quick Start Tips -->
       <div id="dashTips" class="dash-section">
         <div class="dash-section-title">Quick start</div>
         <div class="tips-grid" id="tipsGrid"></div>
@@ -1228,6 +1283,92 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
       <button class="nav-btn" onclick="showPage('dashboard')" style="font-size:13px;">← Back</button>
     </div>
     <div id="calendarPageContent"></div>
+  </div>
+</div>
+
+<!-- CAMPAIGN PLANNER PAGE -->
+<div class="page" id="page-campaigns">
+  <div class="container" style="padding-top:40px; padding-bottom:80px;">
+    <div class="dash-header">
+      <div>
+        <div class="dash-greeting">My <em>Campaigns</em></div>
+        <div class="dash-sub" id="campaignsSub">Plan and track your outreach campaigns</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="nav-btn" onclick="showPage('dashboard')" style="font-size:13px;">← Back</button>
+        <button class="nav-btn primary" onclick="showNewCampaignForm()" style="font-size:13px;">+ New campaign</button>
+      </div>
+    </div>
+
+    <!-- New campaign form (hidden by default) -->
+    <div id="campaignFormWrap" style="display:none; margin-bottom:28px;">
+      <div class="campaign-form">
+        <div class="campaign-section-title">📋 Campaign details</div>
+        <div class="fields-row" style="margin-bottom:14px;">
+          <div>
+            <label class="form-label">Campaign name</label>
+            <input class="text-input" id="campName" placeholder="e.g. Q2 Restaurant Push" />
+          </div>
+          <div>
+            <label class="form-label">What are you selling?</label>
+            <input class="text-input" id="campProduct" placeholder="e.g. website design, CRM software" />
+          </div>
+        </div>
+        <div class="fields-row" style="margin-bottom:14px;">
+          <div>
+            <label class="form-label">Target business type</label>
+            <input class="text-input" id="campTarget" placeholder="e.g. restaurants, law firms" />
+          </div>
+          <div>
+            <label class="form-label">Deal size target</label>
+            <input class="text-input" id="campDealSize" placeholder="e.g. $500/mo, $2,000 one-time" />
+          </div>
+        </div>
+
+        <div class="campaign-section-title">📍 Target areas</div>
+        <div class="areas-wrap" id="areasWrap" onclick="document.getElementById('areaInput').focus()">
+          <input class="areas-input" id="areaInput" placeholder="Type a city and press Enter..." onkeydown="handleAreaInput(event)" />
+        </div>
+        <div style="font-size:11px;color:var(--text4);margin-top:5px;">Press Enter after each location to add it</div>
+
+        <div class="campaign-section-title">📅 Timeline</div>
+        <div class="fields-row" style="margin-bottom:14px;">
+          <div>
+            <label class="form-label">Start date</label>
+            <input class="text-input" type="date" id="campStartDate" />
+          </div>
+          <div>
+            <label class="form-label">End date</label>
+            <input class="text-input" type="date" id="campEndDate" />
+          </div>
+        </div>
+        <div class="fields-row" style="margin-bottom:20px;">
+          <div>
+            <label class="form-label">Daily call goal</label>
+            <input class="text-input" type="number" id="campDailyGoal" placeholder="e.g. 20" min="1" max="500" />
+          </div>
+          <div>
+            <label class="form-label">Conversion goal (%)</label>
+            <input class="text-input" type="number" id="campConvGoal" placeholder="e.g. 5" min="1" max="100" />
+          </div>
+        </div>
+
+        <div id="campError" style="display:none;" class="error-msg"></div>
+        <div style="display:flex;gap:10px;">
+          <button class="cta-btn" id="campGenerateBtn" onclick="generateCampaign()" style="flex:1;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Generate campaign plan
+          </button>
+          <button onclick="hideCampaignForm()" style="padding:16px 20px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-md);color:var(--text3);cursor:pointer;font-size:14px;">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Campaign list -->
+    <div id="campaignList"></div>
+
+    <!-- Campaign detail view -->
+    <div id="campaignDetail" style="display:none;"></div>
   </div>
 </div>
 
@@ -1387,6 +1528,10 @@ function updateNav() {
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'+
             'Search History'+
           '</button>'+
+          '<button class="dropdown-item" onclick="closeProfileMenu();openCampaignsPage()">'+
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>'+
+            'Campaigns'+
+          '</button>'+
           '<button class="dropdown-item" onclick="closeProfileMenu();openCalendarPage()">'+
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'+
             'Call Activity'+
@@ -1459,15 +1604,30 @@ function renderDashSections() {
   var tier = TIERS[currentUser.tier] || TIERS.free;
   var allSearches = JSON.parse(localStorage.getItem('ps_searches_' + currentUser.email) || '[]');
 
-  // ── Streak ──
-  var streakEl = document.getElementById('dashStreak');
-  if (streakEl && allSearches.length > 0) {
-    var days = Math.min(allSearches.length, 7);
-    var msgs = ['Keep it up!', 'On a roll!', 'Stay consistent!', 'Building momentum!', 'Crushing it!'];
-    var msg = msgs[Math.min(days-1, msgs.length-1)];
-    var left = Math.max(0, tier.daily - getUsage(currentUser.email));
-    streakEl.style.display = 'block';
-    streakEl.innerHTML = '<div class="streak-bar"><div class="streak-icon">🔥</div><div class="streak-info"><div class="streak-title">' + msg + '</div><div class="streak-sub">' + days + ' search' + (days!==1?'es':'') + ' today · ' + left + ' prospects left</div></div><div class="streak-num">' + days + '</div></div>';
+  // ── Calendar streak summary on dashboard button ──
+  var calStreakEl = document.getElementById('dashCalendarStreak');
+  if (calStreakEl) {
+    var history = getHistory(currentUser.email);
+    var callMap = {};
+    history.forEach(function(h) {
+      if (!h.callLog) return;
+      h.callLog.forEach(function(c) {
+        var d = new Date(c.ts).toDateString();
+        callMap[d] = (callMap[d]||0) + 1;
+      });
+    });
+    var manualCalls = JSON.parse(localStorage.getItem('ps_manual_calls_' + currentUser.email)||'{}');
+    Object.keys(manualCalls).forEach(function(k) {
+      var parts = k.split('-');
+      var ds = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2])).toDateString();
+      callMap[ds] = (callMap[ds]||0) + (manualCalls[k].count||0);
+    });
+    var streak = 0;
+    var cd = new Date();
+    while (callMap[cd.toDateString()]) { streak++; cd.setDate(cd.getDate()-1); }
+    var totalCalls = Object.values(callMap).reduce(function(a,b){return a+b;}, 0);
+    var streakTxt = streak > 0 ? '🔥 ' + streak + '-day streak · ' + totalCalls + ' total calls' : totalCalls > 0 ? totalCalls + ' total calls logged' : 'Track your calling streak and monthly breakdown';
+    calStreakEl.textContent = streakTxt;
   }
 
   // ── Pipeline Snapshot ──
@@ -2418,6 +2578,10 @@ function renderMobileMenu() {
       '<button class="mobile-menu-item" onclick="closeMobileMenu();openSearchHistory()">' +
         '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
         'Search History' +
+      '</button>' +
+      '<button class="mobile-menu-item" onclick="closeMobileMenu();openCampaignsPage()">' +
+        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>' +
+        'Campaigns' +
       '</button>' +
 
       '<button class="mobile-menu-item" onclick="closeMobileMenu();showPage(\'pricing\')">' +
@@ -3659,6 +3823,364 @@ function deleteSearchHistory(idx) {
   renderSearchHistoryPage();
   renderDashSections();
 }
+
+// ── CAMPAIGN PLANNER ─────────────────────────────────────────────────────────
+var _campaignAreas = [];
+
+function getCampaigns() {
+  if (!currentUser) return [];
+  try { return JSON.parse(localStorage.getItem('ps_campaigns_' + currentUser.email) || '[]'); } catch(e) { return []; }
+}
+function saveCampaigns(campaigns) {
+  if (!currentUser) return;
+  localStorage.setItem('ps_campaigns_' + currentUser.email, JSON.stringify(campaigns));
+}
+
+function openCampaignsPage() {
+  renderCampaignList();
+  showPage('campaigns');
+}
+
+function showNewCampaignForm() {
+  _campaignAreas = [];
+  document.getElementById('campaignFormWrap').style.display = 'block';
+  document.getElementById('campaignDetail').style.display = 'none';
+  // Set default dates
+  var now = new Date();
+  var end = new Date(now); end.setDate(end.getDate() + 30);
+  document.getElementById('campStartDate').value = now.toISOString().slice(0,10);
+  document.getElementById('campEndDate').value = end.toISOString().slice(0,10);
+  document.getElementById('campGenerateBtn').disabled = false;
+  document.getElementById('campGenerateBtn').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Generate campaign plan';
+  document.getElementById('campError').style.display = 'none';
+  document.getElementById('campName').scrollIntoView({behavior:'smooth', block:'start'});
+  document.getElementById('campName').focus();
+}
+
+function hideCampaignForm() {
+  document.getElementById('campaignFormWrap').style.display = 'none';
+  _campaignAreas = [];
+  renderAreasWrap();
+}
+
+function handleAreaInput(e) {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    var val = e.target.value.trim().replace(/,$/,'');
+    if (val && !_campaignAreas.includes(val)) {
+      _campaignAreas.push(val);
+      renderAreasWrap();
+    }
+    e.target.value = '';
+  } else if (e.key === 'Backspace' && !e.target.value && _campaignAreas.length) {
+    _campaignAreas.pop();
+    renderAreasWrap();
+  }
+}
+
+function removeArea(idx) {
+  _campaignAreas.splice(idx, 1);
+  renderAreasWrap();
+}
+
+function renderAreasWrap() {
+  var wrap = document.getElementById('areasWrap');
+  var input = document.getElementById('areaInput');
+  if (!wrap || !input) return;
+  var tags = _campaignAreas.map(function(a, i) {
+    return '<span class="area-tag"><span>' + a + '</span><button onclick="removeArea(' + i + ')" type="button">×</button></span>';
+  }).join('');
+  wrap.innerHTML = tags + '<input class="areas-input" id="areaInput" placeholder="' + (_campaignAreas.length ? 'Add another...' : 'Type a city and press Enter...') + '" onkeydown="handleAreaInput(event)" />';
+}
+
+async function generateCampaign() {
+  if (!currentUser) return;
+  var name      = document.getElementById('campName').value.trim();
+  var product   = document.getElementById('campProduct').value.trim();
+  var target    = document.getElementById('campTarget').value.trim();
+  var dealSize  = document.getElementById('campDealSize').value.trim();
+  var startDate = document.getElementById('campStartDate').value;
+  var endDate   = document.getElementById('campEndDate').value;
+  var dailyGoal = parseInt(document.getElementById('campDailyGoal').value) || 20;
+  var convGoal  = parseInt(document.getElementById('campConvGoal').value) || 5;
+
+  // Add any typed but not entered area
+  var areaInput = document.getElementById('areaInput');
+  if (areaInput && areaInput.value.trim()) {
+    _campaignAreas.push(areaInput.value.trim());
+    areaInput.value = '';
+  }
+
+  var errEl = document.getElementById('campError');
+  if (!name)              { errEl.textContent='Please enter a campaign name.'; errEl.style.display='block'; return; }
+  if (!product)           { errEl.textContent='Please enter what you are selling.'; errEl.style.display='block'; return; }
+  if (!_campaignAreas.length) { errEl.textContent='Please add at least one target area.'; errEl.style.display='block'; return; }
+  if (!startDate||!endDate)   { errEl.textContent='Please set a start and end date.'; errEl.style.display='block'; return; }
+  errEl.style.display = 'none';
+
+  var btn = document.getElementById('campGenerateBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div style="width:16px;height:16px;border:2px solid rgba(8,8,13,0.3);border-top-color:#08080D;border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px;"></div> Generating your plan...';
+
+  // Calculate duration
+  var start = new Date(startDate), end = new Date(endDate);
+  var days  = Math.max(1, Math.round((end - start) / 86400000));
+  var weeks = Math.ceil(days / 7);
+  var totalCalls = dailyGoal * days;
+
+  var prompt = 'You are an expert B2B cold calling strategist. Create a detailed campaign plan in JSON format.\n\n' +
+    'Campaign: ' + name + '\n' +
+    'Selling: ' + product + '\n' +
+    'Target businesses: ' + (target||'general businesses') + '\n' +
+    'Target areas: ' + _campaignAreas.join(', ') + '\n' +
+    'Deal size: ' + (dealSize||'not specified') + '\n' +
+    'Duration: ' + days + ' days (' + weeks + ' weeks)\n' +
+    'Daily call goal: ' + dailyGoal + ' calls/day\n' +
+    'Conversion goal: ' + convGoal + '%\n\n' +
+    'Return ONLY a valid JSON object with these exact fields:\n' +
+    '{\n' +
+    '  "summary": "2-3 sentence overview of the campaign strategy",\n' +
+    '  "approach": "The best angle/hook for selling ' + product + ' to ' + (target||'these businesses') + ' (2-3 sentences)",\n' +
+    '  "bestDays": "Best days and times to call this target",\n' +
+    '  "opener": "A killer opening line for this campaign (1-2 sentences)",\n' +
+    '  "topObjection": "The #1 objection they will face and exactly how to handle it",\n' +
+    '  "weeklyPlan": [array of ' + Math.min(weeks,8) + ' objects, each with: {"week":1,"focus":"what to do this week","areas":["area1"],"callTarget":50,"goal":"specific measurable goal for this week"}],\n' +
+    '  "sequence": [{"day":"Day 1","action":"what to do","note":"why"}, {"day":"Day 3","action":"...","note":"..."}, {"day":"Day 7","action":"...","note":"..."}, {"day":"Day 14","action":"...","note":"..."}],\n' +
+    '  "projections": {"totalCalls":' + totalCalls + ',"expectedConnects":0,"expectedMeetings":0,"expectedCloses":0,"expectedRevenue":"$0"},\n' +
+    '  "tips": ["3 campaign-specific tips as strings"]\n' +
+    '}';
+
+  try {
+    var res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'Authorization':'Bearer '+OPENAI_KEY },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role:'system', content:'Return ONLY valid JSON. No markdown. No backticks.' },
+          { role:'user', content:prompt }
+        ],
+        temperature: 0.4,
+        max_tokens: 2000
+      })
+    });
+    var data = await res.json();
+    var text = (data.choices[0].message.content||'').replace(/```json|```/g,'').trim();
+    var match = text.match(/\{[\s\S]*\}/);
+    var plan = match ? JSON.parse(match[0]) : {};
+
+    // Fix projections
+    var connects = Math.round(totalCalls * 0.25);
+    var meetings = Math.round(connects * (convGoal/100) * 2);
+    var closes   = Math.round(meetings * 0.3);
+    plan.projections = plan.projections || {};
+    plan.projections.totalCalls    = totalCalls;
+    plan.projections.expectedConnects = connects;
+    plan.projections.expectedMeetings = meetings;
+    plan.projections.expectedCloses   = closes;
+
+    // Save campaign
+    var campaign = {
+      id:        'camp_' + Date.now(),
+      name:      name,
+      product:   product,
+      target:    target,
+      dealSize:  dealSize,
+      areas:     _campaignAreas.slice(),
+      startDate: startDate,
+      endDate:   endDate,
+      dailyGoal: dailyGoal,
+      convGoal:  convGoal,
+      status:    'active',
+      plan:      plan,
+      progress:  0,
+      createdAt: Date.now()
+    };
+    var campaigns = getCampaigns();
+    campaigns.unshift(campaign);
+    saveCampaigns(campaigns);
+
+    hideCampaignForm();
+    renderCampaignList();
+    openCampaignDetail(campaign.id);
+    showToast('Campaign created! Your plan is ready.', 'success');
+
+  } catch(err) {
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Generate campaign plan';
+    errEl.textContent = 'AI generation failed: ' + (err.message||'unknown error') + '. Check your OpenAI key.';
+    errEl.style.display = 'block';
+  }
+}
+
+function renderCampaignList() {
+  if (!currentUser) return;
+  var campaigns = getCampaigns();
+  var el = document.getElementById('campaignList');
+  var sub = document.getElementById('campaignsSub');
+  if (!el) return;
+  if (sub) sub.textContent = campaigns.length + ' campaign' + (campaigns.length!==1?'s':'') + ' · click any to view plan';
+
+  if (!campaigns.length) {
+    el.innerHTML = '<div class="pipeline-empty"><div class="pipeline-empty-icon">🎯</div><div class="pipeline-empty-text">No campaigns yet. Create one to get an AI-generated outreach plan.</div></div>';
+    return;
+  }
+
+  el.innerHTML = campaigns.map(function(c) {
+    var start = new Date(c.startDate).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    var end   = new Date(c.endDate).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    var days  = Math.max(1, Math.round((new Date(c.endDate)-new Date(c.startDate))/86400000));
+    var elapsed = Math.min(100, Math.round((Date.now()-new Date(c.startDate).getTime())/(days*86400000)*100));
+    elapsed = Math.max(0, elapsed);
+    var statusClass = c.status==='active' ? 'cstatus-active' : c.status==='complete' ? 'cstatus-complete' : 'cstatus-planned';
+    return '<div class="campaign-card" onclick="openCampaignDetail(\''+c.id+'\')">' +
+      '<div class="campaign-card-top">' +
+        '<div class="campaign-name">'+c.name+'</div>' +
+        '<span class="campaign-status '+statusClass+'">'+c.status+'</span>' +
+      '</div>' +
+      '<div class="campaign-meta">' +
+        '<span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'+start+' – '+end+'</span>' +
+        '<span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/></svg>'+c.areas.slice(0,3).join(', ')+(c.areas.length>3?' +'+( c.areas.length-3)+' more':'' )+'</span>' +
+        '<span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>'+c.product+'</span>' +
+      '</div>' +
+      '<div class="campaign-progress-wrap"><div class="campaign-progress-fill" style="width:'+elapsed+'%"></div></div>' +
+      '<div style="font-size:10px;color:var(--text4);margin-top:5px;">'+elapsed+'% through timeline</div>' +
+    '</div>';
+  }).join('');
+}
+
+function openCampaignDetail(id) {
+  var campaigns = getCampaigns();
+  var c = campaigns.find(function(x){ return x.id===id; });
+  if (!c) return;
+  var el = document.getElementById('campaignDetail');
+  if (!el) return;
+  el.style.display = 'block';
+  el.scrollIntoView({behavior:'smooth', block:'start'});
+  var p = c.plan || {};
+  var days = Math.max(1, Math.round((new Date(c.endDate)-new Date(c.startDate))/86400000));
+  var proj = p.projections || {};
+
+  // Projections grid
+  var projHtml = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;">' +
+    _campStat(proj.totalCalls||0, 'Total calls', 'var(--text2)') +
+    _campStat(proj.expectedConnects||0, 'Connects', 'var(--accent)') +
+    _campStat(proj.expectedMeetings||0, 'Meetings', 'var(--amber)') +
+    _campStat(proj.expectedCloses||0, 'Closes', 'var(--purple)') +
+  '</div>';
+
+  // Weekly plan
+  var weeklyHtml = (p.weeklyPlan||[]).map(function(w) {
+    return '<div class="week-row">' +
+      '<div class="week-num">Wk '+w.week+'</div>' +
+      '<div class="week-content">' +
+        '<div style="font-weight:600;color:var(--text);margin-bottom:4px;">'+w.focus+'</div>' +
+        '<div style="color:var(--text3);font-size:12px;">Goal: '+w.goal+'</div>' +
+        '<div class="week-targets">' +
+          (w.areas||[]).map(function(a){ return '<span class="week-target-chip">📍 '+a+'</span>'; }).join('') +
+          '<span class="week-target-chip">📞 '+w.callTarget+' calls</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  // Call sequence
+  var seqHtml = (p.sequence||[]).map(function(s) {
+    return '<div class="sequence-step">' +
+      '<div class="sequence-day">'+s.day+'</div>' +
+      '<div class="sequence-content">' +
+        '<div class="sequence-text" style="font-weight:600;">'+s.action+'</div>' +
+        '<div class="sequence-text" style="color:var(--text3);font-size:12px;margin-top:3px;">'+s.note+'</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  // Tips
+  var tipsHtml = (p.tips||[]).map(function(t) {
+    return '<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);">' +
+      '<span style="color:var(--accent);font-size:14px;flex-shrink:0;">✓</span>' +
+      '<span style="font-size:13px;color:var(--text2);">'+t+'</span>' +
+    '</div>';
+  }).join('');
+
+  // Scout buttons
+  var scoutBtns = c.areas.map(function(area) {
+    return '<button onclick="scoutFromCampaign(\''+area.replace(/'/g,"'")+'\',\''+c.product.replace(/'/g,"'")+'\',\''+c.target.replace(/'/g,"")+'\')" ' +
+      'style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--accent-dim);color:var(--accent);border:1px solid rgba(190,255,0,0.2);border-radius:var(--r-sm);cursor:pointer;font-size:12px;font-weight:600;white-space:nowrap;">' +
+      '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
+      'Scout '+area+
+    '</button>';
+  }).join('');
+
+  el.innerHTML =
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">' +
+      '<div>' +
+        '<div style="font-size:22px;font-weight:800;letter-spacing:-0.5px;">'+c.name+'</div>' +
+        '<div style="font-size:13px;color:var(--text3);margin-top:3px;">'+c.product+' · '+c.areas.join(', ')+'</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:8px;">' +
+        '<button onclick="deleteCampaign(\''+c.id+'\')" style="padding:8px 14px;background:none;border:1px solid rgba(255,80,80,0.2);border-radius:var(--r-sm);color:#FF8080;cursor:pointer;font-size:12px;">Delete</button>' +
+        '<button onclick="document.getElementById(\'campaignDetail\').style.display=\'none\'" style="padding:8px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text3);cursor:pointer;font-size:12px;">Close</button>' +
+      '</div>' +
+    '</div>' +
+
+    // Projections
+    '<div class="campaign-detail">' +
+      '<div class="campaign-detail-title">📊 Projected results <span style="font-size:11px;color:var(--text4);font-weight:400;">based on '+days+'-day campaign at '+c.dailyGoal+' calls/day</span></div>' +
+      projHtml +
+    '</div>' +
+
+    // Strategy
+    '<div class="campaign-detail">' +
+      '<div class="campaign-detail-title">🎯 Strategy</div>' +
+      (p.summary ? '<div class="strategy-block">'+p.summary+'</div>' : '') +
+      (p.approach ? '<div style="margin-bottom:10px;"><div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Best approach</div><div class="strategy-block">'+p.approach+'</div></div>' : '') +
+      (p.opener ? '<div style="margin-bottom:10px;"><div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Opening line</div><div class="opener-text">'+p.opener+'</div></div>' : '') +
+      (p.bestDays ? '<div style="margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Best times to call</div><div style="font-size:13px;color:var(--text2);">'+p.bestDays+'</div></div>' : '') +
+      (p.topObjection ? '<div><div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Top objection &amp; response</div><div style="font-size:13px;color:var(--text2);background:var(--bg3);padding:12px 14px;border-radius:var(--r-md);border:1px solid var(--border);">'+p.topObjection+'</div></div>' : '') +
+    '</div>' +
+
+    // Weekly plan
+    (weeklyHtml ? '<div class="campaign-detail"><div class="campaign-detail-title">📅 Weekly plan</div>' + weeklyHtml + '</div>' : '') +
+
+    // Call sequence
+    (seqHtml ? '<div class="campaign-detail"><div class="campaign-detail-title">📞 Follow-up sequence</div>' + seqHtml + '</div>' : '') +
+
+    // Tips
+    (tipsHtml ? '<div class="campaign-detail"><div class="campaign-detail-title">💡 Campaign tips</div>' + tipsHtml + '</div>' : '') +
+
+    // Scout buttons
+    '<div class="campaign-detail">' +
+      '<div class="campaign-detail-title">🔍 Scout your areas</div>' +
+      '<div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Click an area to auto-fill the search form and find prospects</div>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:8px;">' + scoutBtns + '</div>' +
+    '</div>';
+}
+
+function _campStat(val, label, color) {
+  return '<div class="projection-stat">' +
+    '<div class="projection-num" style="color:'+color+';">'+val+'</div>' +
+    '<div class="projection-label">'+label+'</div>' +
+  '</div>';
+}
+
+function scoutFromCampaign(area, product, target) {
+  showPage('dashboard');
+  setTimeout(function() {
+    fillSearch(area, product, target);
+    setTimeout(function(){ analyze(); }, 150);
+  }, 200);
+}
+
+function deleteCampaign(id) {
+  if (!confirm('Delete this campaign? This cannot be undone.')) return;
+  var campaigns = getCampaigns().filter(function(c){ return c.id!==id; });
+  saveCampaigns(campaigns);
+  document.getElementById('campaignDetail').style.display = 'none';
+  renderCampaignList();
+  showToast('Campaign deleted', 'info');
+}
+
 
 // ── INIT
 // Re-check for resume when user returns to the tab
