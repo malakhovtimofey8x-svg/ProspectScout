@@ -973,6 +973,10 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
 .rating-badge { display:inline-flex; align-items:center; gap:3px; font-size:10px; font-weight:700; padding:3px 9px; border-radius:20px; background:rgba(255,176,32,0.08); color:var(--amber); border:1px solid rgba(255,176,32,0.2); margin-bottom:6px; margin-left:4px; }
 
 
+/* ── SLIM STATUS BAR ── */
+#statusExpanded { animation:fadeSlideIn 0.2s ease both; }
+#slimStatusBar:hover { background:var(--bg3) !important; }
+
 /* ── COMPREHENSIVE MOBILE FIXES ── */
 @media(max-width:600px) {
   .campaign-detail { padding:16px 14px; }
@@ -1132,17 +1136,38 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
       </div>
     </div>
 
-    <!-- GOAL TRACKER -->
-    <div id="goalTracker" class="goal-bar-wrap" style="display:none;"></div>
-
-    <!-- USAGE -->
-    <div class="usage-bar-wrap">
-      <div class="usage-info">
-        <div class="usage-label">Daily prospects used</div>
-        <div class="usage-track"><div class="usage-fill" id="usageFill" style="width:0%"></div></div>
-        <div class="usage-numbers" id="usageNumbers">0 / 5 today</div>
+    <!-- SLIM STATUS BAR (collapsed goal + usage) -->
+    <div id="slimStatusBar" onclick="toggleStatusExpand()" style="display:none;cursor:pointer;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-xl);padding:12px 18px;margin-bottom:16px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(190,255,0,0.15)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+          <span id="slimGoalText" style="font-size:13px;font-weight:600;color:var(--text2);">🎯 0 / 0 calls today</span>
+          <span style="color:var(--border2);">·</span>
+          <span id="slimUsageText" style="font-size:13px;color:var(--text3);">0 / 5 prospects used</span>
+          <span id="slimUpgradeLink" style="display:none;font-size:12px;color:var(--accent);font-weight:600;">Upgrade →</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span id="slimPct" style="font-size:12px;font-weight:700;color:var(--accent);">0%</span>
+          <svg id="slimChevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text4)" stroke-width="2.5" style="transition:transform 0.2s;flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
       </div>
-      <button class="upgrade-nudge" onclick="showPage('pricing')" id="upgradeNudge" style="display:none;">Get more prospects →</button>
+      <div id="slimProgressBar" style="height:3px;background:var(--bg4);border-radius:2px;margin-top:8px;overflow:hidden;">
+        <div id="slimProgressFill" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#8FFF00);border-radius:2px;transition:width 0.4s;"></div>
+      </div>
+    </div>
+
+    <!-- EXPANDED STATUS (hidden by default) -->
+    <div id="statusExpanded" style="display:none;margin-bottom:16px;">
+      <!-- GOAL TRACKER -->
+      <div id="goalTracker" class="goal-bar-wrap"></div>
+      <!-- USAGE -->
+      <div class="usage-bar-wrap">
+        <div class="usage-info">
+          <div class="usage-label">Daily prospects used</div>
+          <div class="usage-track"><div class="usage-fill" id="usageFill" style="width:0%"></div></div>
+          <div class="usage-numbers" id="usageNumbers">0 / 5 today</div>
+        </div>
+        <button class="upgrade-nudge" onclick="showPage('pricing')" id="upgradeNudge" style="display:none;">Get more prospects →</button>
+      </div>
     </div>
 
     <!-- TIER SWITCHER — hidden, moved to admin panel -->
@@ -1151,23 +1176,6 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
         <button class="tier-switch-btn" id="btn-free"  onclick="switchTier('free')">Free — 3/search</button>
         <button class="tier-switch-btn" id="btn-plus"  onclick="switchTier('plus')">Plus — 5/search</button>
         <button class="tier-switch-btn" id="btn-pro"   onclick="switchTier('pro')">Pro — 25/search</button>
-      </div>
-    </div>
-
-    <!-- EMPTY STATE HINT -->
-    <div id="dashEmptyHint" style="display:none; text-align:center; padding:0 0 24px;">
-      <div style="font-size:32px; margin-bottom:10px;">📍</div>
-      <div style="font-family:Syne,sans-serif; font-size:16px; font-weight:700; margin-bottom:6px;">Scout your first area</div>
-      <div style="font-size:13px; color:var(--text3);">Enter a location below and the AI will find your best prospects to call.</div>
-    </div>
-
-    <!-- RESUME SEARCH BANNER -->
-    <div class="resume-banner" id="resumeBanner">
-      <div class="resume-banner-title">⚡ Resume your search</div>
-      <div class="resume-banner-sub" id="resumeBannerSub">A previous search was interrupted. You have partial results saved.</div>
-      <div class="resume-banner-btns">
-        <button class="resume-btn primary" onclick="resumeSearch()">Resume search</button>
-        <button class="resume-btn secondary" onclick="clearResumeData()">Discard</button>
       </div>
     </div>
 
@@ -1190,6 +1198,25 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
       </button>
       <div id="errorMsg"></div>
     </div>
+
+
+    <!-- EMPTY STATE HINT -->
+    <div id="dashEmptyHint" style="display:none; text-align:center; padding:0 0 24px;">
+      <div style="font-size:32px; margin-bottom:10px;">📍</div>
+      <div style="font-family:Syne,sans-serif; font-size:16px; font-weight:700; margin-bottom:6px;">Scout your first area</div>
+      <div style="font-size:13px; color:var(--text3);">Enter a location below and the AI will find your best prospects to call.</div>
+    </div>
+
+    <!-- RESUME SEARCH BANNER -->
+    <div class="resume-banner" id="resumeBanner">
+      <div class="resume-banner-title">⚡ Resume your search</div>
+      <div class="resume-banner-sub" id="resumeBannerSub">A previous search was interrupted. You have partial results saved.</div>
+      <div class="resume-banner-btns">
+        <button class="resume-btn primary" onclick="resumeSearch()">Resume search</button>
+        <button class="resume-btn secondary" onclick="clearResumeData()">Discard</button>
+      </div>
+    </div>
+
 
     <div class="loading-state" id="loadingState">
       <div class="loading-ring"></div>
@@ -1757,6 +1784,12 @@ function renderDashSections() {
       '</div>';
     }).join('');
   }
+
+  // ── Slim status bar ──
+  updateSlimBar();
+
+  // ── Slim status bar ──
+  updateSlimBar();
 
   // ── Overdue Badge ──
   updateOverdueBadge();
@@ -5110,6 +5143,59 @@ function saveProjEdit(id) {
   renderCampaignList();
   openCampaignDetail(id);
   showToast('Projections updated!', 'success');
+}
+
+
+function toggleStatusExpand() {
+  var bar     = document.getElementById('statusExpanded');
+  var chevron = document.getElementById('slimChevron');
+  if (!bar) return;
+  var open = bar.style.display !== 'none';
+  bar.style.display = open ? 'none' : 'block';
+  if (chevron) chevron.style.transform = open ? '' : 'rotate(180deg)';
+}
+
+function updateSlimBar() {
+  if (!currentUser) return;
+  var bar = document.getElementById('slimStatusBar');
+  if (!bar) return;
+
+  var tier    = TIERS[currentUser.tier || 'free'];
+  var used    = getUsage(currentUser.email);
+  var left    = Math.max(0, tier.daily - used);
+  var pct     = tier.daily > 0 ? Math.round(used / tier.daily * 100) : 0;
+
+  // Goal data
+  var goalKey   = 'ps_daily_goal_' + currentUser.email;
+  var goal      = parseInt(localStorage.getItem(goalKey)) || 20;
+  var history   = getHistory(currentUser.email);
+  var todayStr  = new Date().toDateString();
+  var callsToday = 0;
+  history.forEach(function(h) {
+    if (!h.callLog) return;
+    h.callLog.forEach(function(c) {
+      if (new Date(c.ts).toDateString() === todayStr) callsToday++;
+    });
+  });
+  var goalPct = goal > 0 ? Math.min(100, Math.round(callsToday / goal * 100)) : 0;
+
+  // Update slim bar text
+  var goalEl   = document.getElementById('slimGoalText');
+  var usageEl  = document.getElementById('slimUsageText');
+  var pctEl    = document.getElementById('slimPct');
+  var fillEl   = document.getElementById('slimProgressFill');
+  var upgEl    = document.getElementById('slimUpgradeLink');
+
+  if (goalEl)  goalEl.textContent  = '🎯 ' + callsToday + ' / ' + goal + ' calls today';
+  if (usageEl) usageEl.textContent = used + ' / ' + tier.daily + ' prospects used';
+  if (pctEl)   pctEl.textContent   = goalPct + '%';
+  if (fillEl)  fillEl.style.width  = goalPct + '%';
+  if (upgEl)   upgEl.style.display = left <= 5 ? 'inline' : 'none';
+
+  // Color the goal text based on progress
+  if (goalEl) goalEl.style.color = goalPct >= 100 ? 'var(--accent)' : goalPct >= 50 ? 'var(--amber)' : 'var(--text2)';
+
+  bar.style.display = 'block';
 }
 
 
