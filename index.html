@@ -1700,14 +1700,8 @@ function handleLogoClick() {
 function enterDashboard(){ updateNav(); updateDashboard(); showPage('dashboard'); checkForResume(); renderDashSections(); renderGoalTracker(); updateOverdueBadge(); setTimeout(checkOnboarding, 400); }
 
 // DASHBOARD STATE
-function updateEmptyHint() {
-  var hint = document.getElementById('dashEmptyHint');
-  if (!hint || !currentUser) return;
-  var used = getUsage(currentUser.email);
-  hint.style.display = used === 0 ? 'block' : 'none';
-}
+function updateEmptyHint() { /* disabled — search form is always visible */ }
 
-// ── DASHBOARD SECTIONS ──────────────────────────────────────────────────────
 function renderDashSections() {
   if (!currentUser) return;
   var history = getHistory(currentUser.email);
