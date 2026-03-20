@@ -739,7 +739,7 @@ body.light-mode .logo-icon svg path, body.light-mode .logo-icon svg circle, body
 
 
 /* ── CAMPAIGN PAGE ── */
-.campaign-list { display:flex; flex-direction:column; gap:12px; }
+.campaign-list { display:flex; flex-direction:column; gap:12px; width:100%; }
 .campaign-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-xl); padding:20px 22px; cursor:pointer; transition:border-color 0.2s,background 0.2s,box-shadow 0.2s; box-shadow:var(--shadow-sm); }
 .campaign-card:hover { border-color:var(--border2); background:var(--bg3); box-shadow:var(--shadow-md); }
 .campaign-card.active-campaign { border-color:rgba(190,255,0,0.25); }
@@ -763,19 +763,19 @@ body.light-mode .logo-icon svg path, body.light-mode .logo-icon svg circle, body
 .area-tag button { background:none; border:none; color:var(--text4); cursor:pointer; padding:0; font-size:14px; line-height:1; }
 .area-tag button:hover { color:#FF8080; }
 .areas-wrap { display:flex; flex-wrap:wrap; gap:4px; padding:8px; background:var(--bg3); border:1px solid var(--border2); border-radius:var(--r-md); min-height:44px; align-items:center; }
-.areas-input { background:none; border:none; outline:none; font-family:'Inter',sans-serif; font-size:14px; color:var(--text); flex:1; min-width:120px; padding:2px 4px; }
+.areas-input { background:none; border:none; outline:none; font-family:'Inter',sans-serif; font-size:16px; color:var(--text); flex:1; min-width:100px; padding:2px 4px; }
 .areas-input::placeholder { color:var(--text4); }
 
 /* Campaign detail */
-.campaign-detail { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-xl); padding:24px; box-shadow:var(--shadow-sm); margin-bottom:16px; }
+.campaign-detail { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-xl); padding:24px; box-shadow:var(--shadow-sm); margin-bottom:16px; width:100%; box-sizing:border-box; }
 .campaign-detail-title { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
-.week-row { display:flex; gap:10px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--border); }
+.week-row { display:flex; gap:10px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--border); width:100%; }
 .week-row:last-child { border-bottom:none; }
 .week-num { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; color:var(--accent); background:var(--accent-dim); border:1px solid rgba(190,255,0,0.2); border-radius:var(--r-sm); padding:4px 8px; flex-shrink:0; white-space:nowrap; }
 .week-content { flex:1; font-size:13px; color:var(--text2); line-height:1.6; }
 .week-targets { display:flex; gap:10px; margin-top:6px; flex-wrap:wrap; }
 .week-target-chip { font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px; background:var(--bg4); border:1px solid var(--border2); color:var(--text3); }
-.strategy-block { background:var(--bg3); border-left:3px solid var(--accent); border-radius:0 var(--r-md) var(--r-md) 0; padding:12px 16px; font-size:13px; color:var(--text2); line-height:1.65; margin-bottom:10px; }
+.strategy-block { background:var(--bg3); border-left:3px solid var(--accent); border-radius:0 var(--r-md) var(--r-md) 0; padding:12px 16px; font-size:13px; color:var(--text2); line-height:1.7; margin-bottom:10px; word-break:break-word; }
 .sequence-step { display:flex; align-items:flex-start; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
 .sequence-step:last-child { border-bottom:none; }
 .sequence-day { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; color:var(--accent); background:var(--accent-dim); border-radius:var(--r-sm); padding:3px 8px; flex-shrink:0; }
@@ -789,6 +789,9 @@ body.light-mode .logo-icon svg path, body.light-mode .logo-icon svg circle, body
 @media(max-width:640px) {
   .campaign-form { padding:20px 16px; }
   .week-row { flex-direction:column; gap:6px; }
+  .campaign-detail { padding:16px 14px; }
+  .campaign-detail-title { font-size:13px; }
+  .projection-num { font-size:18px; }
 }
 
 
@@ -933,6 +936,40 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
 .verified-badge { display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:700; padding:3px 9px; border-radius:20px; background:rgba(0,229,160,0.08); color:var(--teal); border:1px solid rgba(0,229,160,0.2); margin-bottom:6px; letter-spacing:0.4px; }
 .rating-badge { display:inline-flex; align-items:center; gap:3px; font-size:10px; font-weight:700; padding:3px 9px; border-radius:20px; background:rgba(255,176,32,0.08); color:var(--amber); border:1px solid rgba(255,176,32,0.2); margin-bottom:6px; margin-left:4px; }
 
+
+/* ── COMPREHENSIVE MOBILE FIXES ── */
+@media(max-width:600px) {
+  .campaign-detail { padding:16px 14px; }
+  .campaign-detail-title { font-size:13px; }
+  .projection-num { font-size:18px; }
+  .projection-stat { padding:10px 8px; }
+  .projection-label { font-size:8px; }
+  .campaign-card { padding:14px 16px; }
+  .campaign-name { font-size:15px; }
+  .campaign-meta span { font-size:11px; }
+  .week-target-chip { font-size:10px; padding:2px 7px; }
+  .week-num { font-size:11px; padding:3px 6px; }
+  .sequence-day { font-size:10px; padding:2px 7px; }
+  .strategy-block { font-size:12px; padding:10px 12px; }
+  .tip-card { padding:14px; }
+  .container { padding-bottom:100px; }
+  .pipeline-stats { grid-template-columns:repeat(2,1fr) !important; }
+}
+@media(max-width:374px) {
+  .container { padding-left:14px; padding-right:14px; }
+  .dash-greeting { font-size:20px !important; }
+  .snap-grid { gap:8px; }
+  .campaign-form { padding:16px 12px; }
+  .nav-btn { font-size:11px; padding:7px 10px; }
+}
+@media(hover:none) {
+  .campaign-card:active, .tip-card:active, .result-card:active { opacity:0.75; }
+  button:active { opacity:0.8; }
+}
+.heatmap-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:4px; }
+.campaign-name, .dash-greeting, .history-item-name { word-break:break-word; overflow-wrap:break-word; }
+input[type="text"]:not(.goal-input), input[type="email"], input[type="password"],
+input[type="number"]:not(.goal-input), input[type="date"], textarea, select { font-size:16px; }
 </style>
 <script src="/api/env"></script>
 </head>
@@ -1282,7 +1319,7 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
       </div>
       <button class="nav-btn" onclick="showPage('dashboard')" style="font-size:13px;">← Back</button>
     </div>
-    <div id="calendarPageContent"></div>
+    <div id="calendarPageContent" style="width:100%;"></div>
   </div>
 </div>
 
@@ -1375,10 +1412,10 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
     </div>
 
     <!-- Campaign list -->
-    <div id="campaignList"></div>
+    <div id="campaignList" class="campaign-list"></div>
 
     <!-- Campaign detail view -->
-    <div id="campaignDetail" style="display:none;"></div>
+    <div id="campaignDetail" style="display:none;width:100%;"></div>
   </div>
 </div>
 
@@ -4066,6 +4103,7 @@ function openCampaignDetail(id) {
   var el = document.getElementById('campaignDetail');
   if (!el) return;
   el.style.display = 'block';
+  el.style.width = '100%';
   el.scrollIntoView({behavior:'smooth', block:'start'});
   var p = c.plan || {};
   var days = Math.max(1, Math.round((new Date(c.endDate)-new Date(c.startDate))/86400000));
@@ -4115,11 +4153,13 @@ function openCampaignDetail(id) {
   }).join('');
 
   el.innerHTML =
-    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">' +
-      '<div>' +
-        '<div style="font-size:22px;font-weight:800;letter-spacing:-0.5px;">'+c.name+'</div>' +
-        '<div style="font-size:13px;color:var(--text3);margin-top:3px;">'+c.product+' · '+c.areas.join(', ')+'</div>' +
-      '</div>' +
+    '<div style="margin-bottom:24px;">' +
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px;">' +
+        '<div style="min-width:0;">' +
+          '<div style="font-family:Syne,sans-serif;font-size:clamp(18px,5vw,22px);font-weight:800;letter-spacing:-0.5px;word-break:break-word;">'+c.name+'</div>' +
+          '<div style="font-size:13px;color:var(--text3);margin-top:4px;">'+c.product+(c.target?' · '+c.target:'')+'</div>' +
+          '<div style="font-size:12px;color:var(--text4);margin-top:3px;">'+c.areas.join(', ')+'</div>' +
+        '</div>' +
       '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
         '<button onclick="exportCampaignPDF(this.dataset.id)" data-id="'+c.id+'" style="padding:8px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text2);cursor:pointer;font-size:12px;">PDF</button>' +
         '<button onclick="duplicateCampaign(this.dataset.id)" data-id="'+c.id+'" style="padding:8px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text2);cursor:pointer;font-size:12px;">Copy</button>' +
@@ -4127,6 +4167,7 @@ function openCampaignDetail(id) {
         '<button onclick="deleteCampaign(this.dataset.id)" data-id="'+c.id+'" style="padding:8px 14px;background:none;border:1px solid rgba(255,80,80,0.2);border-radius:var(--r-sm);color:#FF8080;cursor:pointer;font-size:12px;">Delete</button>' +
         '<button onclick="document.getElementById(\'campaignDetail\').style.display=\'none\'" style="padding:8px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text3);cursor:pointer;font-size:12px;">Close</button>' +
       '</div>' +
+    '</div>' +
 
     // Projections + actual progress
     buildProjectionsSection(c) +
@@ -4297,10 +4338,10 @@ function buildProjectionsSection(c) {
   var actualContacted= campProspects.filter(function(h){ return h.status!=='new'; }).length;
   var pct = totalCalls>0 ? Math.min(100,Math.round(actualCalls/totalCalls*100)) : 0;
 
-  return '<div class="campaign-detail">' +
+  return '<div class="campaign-detail" style="width:100%;">' +
     '<div class="campaign-detail-title">📊 Projections &amp; progress</div>' +
 
-    // Projected vs actual header
+    // Projected vs actual header - responsive 2-col
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">' +
       '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;">' +
         '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">🎯 Projected</div>' +
@@ -4335,7 +4376,7 @@ function buildProjectionsSection(c) {
     // Weekly pace
     '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:12px;">' +
       '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Weekly pace needed</div>' +
-      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">' +
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">' +
         _miniStat(Math.round(totalCalls/weeks)+'/wk','Calls','var(--text2)') +
         _miniStat(Math.round(connects/weeks)+'/wk','Connects','var(--accent)') +
         _miniStat(Math.round(meetings/weeks)+'/wk','Meetings','var(--amber)') +
@@ -4600,8 +4641,8 @@ function openCampaignComparison() {
     var opts = campaigns.map(function(c) {
       return '<option value="'+c.id+'"'+(i<campaigns.length&&campaigns[i]&&campaigns[i].id===c.id?' selected':'')+'>'+c.name+'</option>';
     }).join('');
-    return '<div style="flex:1;"><label style="font-size:11px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">Campaign '+label+'</label>' +
-      '<select onchange="renderComparison()" id="compare'+label+'" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-md);padding:10px 14px;font-size:14px;color:var(--text);outline:none;">'+opts+'</select></div>';
+    return '<div style="flex:1;min-width:140px;"><label style="font-size:11px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">Campaign '+label+'</label>' +
+      '<select onchange="renderComparison()" id="compare'+label+'" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-md);padding:10px 14px;font-size:16px;color:var(--text);outline:none;">'+opts+'</select></div>';
   }).join('');
 
   el.innerHTML = '<div class="campaign-detail">' +
@@ -4805,7 +4846,7 @@ function buildHeatmapSection(c) {
   return '<div class="campaign-detail">' +
     '<div class="campaign-detail-title">🕐 Best time heatmap</div>' +
     '<div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Based on your actual call outcomes — green = high connect rate, yellow = high volume.</div>' +
-    '<div style="display:grid;grid-template-columns:32px repeat(10,1fr);gap:4px;margin-bottom:10px;">' + dayHeaders + rows + '</div>' +
+    '<div class="heatmap-scroll"><div style="display:grid;grid-template-columns:32px repeat(10,1fr);gap:4px;margin-bottom:10px;min-width:360px;">' + dayHeaders + rows + '</div></div>' +
     '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">' +
       '<div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3);"><div style="width:10px;height:10px;border-radius:3px;background:rgba(190,255,0,0.15);"></div>Some calls</div>' +
       '<div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3);"><div style="width:10px;height:10px;border-radius:3px;background:rgba(190,255,0,0.5);"></div>High volume</div>' +
