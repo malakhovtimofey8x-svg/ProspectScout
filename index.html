@@ -3910,6 +3910,14 @@ function deleteSearchHistory(idx) {
 // ── CAMPAIGN PLANNER ─────────────────────────────────────────────────────────
 var _campaignAreas = [];
 
+function closeCampaignDetail() {
+  var el = document.getElementById('campaignDetail');
+  var listEl = document.getElementById('campaignList');
+  if (el) el.style.display = 'none';
+  if (listEl) { listEl.style.display = 'flex'; listEl.style.flexDirection = 'column'; }
+  window.scrollTo({top: document.getElementById('page-campaigns').offsetTop, behavior:'smooth'});
+}
+
 function getCampaigns() {
   if (!currentUser) return [];
   try { return JSON.parse(localStorage.getItem('ps_campaigns_' + currentUser.email) || '[]'); } catch(e) { return []; }
@@ -3920,6 +3928,10 @@ function saveCampaigns(campaigns) {
 }
 
 function openCampaignsPage() {
+  var el = document.getElementById('campaignDetail');
+  var listEl = document.getElementById('campaignList');
+  if (el) el.style.display = 'none';
+  if (listEl) listEl.style.display = 'flex';
   renderCampaignList();
   showPage('campaigns');
 }
@@ -4105,10 +4117,13 @@ function renderCampaignList() {
   if (sub) sub.textContent = campaigns.length + ' campaign' + (campaigns.length!==1?'s':'') + ' · click any to view plan';
 
   if (!campaigns.length) {
+    el.style.display = 'block';
     el.innerHTML = '<div class="pipeline-empty"><div class="pipeline-empty-icon">🎯</div><div class="pipeline-empty-text">No campaigns yet. Create one to get an AI-generated outreach plan.</div></div>';
     return;
   }
 
+  el.style.display = 'flex';
+  el.style.flexDirection = 'column';
   el.innerHTML = campaigns.map(function(c) {
     var start = new Date(c.startDate).toLocaleDateString('en-US',{month:'short',day:'numeric'});
     var end   = new Date(c.endDate).toLocaleDateString('en-US',{month:'short',day:'numeric'});
@@ -4137,10 +4152,16 @@ function openCampaignDetail(id) {
   var c = campaigns.find(function(x){ return x.id===id; });
   if (!c) return;
   var el = document.getElementById('campaignDetail');
+  var listEl = document.getElementById('campaignList');
+  var formEl = document.getElementById('campaignFormWrap');
   if (!el) return;
+  // Hide list and form, show detail
+  if (listEl) listEl.style.display = 'none';
+  if (formEl) formEl.style.display = 'none';
   el.style.display = 'block';
   el.style.width = '100%';
-  el.scrollIntoView({behavior:'smooth', block:'start'});
+  // Scroll to top of page
+  window.scrollTo({top: document.getElementById('page-campaigns').offsetTop, behavior:'smooth'});
   var p = c.plan || {};
   var days = Math.max(1, Math.round((new Date(c.endDate)-new Date(c.startDate))/86400000));
   var proj = p.projections || {};
@@ -4189,7 +4210,9 @@ function openCampaignDetail(id) {
   }).join('');
 
   el.innerHTML =
-    '<div style="margin-bottom:24px;">' +
+    '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-xl);padding:24px 26px;margin-bottom:20px;box-shadow:var(--shadow-md);position:relative;">' +
+    '<div style="position:absolute;top:-1px;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);border-radius:2px;"></div>' +
+    '<div style="margin-bottom:20px;">' +
       '<div style="margin-bottom:16px;">' +
         '<input id="cedit-name-'+c.id+'" value="'+c.name.replace(/"/g,'&quot;')+'" readonly style="font-family:Syne,sans-serif;font-size:clamp(18px,5vw,24px);font-weight:800;letter-spacing:-0.5px;word-break:break-word;background:transparent;border:1px solid transparent;color:var(--text);width:100%;outline:none;border-radius:var(--r-sm);padding:2px 6px;cursor:default;transition:all 0.2s;display:block;margin-bottom:6px;" />' +
         '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px;">' +
@@ -4207,7 +4230,7 @@ function openCampaignDetail(id) {
         '<button onclick="duplicateCampaign(this.dataset.id)" data-id="'+c.id+'" style="padding:9px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-md);color:var(--text2);cursor:pointer;font-size:12px;">Copy</button>' +
         '<button onclick="cycleCampaignStatus(this.dataset.id)" data-id="'+c.id+'" style="padding:9px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-md);color:var(--accent);cursor:pointer;font-size:12px;font-weight:600;text-transform:capitalize;">'+c.status+'</button>' +
         '<button onclick="deleteCampaign(this.dataset.id)" data-id="'+c.id+'" style="padding:9px 14px;background:none;border:1px solid rgba(255,80,80,0.2);border-radius:var(--r-md);color:#FF8080;cursor:pointer;font-size:12px;">Delete</button>' +
-        '<button onclick="document.getElementById(\'campaignDetail\').style.display=\'none\'" style="padding:9px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-md);color:var(--text3);cursor:pointer;font-size:12px;">Close</button>' +
+        '<button onclick="closeCampaignDetail()" style="padding:9px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-md);color:var(--text3);cursor:pointer;font-size:12px;">← Back</button>' +
       '</div>' +
 
     // Projections + actual progress
@@ -4231,6 +4254,8 @@ function openCampaignDetail(id) {
 
     // Tips
     (tipsHtml ? '<div class="campaign-detail"><div class="campaign-detail-title">💡 Campaign tips</div>' + tipsHtml + '</div>' : '') +
+
+    '</div>' +  // close header card wrapper
 
     // Scout buttons
     '<div class="campaign-detail">' +
@@ -4729,7 +4754,7 @@ function openCampaignComparison() {
   el.innerHTML = '<div class="campaign-detail">' +
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">' +
       '<div class="campaign-detail-title" style="margin:0;">⚖️ Campaign comparison</div>' +
-      '<button onclick="document.getElementById(\'campaignDetail\').style.display=\'none\'" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px;">×</button>' +
+      '<button onclick="closeCampaignDetail()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px;">×</button>' +
     '</div>' +
     '<div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;">' + selects + '</div>' +
     '<div id="comparisonContent"></div>' +
