@@ -61,8 +61,8 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 body::after { content:''; position:fixed; top:0;right:0;bottom:0;left:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:999; opacity:0.4; }
 body::before { content:''; position:fixed; top:0;right:0;bottom:0;left:0; background-image:radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px); background-size:28px 28px; pointer-events:none; z-index:0; }
 .orb { position:fixed; border-radius:50%; filter:blur(100px); pointer-events:none; z-index:0; }
-.orb1 { width:700px; height:700px; top:-250px; right:-200px; background:rgba(190,255,0,0.05); }
-.orb2 { width:600px; height:600px; bottom:-150px; left:-200px; background:rgba(0,229,160,0.04); }
+.orb1 { width:700px; height:700px; top:-250px; right:-200px; background:rgba(190,255,0,0.03); }
+.orb2 { width:600px; height:600px; bottom:-150px; left:-200px; background:rgba(0,229,160,0.025); }
 .container { max-width:860px; margin:0 auto; padding:0 28px; position:relative; z-index:1; }
 
 /* HEADER */
@@ -70,7 +70,7 @@ header { padding:16px 0; padding-top:max(16px, env(safe-area-inset-top)); border
 .nav { display:flex; align-items:center; justify-content:space-between; }
 .logo { font-family:Syne,sans-serif; font-size:18px; font-weight:800; letter-spacing:-0.5px; display:flex; align-items:center; gap:10px; cursor:pointer; }
 .logo-icon { width:30px; height:30px; background:var(--accent); border-radius:8px; display:flex; align-items:center; justify-content:center; animation:pulse 3s ease-in-out infinite; }
-@keyframes pulse { 0%,100%{box-shadow:0 0 20px rgba(190,255,0,0.3)} 50%{box-shadow:0 0 32px rgba(190,255,0,0.55)} }
+@keyframes pulse { 0%,100%{box-shadow:0 0 12px rgba(190,255,0,0.2)} 50%{box-shadow:0 0 20px rgba(190,255,0,0.35)} }
 .nav-right { display:flex; align-items:center; gap:8px; }
 .nav-btn { font-family:'Inter',sans-serif; font-size:14px; font-weight:500; padding:7px 14px; min-height:36px; border-radius:var(--r-sm); cursor:pointer; transition:all 0.15s; border:1px solid var(--border2); background:transparent; color:var(--text2); }
 .nav-btn:hover { background:var(--bg3); color:var(--text); }
@@ -263,6 +263,16 @@ h1 em { font-style:normal; color:var(--accent); }
 .regen-btn:active { transform:scale(0.97); }
 .demo-hint { font-size:12px; color:var(--text3); text-align:center; margin-top:10px; line-height:1.5; }
 .demo-hint strong { color:var(--text2); font-weight:600; }
+
+/* PIPELINE COLLAPSE — HIDDEN UNTIL EARNED */
+.pipeline-section { max-height:0; overflow:hidden; opacity:0; pointer-events:none; transition:max-height 0.4s ease, opacity 0.3s ease; }
+.pipeline-section.expanded { max-height:2000px; opacity:1; pointer-events:auto; }
+.pipeline-toggle { display:flex; align-items:center; justify-content:center; gap:6px; width:100%; padding:12px; margin-top:12px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-md); font-family:'Inter',sans-serif; font-size:12px; font-weight:600; color:var(--text3); cursor:pointer; transition:all 0.15s; }
+.pipeline-toggle:hover { color:var(--text2); border-color:var(--border2); }
+.pipeline-toggle svg { transition:transform 0.3s ease; }
+.pipeline-toggle.open svg { transform:rotate(180deg); }
+.pipeline-hint { font-size:11px; color:var(--text4); text-align:center; margin-top:8px; }
+.pipeline-hint em { font-style:normal; color:var(--accent); font-weight:600; }
 .profile-wrap { position: relative; }
 .profile-dropdown { display:none; position:absolute; top:calc(100% + 8px); right:0; background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r-lg); min-width:180px; padding:6px; z-index:200; box-shadow:0 8px 32px rgba(0,0,0,0.4); animation:dropIn 0.15s ease; }
 @keyframes dropIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
@@ -882,8 +892,8 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   transform: translateY(0);
 }
 .biz-card.top-result.visible {
-  box-shadow: 0 0 30px rgba(190,255,0,0.18), 0 2px 8px rgba(0,0,0,0.3);
-  border-color: rgba(190,255,0,0.15);
+  box-shadow: 0 0 16px rgba(190,255,0,0.1), 0 2px 8px rgba(0,0,0,0.3);
+  border-color: rgba(190,255,0,0.1);
 }
 
 /* Click micro-feedback */
@@ -982,11 +992,11 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
       </div>
 
       <h1 class="hero-animate" style="font-size:clamp(32px,7vw,58px);line-height:1.1;letter-spacing:-1.5px;margin-bottom:20px;transition-delay:0ms;">
-        Find prospects that already<br><em>need your service.</em>
+        Know exactly who to call<br><em>and what to say.</em>
       </h1>
 
       <p class="hero-sub hero-animate" style="max-width:520px;font-size:clamp(15px,2.5vw,18px);color:var(--text2);line-height:1.7;margin:0 auto 36px;transition-delay:120ms;">
-        Tell us what you sell. We find prospects showing signals they need it right now — with a reason for every lead.
+        Generate high-intent leads tailored to your offer using real-time signals. Stop guessing who to contact.
       </p>
 
       <div class="hero-btns hero-animate" style="flex-wrap:wrap;gap:12px;margin-bottom:48px;transition-delay:240ms;">
@@ -1002,11 +1012,11 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
       <div class="hero-animate" style="display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;transition-delay:360ms;">
         <span style="font-size:12px;color:var(--text4);display:flex;align-items:center;gap:6px;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          No static database
+          Built for real outreach
         </span>
         <span style="font-size:12px;color:var(--text4);display:flex;align-items:center;gap:6px;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          Tailored to your offer
+          Used by freelance operators
         </span>
         <span style="font-size:12px;color:var(--text4);display:flex;align-items:center;gap:6px;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1344,7 +1354,8 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 
     <div id="results">
       <div id="demoBadge" style="display:none;">
-        <span class="demo-badge"><span class="demo-dot"></span> DEMO — Showing sample results for Miami, FL</span>
+        <span class="demo-badge"><span class="demo-dot"></span> DEMO MODE</span>
+        <div style="font-size:11px;color:var(--text4);margin-top:4px;margin-bottom:4px;">Example results to show how it works</div>
       </div>
       <div id="resultsLoadingBar" style="display:none;"><div id="resultsLoadingProg"></div></div>
       <div id="resultsLoadingText" style="display:none;"></div>
@@ -1378,9 +1389,25 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
       <div id="regenWrap" style="display:none;">
         <button class="regen-btn" onclick="generateMyLeads()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          Generate My Leads
+          Find My Leads
         </button>
         <div class="demo-hint">Edit the offer above, then hit generate — <strong>these are your real leads</strong></div>
+      </div>
+
+      <!-- PIPELINE — collapsed by default, expands after first call -->
+      <button class="pipeline-toggle" id="pipelineToggleBtn" onclick="togglePipelineSection()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        View pipeline
+      </button>
+      <div id="pipelineHint" class="pipeline-hint">Make your first call to unlock tracking</div>
+      <div class="pipeline-section" id="pipelineSectionWrap">
+        <div style="padding-top:14px;">
+          <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Track and manage your leads here</div>
+          <div class="snap-grid" id="resultsSnapGrid"></div>
+          <button class="pipeline-toggle" onclick="openHistoryPage()" style="margin-top:10px;color:var(--accent);border-color:rgba(190,255,0,0.2);">
+            Open full pipeline →
+          </button>
+        </div>
       </div>
     </div>
 
@@ -2873,7 +2900,7 @@ function hideScreenLockWarning() {
   if (b) b.classList.remove('visible');
 }
 
-const loadingMsgs = ['Analyzing your offer...','Detecting high-intent signals...','Identifying best-fit prospects...','Scoring signal strength...','Building your intelligence report...'];
+const loadingMsgs = ['Scanning businesses near you...','Analyzing buying signals...','Finding best opportunities...','Matching to your offer...','Building your call list...'];
 let loadingInterval;
 function startLoading() { let i=0; document.getElementById('loadingText').textContent=loadingMsgs[0]; loadingInterval=setInterval(()=>{i=(i+1)%loadingMsgs.length;document.getElementById('loadingText').textContent=loadingMsgs[i];},1800); }
 function stopLoading()  { clearInterval(loadingInterval); }
@@ -2881,6 +2908,8 @@ function stopLoading()  { clearInterval(loadingInterval); }
 function resetSearch() {
   hideDemoUI();
   dismissFirstCardFlow();
+  collapsePipelineSection();
+  window._sessionCallCount = 0;
   document.getElementById('results').style.display='none';
   var sfWrap = document.getElementById('scoreFilterWrap'); if(sfWrap) sfWrap.style.display='none';
   document.getElementById('inputSection').style.display='block';
@@ -4043,17 +4072,17 @@ function buildBizCardHTML(b, i) {
       '</div>'+
       '<div class="right" onclick="event.stopPropagation()">'+
         (phone ?
-          '<a href="tel:'+phone.replace(/\D/g,'')+'" class="call-main" onclick="dismissFirstCardFlow()">'+
+          '<a href="tel:'+phone.replace(/\D/g,'')+'" class="call-main" onclick="trackCall('+i+')">'+
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>'+
             'Call now'+
           '</a>'
         :
-          '<button class="call-main" onclick="dismissFirstCardFlow();copyOpener('+i+')">'+
+          '<button class="call-main" onclick="trackCall('+i+');copyPitch('+i+')">'+
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>'+
-            'Use opener'+
+            'Use pitch'+
           '</button>'
         )+
-        '<button class="use-opener" id="copy-'+i+'" onclick="dismissFirstCardFlow();toggleMiniInfo('+i+');copyOpener('+i+')">Copy opener</button>'+
+        '<button class="use-opener" id="copy-'+i+'" onclick="dismissFirstCardFlow();toggleMiniInfo('+i+');copyPitch('+i+')">Copy pitch</button>'+
         (isTop ? '<div class="call-hint">Highest-match signal — tap to start</div>' : '')+
       '</div>'+
       '<div class="mini-info hidden" id="mini-'+i+'">'+
@@ -6456,7 +6485,9 @@ function renderPatternInsight(pattern) {
 }
 
 // ── COPY OPENER ───────────────────────────────────────────────────────────────
-function copyOpener(i) {
+window._sessionCallCount = 0;
+
+function copyPitch(i) {
   var b = window._currentBusinesses && window._currentBusinesses[i];
   if (!b) return;
   var text = b.messageIdea || b.opener || '';
@@ -6464,8 +6495,70 @@ function copyOpener(i) {
   if (!navigator.clipboard || !text) return;
   navigator.clipboard.writeText(text).then(function() {
     if (btn) { btn.textContent = 'Copied!'; btn.style.color = 'var(--accent)'; }
-    setTimeout(function() { if (btn) { btn.textContent = 'Copy opener'; btn.style.color = ''; } }, 1400);
+    setTimeout(function() { if (btn) { btn.textContent = 'Copy pitch'; btn.style.color = ''; } }, 1400);
   });
+}
+
+function trackCall(i) {
+  dismissFirstCardFlow();
+  window._sessionCallCount++;
+  var count = window._sessionCallCount;
+
+  // Toast feedback
+  if (count === 1) {
+    showToast('<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px;"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07"/></svg> Call started — good luck!', 'success');
+    // Auto-expand pipeline after first call
+    expandPipelineSection();
+  } else if (count === 3) {
+    showToast('🔥 3 calls — you\'re building momentum!', 'success');
+  } else if (count === 5) {
+    showToast('⚡ 5 calls in a session — unstoppable', 'success');
+  }
+}
+
+function expandPipelineSection() {
+  var section = document.getElementById('pipelineSectionWrap');
+  var toggle = document.getElementById('pipelineToggleBtn');
+  if (section) section.classList.add('expanded');
+  if (toggle) { toggle.classList.add('open'); }
+  // Update hint
+  var hint = document.getElementById('pipelineHint');
+  if (hint) hint.innerHTML = 'Track and manage your leads here';
+  // Populate mini snap grid
+  var grid = document.getElementById('resultsSnapGrid');
+  if (grid && currentUser) {
+    var history = getHistory(currentUser.email);
+    var counts = { contacted:0, qualified:0, converted:0 };
+    history.forEach(function(h) {
+      if (h.status === 'contacted' || h.status === 'meeting' || h.status === 'converted') counts.contacted++;
+      if (h.status === 'meeting' || h.status === 'converted') counts.qualified++;
+      if (h.status === 'converted') counts.converted++;
+    });
+    grid.innerHTML =
+      '<div class="snap-card" onclick="openHistoryPage()"><div class="snap-num" style="color:var(--text2);">'+history.length+'</div><div class="snap-label">Saved</div></div>'+
+      '<div class="snap-card" onclick="openHistoryPage()"><div class="snap-num" style="color:var(--accent);">'+counts.contacted+'</div><div class="snap-label">Contacted</div></div>'+
+      '<div class="snap-card" onclick="openHistoryPage()"><div class="snap-num" style="color:var(--amber);">'+counts.qualified+'</div><div class="snap-label">Meetings</div></div>'+
+      '<div class="snap-card" onclick="openHistoryPage()"><div class="snap-num" style="color:var(--purple);">'+counts.converted+'</div><div class="snap-label">Closed</div></div>';
+  }
+}
+
+function collapsePipelineSection() {
+  var section = document.getElementById('pipelineSectionWrap');
+  if (section) section.classList.remove('expanded');
+  var toggle = document.getElementById('pipelineToggleBtn');
+  if (toggle) toggle.classList.remove('open');
+}
+
+function togglePipelineSection() {
+  var section = document.getElementById('pipelineSectionWrap');
+  var toggle = document.getElementById('pipelineToggleBtn');
+  if (!section) return;
+  var isOpen = section.classList.contains('expanded');
+  if (isOpen) {
+    collapsePipelineSection();
+  } else {
+    expandPipelineSection();
+  }
 }
 
 
