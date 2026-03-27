@@ -3257,6 +3257,29 @@ function renderAnalyticsPage() {
 }
 
 
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+// Re-check for resume when user returns to the tab
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden && currentUser) checkForResume();
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  restoreSession();
+  updateNav();
+  if (currentUser) {
+    showPage('dashboard');
+    updateDashboard();
+    renderDashSections();
+    renderGoalTracker();
+    updateOverdueBadge();
+    updateSlimBar();
+    setTimeout(checkOnboarding, 600);
+  } else {
+    showPage('home');
+  }
+});
+
 // ── PARALLEL STREAMING ENRICHMENT (fast mode) ────────────────────────────────
 async function enrichWithAI(businesses, product, location) {
   if (!businesses.length) return [];
@@ -6165,6 +6188,29 @@ function renderAnalyticsPage() {
   el.innerHTML=statsHtml+dowHtml+hourHtml+locHtml+indHtml+outcomeHtml+recHtml;
 }
 
+
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+// Re-check for resume when user returns to the tab
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden && currentUser) checkForResume();
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  restoreSession();
+  updateNav();
+  if (currentUser) {
+    showPage('dashboard');
+    updateDashboard();
+    renderDashSections();
+    renderGoalTracker();
+    updateOverdueBadge();
+    updateSlimBar();
+    setTimeout(checkOnboarding, 600);
+  } else {
+    showPage('home');
+  }
+});
 
 // ── PARALLEL STREAMING ENRICHMENT (fast mode) ────────────────────────────────
 </script>
