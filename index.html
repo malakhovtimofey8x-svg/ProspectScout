@@ -72,6 +72,9 @@ header { padding:16px 0; padding-top:max(16px, env(safe-area-inset-top)); border
 .logo-icon { width:30px; height:30px; background:var(--accent); border-radius:8px; display:flex; align-items:center; justify-content:center; animation:pulse 3s ease-in-out infinite; }
 @keyframes pulse { 0%,100%{box-shadow:0 0 12px rgba(190,255,0,0.2)} 50%{box-shadow:0 0 20px rgba(190,255,0,0.35)} }
 .nav-right { display:flex; align-items:center; gap:8px; }
+.nav-pipeline-btn { display:none; align-items:center; gap:5px; font-family:'Inter',sans-serif; font-size:12px; font-weight:600; padding:6px 12px; border-radius:var(--r-sm); border:1px solid var(--border2); background:transparent; color:var(--text3); cursor:pointer; transition:all 0.15s; }
+.nav-pipeline-btn:hover { background:var(--bg3); color:var(--text2); border-color:var(--border3); }
+.nav-pipeline-btn .pip-count { font-size:10px; font-weight:700; background:var(--bg4); color:var(--text3); padding:1px 6px; border-radius:10px; margin-left:2px; }
 .nav-btn { font-family:'Inter',sans-serif; font-size:14px; font-weight:500; padding:7px 14px; min-height:36px; border-radius:var(--r-sm); cursor:pointer; transition:all 0.15s; border:1px solid var(--border2); background:transparent; color:var(--text2); }
 .nav-btn:hover { background:var(--bg3); color:var(--text); }
 .nav-btn.primary { background:var(--accent); color:#08080D; border-color:transparent; font-weight:600; }
@@ -294,7 +297,7 @@ h1 em { font-style:normal; color:var(--accent); }
 .pipeline-search::placeholder { color:var(--text4); }
 .pipeline-sort-select { font-family:'Inter',sans-serif; font-size:16px; font-weight:500; padding:10px 14px; border-radius:var(--r-md); border:1px solid var(--border2); background:var(--bg3); color:var(--text2); cursor:pointer; outline:none; -webkit-appearance:none; appearance:none; }
 
-/* PIPELINE CONTROLS */
+/* NOTES */
 .notes-wrap { flex:1; min-width:180px; }
 .notes-input { width:100%; background:var(--bg3); border:1px solid var(--border); border-radius:var(--r-sm); padding:8px 10px; font-family:'Inter',sans-serif; font-size:12px; color:var(--text2); resize:none; outline:none; min-height:60px; line-height:1.5; transition:border-color 0.2s; }
 .notes-input::placeholder { color:var(--text4); }
@@ -383,8 +386,41 @@ h1 em { font-style:normal; color:var(--accent); }
 .reminder-pop-clear { display:flex; align-items:center; gap:8px; width:100%; padding:8px 10px; border-radius:var(--r-sm); border:none; background:none; color:#FF8080; font-family:'Inter',sans-serif; font-size:12px; cursor:pointer; transition:background 0.1s; }
 .reminder-pop-clear:hover { background:rgba(255,80,80,0.08); }
 
-/* EXPANDABLE PIPELINE CARDS */
-
+/* ── KANBAN PIPELINE BOARD ── */
+.kanban-stats { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:20px; }
+.kanban-stat { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:14px 12px; text-align:center; transition:border-color 0.15s; cursor:pointer; }
+.kanban-stat:hover { border-color:var(--border2); }
+.kanban-stat-num { font-family:Syne,sans-serif; font-size:22px; font-weight:800; line-height:1; margin-bottom:3px; }
+.kanban-stat-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.8px; font-weight:600; }
+.kanban-board { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; align-items:start; min-height:300px; }
+.kanban-col { background:var(--bg2); border:1px solid var(--border); border-radius:12px; min-height:200px; display:flex; flex-direction:column; }
+.kanban-col-header { padding:12px 14px 10px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; }
+.kanban-col-title { font-family:Syne,sans-serif; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; }
+.kanban-col-count { font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px; background:var(--bg4); color:var(--text3); }
+.kanban-col-body { padding:8px; flex:1; display:flex; flex-direction:column; gap:6px; overflow-y:auto; max-height:60vh; }
+.kanban-col-body:empty::after { content:'No prospects'; display:block; text-align:center; font-size:11px; color:var(--text4); padding:24px 8px; }
+.k-card { background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:10px 12px; cursor:default; transition:border-color 0.15s,background 0.15s; }
+.k-card:hover { border-color:var(--border2); background:var(--bg4); }
+.k-card-name { font-size:12px; font-weight:700; color:var(--text); margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.k-card-type { font-size:10px; color:var(--text4); margin-bottom:6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.k-card-actions { display:flex; gap:4px; }
+.k-btn { font-family:'Inter',sans-serif; font-size:10px; font-weight:600; padding:4px 8px; border-radius:6px; border:1px solid var(--border2); background:transparent; color:var(--text3); cursor:pointer; transition:all 0.12s; white-space:nowrap; }
+.k-btn:hover { color:var(--text2); border-color:var(--border3); }
+.k-btn.advance { background:var(--accent-dim); color:var(--accent); border-color:rgba(190,255,0,0.2); }
+.k-btn.advance:hover { background:rgba(190,255,0,0.15); }
+.k-btn.call { background:var(--accent); color:#08080D; border-color:transparent; font-weight:700; }
+.k-btn.call:hover { box-shadow:0 0 16px rgba(190,255,0,0.3); }
+.k-btn.del { color:var(--text4); }
+.k-btn.del:hover { color:#FF8080; border-color:rgba(255,80,80,0.3); }
+.k-card-phone { font-size:10px; color:var(--teal); font-weight:500; margin-bottom:4px; }
+.k-card-reminder { font-size:9px; padding:2px 6px; border-radius:8px; font-weight:600; }
+.k-card-reminder.overdue { background:rgba(255,80,80,0.08); color:#FF8080; border:1px solid rgba(255,80,80,0.2); }
+.k-card-reminder.upcoming { background:var(--amber-dim); color:var(--amber); border:1px solid rgba(255,176,32,0.2); }
+.kanban-empty { text-align:center; padding:60px 20px; }
+.kanban-empty-icon { font-size:36px; margin-bottom:12px; }
+.kanban-empty-text { font-size:14px; color:var(--text3); max-width:280px; margin:0 auto; line-height:1.6; }
+@media(max-width:900px) { .kanban-board { grid-template-columns:1fr; } .kanban-col { min-height:auto; } .kanban-col-body { max-height:40vh; } .kanban-stats { grid-template-columns:repeat(3,1fr); } }
+@media(max-width:500px) { .kanban-stats { grid-template-columns:repeat(2,1fr); } }
 
 /* ADMIN PANEL */
 .admin-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
@@ -1315,10 +1351,8 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
       </div>
 
       <div style="font-size:12px;color:var(--text4);margin-top:10px;margin-bottom:4px;">Based on real-world business signals — not a database.</div>
-
-      <p style="font-size:12px;color:var(--text4);margin:8px 0 4px;line-height:1.5;">Based on real-world business signals — not a database.</p>
       <button class="cta-btn" id="analyzeBtn" onclick="analyze()" style="margin-top:12px;opacity:0.5;cursor:not-allowed;" disabled>
-        Analyze my offer <span class="arrow">→</span>
+        Find leads <span class="arrow">→</span>
       </button>
       <div id="errorMsg"></div>
     </div>
@@ -1380,7 +1414,6 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
           <button class="score-filter-btn" onclick="setScoreFilter(9,this)">9+</button>
         </div>
       </div>
-      <div id="patternInsightBar" style="display:none;margin-bottom:16px;"></div>
       <div id="patternInsightBar" style="display:none;margin-bottom:16px;"></div>
       <div id="callGuide" class="call-guide" style="display:none;">
         <span class="guide-arrow">↓</span> Your #1 match — start here
@@ -1461,61 +1494,37 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 
 <!-- PIPELINE PAGE -->
 <div class="page" id="page-history">
-  <div class="container" style="padding-top:48px; padding-bottom:100px;">
-    <div class="dash-header">
+  <div class="container" style="padding-top:48px; padding-bottom:100px; max-width:1100px;">
+    <div class="dash-header" style="margin-bottom:20px;">
       <div>
         <div class="dash-greeting">My <em>Pipeline</em></div>
         <div class="dash-sub" id="historySub">Track every prospect from first call to closed deal.</div>
       </div>
-      <button class="nav-btn" onclick="showPage('dashboard')" style="font-size:13px;">← Scout more</button>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="export-btn" onclick="exportCSV()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export
+        </button>
+        <button class="nav-btn" onclick="showPage('dashboard')" style="font-size:13px;">← Scout more</button>
+      </div>
     </div>
 
-    <div class="pipeline-stats" id="historyStats"></div>
-
-    <!-- WIN RATE BY LOCATION -->
-    <div id="locationWins" style="margin-bottom:20px;"></div>
-
-    <!-- OVERDUE BADGE -->
-    <div id="overdueAlert" style="display:none; margin-bottom:16px;"></div>
+    <!-- STATS BAR -->
+    <div class="kanban-stats" id="kanbanStats"></div>
 
     <!-- PIPELINE VALUE BAR -->
-    <div id="pipelineValueBar" style="display:none; margin-bottom:20px;"></div>
+    <div id="pipelineValueBar" style="display:none; margin-bottom:16px;"></div>
 
-    <!-- SEARCH + SORT ROW -->
-    <!-- CAMPAIGN PIPELINE STATS -->
-    <div id="campaignPipelineStats"></div>
-
-    <!-- CAMPAIGN FILTER BAR -->
-    <div id="campaignFilterBar"></div>
-
-    <div class="pipeline-controls">
+    <!-- SEARCH -->
+    <div class="pipeline-controls" style="margin-bottom:16px;">
       <div class="pipeline-search-wrap">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input class="pipeline-search" id="pipelineSearch" type="text" placeholder="Search prospects..." oninput="renderHistoryList(currentHistoryFilter)" />
+        <input class="pipeline-search" id="pipelineSearch" type="text" placeholder="Search prospects..." oninput="renderKanban()" />
       </div>
-      <select class="pipeline-sort-select" id="pipelineSort" onchange="renderHistoryList(currentHistoryFilter)">
-        <option value="newest">Newest first</option>
-        <option value="oldest">Oldest first</option>
-        <option value="score">Highest score</option>
-        <option value="status">By status</option>
-        <option value="followup">Follow-up due</option>
-      </select>
-      <button class="export-btn" onclick="exportCSV()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Export CSV
-      </button>
     </div>
 
-    <div class="pipeline-tabs" id="pipelineTabs">
-      <button class="pipeline-tab active" id="tab-all"       onclick="filterHistory('all')">All <span class="pipeline-tab-count" id="cnt-all">0</span></button>
-      <button class="pipeline-tab"        id="tab-new"       onclick="filterHistory('new')"><span class="status-dot dot-new"></span>New <span class="pipeline-tab-count" id="cnt-new">0</span></button>
-      <button class="pipeline-tab"        id="tab-contacted" onclick="filterHistory('contacted')"><span class="status-dot dot-contacted"></span>Contacted <span class="pipeline-tab-count" id="cnt-contacted">0</span></button>
-      <button class="pipeline-tab"        id="tab-engaged"   onclick="filterHistory('engaged')"><span class="status-dot dot-engaged"></span>Responded <span class="pipeline-tab-count" id="cnt-engaged">0</span></button>
-      <button class="pipeline-tab"        id="tab-qualified" onclick="filterHistory('qualified')"><span class="status-dot dot-qualified"></span>Meeting Set <span class="pipeline-tab-count" id="cnt-qualified">0</span></button>
-      <button class="pipeline-tab"        id="tab-converted" onclick="filterHistory('converted')"><span class="status-dot dot-converted"></span>Closed <span class="pipeline-tab-count" id="cnt-converted">0</span></button>
-    </div>
-
-    <div id="historyList"></div>
+    <!-- KANBAN BOARD -->
+    <div id="kanbanBoard"></div>
   </div>
 </div>
 
@@ -1839,6 +1848,10 @@ function updateNav() {
   if (currentUser) {
     const t = TIERS[currentUser.tier]||TIERS.free;
     nr.innerHTML =
+      '<button class="nav-pipeline-btn" id="navPipelineBtn" onclick="openHistoryPage()">'+
+        '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>'+
+        'Pipeline <span class="pip-count" id="navPipCount">0</span>'+
+      '</button>'+
       '<div class="profile-wrap" id="profileWrap">'+
         '<div class="user-pill" onclick="toggleProfileMenu(event)">'+
           '<div class="user-avatar">'+currentUser.name.charAt(0).toUpperCase()+'</div>'+
@@ -1853,7 +1866,10 @@ function updateNav() {
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>'+
             'Dashboard'+
           '</button>'+
-          /* Pipeline hidden - CRM features temporarily disabled */
+          '<button class="dropdown-item" onclick="closeProfileMenu();openHistoryPage()">'+
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>'+
+            'Pipeline'+
+          '</button>'+
           '<button class="dropdown-item" onclick="closeProfileMenu();openSearchHistory()">'+
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'+
             'Search History'+
@@ -1894,6 +1910,17 @@ function updateNav() {
   }
 }
 
+function updateNavPipeline() {
+  var btn = document.getElementById('navPipelineBtn');
+  var countEl = document.getElementById('navPipCount');
+  if (!btn || !currentUser) return;
+  var history = getHistory(currentUser.email);
+  var count = history.length;
+  if (countEl) countEl.textContent = count;
+  // Show button when user is on dashboard or has pipeline items
+  btn.style.display = count > 0 ? 'inline-flex' : 'none';
+}
+
 function toggleProfileMenu(e) {
   e.stopPropagation();
   const wrap = document.getElementById('profileWrap');
@@ -1921,7 +1948,7 @@ function handleLogoClick() {
   }
   _logoTimer = setTimeout(function(){ _logoTaps=0; goHome(); }, 400);
 }
-function enterDashboard(){ updateNav(); updateDashboard(); showPage('dashboard'); checkForResume(); renderDashSections(); renderGoalTracker(); updateOverdueBadge(); if(isDemoEligible()){scheduleDemoRun();}else{setTimeout(checkOnboarding, 400);} }
+function enterDashboard(){ updateNav(); updateNavPipeline(); updateDashboard(); showPage('dashboard'); checkForResume(); renderDashSections(); renderGoalTracker(); updateOverdueBadge(); if(isDemoEligible()){scheduleDemoRun();}else{setTimeout(checkOnboarding, 400);} }
 
 // DASHBOARD STATE
 function updateEmptyHint() { /* disabled — search form is always visible */ }
@@ -2244,7 +2271,7 @@ function setStatus(id, newStatus) {
   }
   updateOverdueBadge();
   if (document.getElementById('page-history').classList.contains('active')) {
-    renderHistoryStats(); renderHistoryList(currentHistoryFilter);
+    renderKanban();
   }
 }
 
@@ -2252,7 +2279,8 @@ function deleteProspect(id) {
   if (!currentUser) return;
   const history = getHistory(currentUser.email).filter(h=>h.id!==id);
   saveHistory(currentUser.email, history);
-  renderHistoryStats(); renderHistoryList(currentHistoryFilter);
+  renderKanban();
+  updateNavPipeline();
 }
 
 function togglePipelineCard(id) {
@@ -2321,7 +2349,7 @@ function logCallOutcome(id, outcome) {
   const autoNote = dateStr + ' — ' + label;
   item.notes = item.notes ? autoNote + '\n' + item.notes : autoNote;
   saveHistory(currentUser.email, history);
-  renderHistoryList(currentHistoryFilter);
+  renderKanban();
 }
 
 // ── DEAL VALUE ───────────────────────────────────────────────────────────────
@@ -2412,24 +2440,14 @@ let currentHistoryFilter = 'all';
 let currentSearchQuery = '';
 
 function openHistoryPage() {
-  currentHistoryFilter = 'all';
-  renderHistoryStats();
-  renderLocationWins();
-  renderOverdueAlert();
+  renderKanban();
   renderPipelineValueBar();
-  _pipelineCampaignFilter = 'all';
-  renderCampaignFilterBar();
-  renderHistoryList('all');
   showPage('history');
 }
 
 function filterHistory(filter) {
   currentHistoryFilter = filter;
-  var allKeys = ['all'].concat(Object.keys(STATUSES)); allKeys.forEach(function(f) {
-    const el = document.getElementById('tab-'+f);
-    if (el) el.classList.toggle('active', f===filter);
-  });
-  renderHistoryList(filter);
+  renderKanban();
 }
 
 // ── NOTES ────────────────────────────────────────────────────────────────────
@@ -2452,9 +2470,8 @@ function setReminder(id, val) {
   if (!val || val === 'clear') { item.reminderAt = null; }
   else { item.reminderAt = Date.now() + parseInt(val) * 86400000; }
   saveHistory(currentUser.email, history);
-  renderHistoryStats();
-  renderOverdueAlert();
-  renderHistoryList(currentHistoryFilter);
+  renderKanban();
+  updateOverdueBadge();
 }
 
 function isOverdue(item) {
@@ -2549,17 +2566,128 @@ function buildReminderBtn(h) {
 
 // ── MAIN LIST RENDER ─────────────────────────────────────────────────────────
 function renderHistoryList(searches, container) {
+  // Legacy — kept for compat, Kanban is primary now
   if (!container) return;
-  if (!searches || !searches.length) {
-    container.innerHTML = '<div class="pipeline-empty"><div class="pipeline-empty-text">No history yet.</div></div>';
+}
+
+// ── KANBAN BOARD RENDERER ────────────────────────────────────────────────────
+var KANBAN_COLS = [
+  { key:'new',       label:'New',        color:'var(--text3)',  next:'contacted' },
+  { key:'contacted', label:'Contacted',  color:'var(--accent)', next:'engaged' },
+  { key:'engaged',   label:'Responded',  color:'var(--teal)',   next:'qualified' },
+  { key:'qualified', label:'Meeting Set', color:'var(--amber)',  next:'converted' },
+  { key:'converted', label:'Closed',     color:'var(--purple)', next:null }
+];
+
+function renderKanban() {
+  if (!currentUser) return;
+  var history = getHistory(currentUser.email);
+  var board = document.getElementById('kanbanBoard');
+  var statsEl = document.getElementById('kanbanStats');
+  var subEl = document.getElementById('historySub');
+  if (!board) return;
+
+  // Search filter
+  var q = (document.getElementById('pipelineSearch') || {}).value || '';
+  q = q.toLowerCase().trim();
+  var filtered = history;
+  if (q) {
+    filtered = history.filter(function(h) {
+      return (h.name||'').toLowerCase().indexOf(q) > -1 ||
+             (h.type||'').toLowerCase().indexOf(q) > -1 ||
+             (h.phone||'').toLowerCase().indexOf(q) > -1 ||
+             (h.searchLocation||'').toLowerCase().indexOf(q) > -1;
+    });
+  }
+
+  // Group by status
+  var groups = {};
+  KANBAN_COLS.forEach(function(c) { groups[c.key] = []; });
+  filtered.forEach(function(h) {
+    var s = h.status || 'new';
+    if (!groups[s]) s = 'new';
+    groups[s].push(h);
+  });
+
+  // Sort each group by newest first
+  Object.keys(groups).forEach(function(k) {
+    groups[k].sort(function(a,b) { return (b.savedAt||0) - (a.savedAt||0); });
+  });
+
+  // Empty state
+  if (!history.length) {
+    board.innerHTML = '<div class="kanban-empty"><div class="kanban-empty-icon">📋</div><div class="kanban-empty-text">No prospects in your pipeline yet. Scout some leads and save them to start tracking deals.</div></div>';
+    if (statsEl) statsEl.innerHTML = '';
+    if (subEl) subEl.textContent = 'Track every prospect from first call to closed deal.';
     return;
   }
-  container.innerHTML = searches.slice(0, 10).map(function(s, idx) {
-    return '<div class="pipeline-card" style="margin-bottom:6px;cursor:default;padding:12px 14px;">' +
-      '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (s.product || s.offer || 'Search') + '</div>' +
-      '<div style="font-size:11px;color:var(--text4);">' + (s.location || '') + (s.ts ? ' &middot; ' + new Date(s.ts).toLocaleDateString() : '') + '</div>' +
+
+  // Stats bar
+  var counts = {};
+  KANBAN_COLS.forEach(function(c) { counts[c.key] = groups[c.key].length; });
+  var total = filtered.length;
+  var convRate = total ? Math.round(counts.converted / history.length * 100) : 0;
+  if (statsEl) {
+    statsEl.innerHTML = KANBAN_COLS.map(function(c) {
+      return '<div class="kanban-stat">' +
+        '<div class="kanban-stat-num" style="color:'+c.color+';">'+counts[c.key]+'</div>' +
+        '<div class="kanban-stat-label">'+c.label+'</div>' +
+      '</div>';
+    }).join('');
+  }
+  if (subEl) {
+    subEl.textContent = total+' prospect'+(total!==1?'s':'')+' · '+counts.converted+' closed · '+convRate+'% conversion';
+  }
+
+  // Build columns
+  board.innerHTML = '<div class="kanban-board">' + KANBAN_COLS.map(function(col) {
+    var items = groups[col.key];
+    return '<div class="kanban-col">' +
+      '<div class="kanban-col-header">' +
+        '<div class="kanban-col-title"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+col.color+';"></span> '+col.label+'</div>' +
+        '<span class="kanban-col-count">'+items.length+'</span>' +
+      '</div>' +
+      '<div class="kanban-col-body">' +
+        items.map(function(h) { return buildKanbanCard(h, col); }).join('') +
+      '</div>' +
     '</div>';
-  }).join('');
+  }).join('') + '</div>';
+}
+
+function buildKanbanCard(h, col) {
+  var id = h.id;
+  var phone = h.phone || '';
+  var name = (h.name||'Unknown').replace(/</g,'&lt;');
+  var type = (h.type||'').replace(/</g,'&lt;');
+  var now = Date.now();
+  var reminderHtml = '';
+  if (isOverdue(h)) {
+    reminderHtml = '<span class="k-card-reminder overdue">Overdue</span> ';
+  } else if (h.reminderAt && h.reminderAt > now) {
+    var days = Math.ceil((h.reminderAt - now) / 86400000);
+    reminderHtml = '<span class="k-card-reminder upcoming">In '+days+'d</span> ';
+  }
+
+  // Actions
+  var callBtn = '';
+  if (phone) {
+    callBtn = '<a href="tel:'+phone.replace(/\D/g,'')+'" class="k-btn call" onclick="event.stopPropagation()">Call</a>';
+  }
+  var advanceBtn = '';
+  if (col.next) {
+    advanceBtn = '<button class="k-btn advance" onclick="event.stopPropagation();setStatus(\''+id+'\',\''+col.next+'\')">'+STATUSES[col.next].label+' →</button>';
+  }
+  var delBtn = '<button class="k-btn del" onclick="event.stopPropagation();if(confirm(\'Remove '+name.replace(/'/g,'\\\'')+'?\'))deleteProspect(\''+id+'\')">✕</button>';
+
+  return '<div class="k-card">' +
+    '<div class="k-card-name">'+name+'</div>' +
+    (type ? '<div class="k-card-type">'+type+'</div>' : '') +
+    (phone ? '<div class="k-card-phone">'+phone+'</div>' : '') +
+    reminderHtml +
+    '<div class="k-card-actions">' +
+      callBtn + advanceBtn + delBtn +
+    '</div>' +
+  '</div>';
 }
 
 
@@ -2761,7 +2889,11 @@ function renderMobileMenu() {
         'Dashboard' +
       '</button>' +
 
-/* Pipeline hidden from mobile menu */
+      '<button class="mobile-menu-item" onclick="closeMobileMenu();openHistoryPage()">' +
+        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>' +
+        'Pipeline' +
+      '</button>' +
+
       '<button class="mobile-menu-item" onclick="closeMobileMenu();openSearchHistory()">' +
         '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
         'Search History' +
@@ -4005,7 +4137,7 @@ async function analyze() {
     }
 
     if (_searchWasInterrupted) { throw new Error('INTERRUPTED'); }
-    if (!allBusinesses.length) throw new Error('No results found. Try a different location or business type.');
+    if (!allBusinesses.length) throw new Error('No leads found — try adjusting your offer or location.');
 
     // Deduplicate
     var seen = {};
@@ -4162,10 +4294,9 @@ function addToPipeline(i) {
     btn.title = 'Saved to pipeline';
   }
   showToast('<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:5px;"><polyline points="20 6 9 17 4 12"/></svg> Added to pipeline');
+  updateNavPipeline();
 }
 
-
-function toggleCard(i){}
 
 // ── LIGHT/DARK MODE ──────────────────────────────────────────────────────────
 function toggleLightMode() {
@@ -6145,7 +6276,7 @@ function setPipelineCampaignFilter(val) {
     btn.style.color         = active ? 'var(--accent)'     : 'var(--text3)';
     btn.style.borderColor   = active ? 'rgba(190,255,0,0.25)' : 'var(--border2)';
   });
-  renderHistoryList(window._currentHistoryFilter || 'all');
+  renderKanban();
 }
 
 function renderCampaignFilterBar() {
@@ -6684,6 +6815,7 @@ document.addEventListener('DOMContentLoaded', function() {
     renderGoalTracker();
     updateOverdueBadge();
     updateSlimBar();
+    updateNavPipeline();
     // Demo: delayed auto-run with cancellation
     if (isDemoEligible()) {
       scheduleDemoRun();
