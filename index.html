@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>ProspectScout — Lead Intelligence Engine</title>
 <meta name="description" content="Generate high-intent leads tailored to your exact offer using real-time signals. Stop guessing who to contact." />
-<meta name="keywords" content="lead generation, sales prospecting, AI outreach scripts, lead generation, sales intelligence, prospect finder" />
+<meta name="keywords" content="lead generation, sales prospecting, AI intelligence insights, lead generation, sales intelligence, prospect finder" />
 <meta name="author" content="ProspectScout" />
 <meta name="theme-color" content="#06060C" />
 
@@ -1159,7 +1159,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 
           <!-- Opener -->
           <div style="background:rgba(190,255,0,0.04);border:1px solid rgba(190,255,0,0.15);border-radius:var(--r-md);padding:14px 16px;margin-bottom:20px;">
-            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:8px;">Generated opener</div>
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:8px;">Opening line</div>
             <p style="font-size:13px;color:var(--text2);line-height:1.7;margin:0;font-style:italic;">"Hi, is the owner available? I was searching for day spas in Austin and noticed Bella Vita isn't showing up online — three of your competitors on the same street are ranking on page 1. I help salons fix that in about 2 weeks. Worth a 5-minute chat?"</p>
           </div>
 
@@ -1280,7 +1280,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
     <div class="dash-header">
       <div>
         <div class="dash-greeting">Hey, <em id="dashName">there</em> 👋</div>
-        <div class="dash-sub" id="dashSub">Find prospects that already need your service.</div>
+        <div class="dash-sub" id="dashSub">Your intelligence layer for finding the right prospects.</div>
       </div>
       <div class="dash-tier-badge">
         <span class="tier-chip" id="dashTierChip">Free</span>
@@ -1343,6 +1343,11 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 
     <!-- SCOUT FORM -->
     <div class="scout-card" id="inputSection">
+      <!-- Empty state hero -->
+      <div style="text-align:center;padding:4px 0 20px;">
+        <div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.5px;color:var(--text);margin-bottom:8px;line-height:1.2;">Find exactly who needs<br>what you sell.</div>
+        <div style="font-size:13px;color:var(--text3);line-height:1.6;max-width:320px;margin:0 auto;">Describe your offer. We identify businesses already showing signals they need it — with reasoning for every result.</div>
+      </div>
 
       <!-- PRIMARY: What you sell (required) -->
       <label class="form-label" style="font-size:13px;font-weight:700;color:var(--text);">What do you sell? <span style="color:var(--accent);">*</span></label>
@@ -1360,11 +1365,11 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
         </div>
       </div>
 
-      <div style="font-size:12px;color:var(--text4);margin-top:10px;margin-bottom:4px;">Describe your service. We'll find prospects already showing buying signals.</div>
+      <div style="font-size:12px;color:var(--text4);margin-top:10px;margin-bottom:4px;">Based on real-world business signals — not a database.</div>
 
-      <p style="font-size:12px;color:var(--text4);margin:8px 0 4px;line-height:1.5;">Describe your service. We'll find prospects already showing buying signals.</p>
+      <p style="font-size:12px;color:var(--text4);margin:8px 0 4px;line-height:1.5;">Based on real-world business signals — not a database.</p>
       <button class="cta-btn" id="analyzeBtn" onclick="analyze()" style="margin-top:12px;opacity:0.5;cursor:not-allowed;" disabled>
-        Find opportunities <span class="arrow">→</span>
+        Analyze my offer <span class="arrow">→</span>
       </button>
       <div id="errorMsg"></div>
     </div>
@@ -1391,7 +1396,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 
     <div class="loading-state" id="loadingState">
       <div class="loading-ring"></div>
-      <p class="loading-text" id="loadingText">Scouting the area...</p>
+      <p class="loading-text" id="loadingText">Analyzing your offer...</p>
       <div class="loading-progress-wrap" id="loadingProgressWrap" style="display:none;">
         <div class="loading-progress-bar"><div class="loading-progress-fill" id="loadingProgressFill" style="width:0%"></div></div>
         <div class="loading-progress-label" id="loadingProgressLabel">0 of 0 prospects</div>
@@ -1404,7 +1409,8 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
       <button class="reset-btn" onclick="resetSearch()">← New search</button>
       <div class="stats-row" id="statsRow"></div>
       <div class="results-header">
-        <div class="results-title" id="resultsTitle">High-intent opportunities based on your offer</div>
+        <div class="results-title" id="resultsTitle">High-intent opportunities matched to your offer</div>
+          <div id="resultsOfferTag" style="font-size:11px;color:var(--text4);margin-top:2px;letter-spacing:0.3px;">Based on real-world business signals</div>
         <div style="display:flex;align-items:center;gap:8px;">
           <button class="export-btn" onclick="exportPDF()" style="font-size:11px;padding:6px 12px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> PDF</button>
           <span class="results-count" id="resultsCount"></span>
@@ -1421,6 +1427,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
           <button class="score-filter-btn" onclick="setScoreFilter(9,this)">9+</button>
         </div>
       </div>
+      <div id="patternInsightBar" style="display:none;margin-bottom:16px;"></div>
       <div id="bizList"></div>
     </div>
 
@@ -1771,7 +1778,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 window.onerror = function(msg, src, line, col, err) {
   try {
     document.body.style.cssText = 'background:#08080D;color:#EEEEF5;font-family:sans-serif;padding:40px 20px;';
-    document.body.innerHTML = '<h2 style="color:#BEFF00;margin-bottom:16px">ProspectScout</h2><p>App error — please reload.</p><p style="font-size:11px;color:#888;margin-top:8px">' + msg + '</p><br><button onclick="location.reload()" style="background:#BEFF00;color:#000;border:0;padding:14px 28px;border-radius:8px;font-size:16px;margin-top:16px">Reload</button>';
+    document.body.innerHTML = '<h2 style="color:#BEFF00;margin-bottom:16px">ProspectScout</h2><p>Something went wrong — please reload.</p><p style="font-size:11px;color:#888;margin-top:8px">' + msg + '</p><br><button onclick="location.reload()" style="background:#BEFF00;color:#000;border:0;padding:14px 28px;border-radius:8px;font-size:16px;margin-top:16px">Reload</button>';
   } catch(e2) {}
   return true;
 };
@@ -2651,7 +2658,7 @@ function renderHistoryList(filter) {
       '</div></div>';
     }
 
-    var openerSection = h.opener ? '<div class="exp-block" style="margin-top:12px;"><div class="section-label">Opening line</div><div class="opener-text">'+h.opener+'</div></div>' : '';
+    var openerSection = h.opener ? '<div class="exp-block" style="margin-top:12px;"><div class="section-label">Personalized opener</div><div class="opener-text">'+h.opener+'</div></div>' : '';
     var talkSection   = h.talk_track ? '<div class="exp-block" style="margin-top:12px;"><div class="section-label">Talk track</div><div class="talk-track-text">'+h.talk_track+'</div></div>' : '';
 
     return '<div class="pipeline-card '+(s.border||'')+' '+(overdue?'overdue-card':'')+'" style="animation-delay:'+(i*25)+'ms;" id="pcard-'+h.id+'" onclick="togglePipelineCard(\''+h.id+'\')">'+
@@ -3071,7 +3078,7 @@ function hideScreenLockWarning() {
   if (b) b.classList.remove('visible');
 }
 
-const loadingMsgs = ['Scouting the area...','Analyzing prospects...','Ranking your prospects...','Crafting your openers...','Almost ready...'];
+const loadingMsgs = ['Analyzing your offer...','Detecting high-intent signals...','Identifying best-fit prospects...','Scoring signal strength...','Building your intelligence report...'];
 let loadingInterval;
 function startLoading() { let i=0; document.getElementById('loadingText').textContent=loadingMsgs[0]; loadingInterval=setInterval(()=>{i=(i+1)%loadingMsgs.length;document.getElementById('loadingText').textContent=loadingMsgs[i];},1800); }
 function stopLoading()  { clearInterval(loadingInterval); }
@@ -3149,6 +3156,10 @@ function finalizeStreamedResults(businesses) {
       return buildBizCardHTML(b, i);
     }).join('');
   }
+
+  // Pattern intelligence — analyze and display above results
+  var pattern = analyzeResultPatterns(businesses, window._lastProduct);
+  renderPatternInsight(pattern);
 
   var lb = document.getElementById('resultsLoadingBar');
   var lt = document.getElementById('resultsLoadingText');
@@ -3327,97 +3338,358 @@ function parseOffer(offer) {
 // ── 2. SIGNAL LIBRARY WITH CATEGORIES ────────────────────────────────────────
 var SIGNAL_LIBRARY = {
   'real estate agencies': [
-    { cat:'hiring',       score:92, s:'Posted 5+ agent job listings in the past 30 days',           r:'Fast hiring creates lead management chaos — agents without systems miss follow-ups and lose deals' },
-    { cat:'growth',       score:90, s:'Opened a second office location in the past quarter',         r:'Multi-location expansion without unified systems leads to miscommunication and lost pipeline' },
-    { cat:'volume',       score:88, s:'Managing 40+ active listings with no visible CRM',            r:'High listing volume without automation means missed buyer inquiries — deals left on the table daily' },
-    { cat:'tech gap',     score:85, s:'Website has no lead capture form or chatbot integration',     r:'Agents miss warm inbound leads while competitors capture and nurture them automatically' },
-    { cat:'inefficiency', score:83, s:'Reviews mention slow agent response times',                   r:'Response speed is the #1 conversion factor in real estate — automation closes this gap immediately' },
-    { cat:'ad spend',     score:80, s:'Running Zillow and Google Ads but no visible follow-up system',r:'Paying for leads without automation leaks them — most prospects never receive a second touchpoint' },
-    { cat:'growth',       score:78, s:'Recruiting agents from competing brokerages on LinkedIn',      r:'Aggressive talent acquisition signals ambition — growing teams need systems before they hit a wall' },
+    { cat:'hiring', score:94,
+      s:'Currently hiring 3+ buyer agents and a transaction coordinator',
+      r:'Rapid team expansion is already increasing lead volume beyond what manual follow-up can handle — agencies at this stage lose 30-40% of inbound inquiries before a human responds, making now the highest-leverage moment to introduce automation.',
+      a:'Position your offer as the system that makes each new hire 2x more productive from day one — not a cost, but a multiplier on the headcount they\'re already paying for.',
+      m:'Noticed you\'re hiring agents right now — that usually means lead volume is growing faster than the team can keep up. We help agencies make sure none of those leads go cold.' },
+    { cat:'growth', score:92,
+      s:'Opened a second office location in the past 60 days',
+      r:'Multi-location growth creates immediate coordination gaps — listings, agent assignments, and client handoffs are already falling through the cracks, and without a centralized system, the second location will underperform the first within 90 days.',
+      a:'Lead with the coordination problem, not the technology — ask how they\'re currently keeping both offices aligned, then show how your solution makes that seamless.',
+      m:'Congrats on the second office — most agencies find the first 90 days are where things start slipping between locations. Worth a quick chat about how other agencies handle it?' },
+    { cat:'inefficiency', score:90,
+      s:'Managing 40+ active listings with no visible CRM or lead routing system',
+      r:'At this volume, unrouted leads are currently going cold within hours — competitors with automation are likely converting the same buyers this agency is losing to slow response times.',
+      a:'Don\'t pitch software — pitch speed. Show them exactly how fast their leads are going cold and what one extra touchpoint per inquiry would do to their close rate.',
+      m:'With 40+ listings, you\'re probably fielding a lot of inbound — do you have a system for routing those to the right agent instantly, or is it still manual?' },
+    { cat:'ad spend', score:88,
+      s:'Spending on Zillow Premier Agent and Google Ads with no visible follow-up infrastructure',
+      r:'Every dollar spent on lead generation is actively leaking — without a nurture system, most paid leads receive one touchpoint and disappear, meaning the ROI on their current ad spend is a fraction of what it could be.',
+      a:'Frame your offer as the thing that makes their existing ad spend finally work — they\'re already paying for leads, you\'re just helping them stop losing them.',
+      m:'Saw you\'re running Zillow ads — those leads are expensive. Most agencies we talk to are only converting a fraction because there\'s no follow-up system behind them. Happy to show you what that gap looks like.' },
+    { cat:'tech gap', score:86,
+      s:'Website has no live chat, no lead capture form, and no scheduling link',
+      r:'Buyers researching properties late at night — the highest-intent window — have no way to engage, and that traffic is currently converting directly into competitor leads.',
+      a:'Open with a screen recording or screenshot of their site at 10pm — show them exactly what a motivated buyer sees and experiences when no one is available to respond.',
+      m:'Quick observation: someone browsing your listings at 11pm has no way to reach you or book a call. That\'s your highest-intent traffic going somewhere else.' },
+    { cat:'reputation', score:83,
+      s:'Recent reviews mention slow agent response times and missed follow-ups',
+      r:'Response speed is the #1 factor in real estate conversion, and this problem is already costing them listings — it will compound as review scores drop and referral volume shrinks.',
+      a:'Reference a specific review — not to embarrass them, but to show you\'ve done your homework. Then pivot to how you fix the underlying system problem, not just the symptom.',
+      m:'Noticed a few recent reviews mentioning response time — that\'s usually a systems issue, not a people issue. We help agencies fix it at the process level so it stops showing up in reviews.' },
+    { cat:'growth', score:80,
+      s:'Actively recruiting agents from competing brokerages on LinkedIn',
+      r:'Aggressive recruiting signals an intent to scale quickly — growth at this pace without operational systems already in place typically creates the exact chaos that drives good agents back out.',
+      a:'Position your offer as the infrastructure that makes the agency worth joining — agents choose brokerages based on tools and support, and you\'re selling both.',
+      m:'Poaching agents from other brokerages usually works better when you can tell them you have better systems backing them up. That\'s something we can help with.' },
   ],
   'restaurants': [
-    { cat:'tech gap',     score:90, s:'No online ordering system despite high delivery demand in area',r:'Restaurants without online ordering lose 30-40% of potential revenue to delivery-first competitors' },
-    { cat:'reputation',   score:87, s:'Google rating dropped 0.3 stars across the last 20 reviews',  r:'Rating decline signals a consistency problem — operational systems are the fastest fix' },
-    { cat:'tech gap',     score:85, s:'Menu not updated online in 6+ months',                        r:'Stale digital presence causes customers to choose competitors — automatic updates solve this passively' },
-    { cat:'inefficiency', score:83, s:'No reservation or waitlist system visible on any platform',   r:'Walk-in only operations lose high-intent customers who won\'t wait without confirmation' },
-    { cat:'growth',       score:80, s:'Recently expanded from one to two locations',                 r:'Multi-location restaurants need consistent systems across both sites — manual coordination breaks fast' },
-    { cat:'retention',    score:78, s:'No loyalty program or repeat-visit mechanism visible',        r:'Repeat customers spend 67% more — without a retention system they leave for competitors who have one' },
+    { cat:'tech gap', score:92,
+      s:'No online ordering system despite being in a zip code with 60%+ delivery demand',
+      r:'Third-party delivery apps are currently capturing this revenue at a 30% commission — every week without a direct ordering channel is margin being permanently transferred to competitors.',
+      a:'Lead with the commission math — calculate what 30% of their estimated delivery volume costs them annually, then show what a direct channel costs. The ROI sells itself.',
+      m:'Quick question — are you using DoorDash or Uber Eats right now? Most restaurants we talk to are giving up 25-30% margin they could keep with a direct ordering setup.' },
+    { cat:'reputation', score:89,
+      s:'Rating dropped from 4.6 to 4.2 across the last 25 reviews with no owner responses',
+      r:'Unanswered negative reviews are actively deterring new customers — the visibility algorithm is already deprioritizing this location, and the slide will accelerate unless addressed now.',
+      a:'Don\'t lead with the rating drop — lead with the algorithm. Show them that Google is already showing their restaurant lower in local results, and that responding to reviews is part of the fix.',
+      m:'Noticed your Google rating has slipped a bit recently — the algorithm actually penalizes locations that don\'t respond to reviews. Happy to show you what that\'s doing to your visibility.' },
+    { cat:'inefficiency', score:86,
+      s:'Taking reservations via phone only during business hours with no waitlist management',
+      r:'Every missed call during peak hours is a lost table — customers who cannot book instantly are currently going to the next restaurant on Google, not calling back.',
+      a:'Ask them how many calls they miss during a dinner rush — the answer is always more than they think. Then show them what each missed call is worth in average ticket value.',
+      m:'How many reservation calls do you think you\'re missing during a busy Friday night? Most restaurants are surprised when they actually count — usually worth doing the math.' },
+    { cat:'growth', score:84,
+      s:'Recently expanded from one to two locations and is running both manually',
+      r:'Split-location operations without unified systems are already creating inconsistency — menu changes, staff communications, and promotion timing are likely diverging in ways that will hurt the brand within months.',
+      a:'Ask what their biggest headache has been since opening the second location — they\'ll tell you exactly what to solve. Lead with curiosity, not a pitch.',
+      m:'Running two locations manually is a very specific kind of chaos. Curious what\'s been the hardest part to keep consistent between them — we usually see it\'s one of three things.' },
+    { cat:'retention', score:81,
+      s:'No loyalty or repeat-visit mechanism visible across any platform',
+      r:'One-time customers are currently the norm — without a retention system, this restaurant is paying full acquisition cost for every visit, while competitors with loyalty programs compound their customer value over time.',
+      a:'Frame this as a revenue math conversation — show them the difference in lifetime value between a one-time diner and a regular, then show what moving even 20% of customers into the second category is worth.',
+      m:'Do you have a way to track which customers are coming back versus just coming once? That number tells you a lot about where the revenue opportunity actually is.' },
+    { cat:'tech gap', score:78,
+      s:'Menu page is a low-resolution PDF with prices crossed out and handwritten corrections',
+      r:'This is actively filtering out mobile customers — 70% of restaurant searches happen on phones, and an unusable menu page is currently converting that high-intent traffic straight to competitors.',
+      a:'Send them a screenshot of their menu page on mobile before you call. Open with: "I was looking at your menu online last night and wanted to show you what your customers are seeing."',
+      m:'Tried to look at your menu on my phone last night — I couldn\'t actually read it. Figured you\'d want to know since that\'s probably the first thing a new customer checks before deciding.' },
   ],
   'dental practices': [
-    { cat:'tech gap',     score:92, s:'No online booking — patients must call the front desk',       r:'Practices without online booking lose 40% of after-hours inquiries to competitors who offer it' },
-    { cat:'reputation',   score:88, s:'Last Google review posted over 60 days ago',                 r:'Review recency signals patient flow — a gap suggests a recall or retention issue that costs revenue' },
-    { cat:'tech gap',     score:85, s:'Website not mobile-optimized or loads slowly',               r:'70% of dental searches happen on mobile — slow sites drop appointment requests directly to voicemail' },
-    { cat:'growth',       score:82, s:'Accepting new patients but no new patient incentive visible', r:'High patient acquisition cost with no offer means missed conversions from warm, browsing prospects' },
-    { cat:'inefficiency', score:80, s:'No patient recall system based on review comments about reminders',r:'Manual recall systems miss 30-40% of due patients — automated reminders recapture lost revenue' },
-    { cat:'hiring',       score:77, s:'Hiring a dental assistant or front desk coordinator',         r:'Team growth at this stage signals capacity scaling — systems must grow with the headcount' },
+    { cat:'tech gap', score:94,
+      s:'No online booking — new patients must call during business hours to schedule',
+      r:'The highest-converting moment for a dental inquiry is the one right after a toothache starts — without 24/7 booking, those patients are currently booking with the next practice that shows up in Google with a "Book Now" button.',
+      a:'Do a live demo during the call — search for dentists near them on Google and show exactly where their competitors with online booking appear versus where they appear.',
+      m:'If someone searches for a dentist at 10pm with a toothache, your practice shows up but they can\'t book — so they go to the next one. Worth making sure that\'s not happening?' },
+    { cat:'inefficiency', score:90,
+      s:'No automated patient recall system — reactivation is handled manually or not at all',
+      r:'30-40% of lapsed patients are currently sitting in this practice\'s database uncontacted — at an average patient value of $800-1,200/year, the unrealized revenue from a 6-month recall gap is already significant.',
+      a:'Open with the math: estimate how many patients they see per year, apply a 30% lapse rate, multiply by average patient value. Show the number before you explain the solution.',
+      m:'Quick question for you — do you know offhand how many patients you\'ve seen in the last 2 years who haven\'t been back? That number is usually bigger than practices expect.' },
+    { cat:'reputation', score:87,
+      s:'Last review posted 90+ days ago despite an active patient schedule',
+      r:'Review recency is a primary Google ranking signal — this practice is currently losing search position to competitors who automate review requests, and the gap is compounding every week.',
+      a:'Show them their Google ranking versus a competitor with recent reviews on the same search — make the competitive gap visible before you offer the solution.',
+      m:'Your Google profile looks great but the reviews have gone quiet — that actually affects your ranking. Competitors who are getting weekly reviews are probably outranking you on new patient searches right now.' },
+    { cat:'growth', score:84,
+      s:'Added a second operatory and a new associate dentist in the past quarter',
+      r:'Expanded capacity that isn\'t immediately filled with new patients is the most expensive mistake in dental growth — the chair time is being paid for whether it\'s occupied or not.',
+      a:'Lead with the capacity utilization question — ask how full the new associate\'s schedule is. If it\'s under 70%, that\'s the pain point. Your offer fills the gap.',
+      m:'Adding a new associate is exciting — how\'s the schedule looking for them? Most practices find the first few months are a race to get their chair filled, and there are faster ways to do it.' },
+    { cat:'tech gap', score:81,
+      s:'Website is not mobile-optimized and loads in over 4 seconds on mobile',
+      r:'Google is currently penalizing this site in mobile search results — which is where 70%+ of new patient searches happen — and every day this remains unfixed is compounding lost traffic.',
+      a:'Use PageSpeed Insights to pull their actual score before the call. Open with the number — a 38/100 mobile score is a much stronger opener than any pitch.',
+      m:'Ran your site through Google\'s speed test out of curiosity — mobile score is pretty rough. That\'s actually affecting where you show up for people searching "dentist near me" on their phone.' },
+    { cat:'ad spend', score:78,
+      s:'Running Google Search Ads for high-value treatments with no dedicated landing page',
+      r:'Paid traffic landing on a generic homepage is converting at 1-2% instead of 8-12% — this practice is currently paying for clicks that competitors with optimized funnels are winning.',
+      a:'Calculate their approximate monthly ad waste: (ad spend) × (gap between current vs optimal conversion rate). Present the waste number, then offer the fix.',
+      m:'Noticed you\'re running Google Ads for implants — do those click through to a specific page or the homepage? That one thing can double or triple what you\'re getting from the same budget.' },
   ],
   'law firms': [
-    { cat:'tech gap',     score:90, s:'No live chat or intake form on practice website',            r:'Legal clients research late at night — without 24/7 intake, the firm misses high-intent prospects' },
-    { cat:'reputation',   score:87, s:'Reviews mention difficulty reaching attorneys or slow callbacks',r:'Response speed is the #1 driver in legal conversion — systems eliminate this friction permanently' },
-    { cat:'growth',       score:84, s:'Added a new practice area or attorney in the past 6 months', r:'Expanding practices need client management systems to maintain quality across a growing team' },
-    { cat:'inefficiency', score:81, s:'No client portal or document sharing system mentioned online',r:'Manual document exchange creates delays and signals a firm stuck on old workflows' },
-    { cat:'ad spend',     score:78, s:'Running Google Ads for legal services with no retargeting',  r:'Legal ad spend without follow-up systems burns budget — most leads need 3-5 touchpoints to convert' },
+    { cat:'tech gap', score:92,
+      s:'No intake form or live chat — prospective clients can only leave a voicemail',
+      r:'Legal clients in crisis research between 9pm and midnight — without a 24/7 capture point, this firm is currently losing its highest-intent prospects to competitors who respond instantly with automated intake.',
+      a:'Ask them what happens to an inquiry that comes in at 9pm on a Friday — walk through the gap out loud. When they say "voicemail," that\'s the moment to pivot to what you offer.',
+      m:'What happens when a potential client tries to reach you at 9pm? Most firms lose those inquiries completely — and those are often the most motivated people.' },
+    { cat:'reputation', score:89,
+      s:'Multiple reviews mention unanswered voicemails and 2-3 day callback delays',
+      r:'Response speed is the primary conversion factor in legal services — these reviews are already costing this firm clients at a measurable rate, and Google is surfacing the complaints to every future prospect.',
+      a:'Lead with the review text itself — read it back to them matter-of-factly, not accusatorially. Then show how the underlying system problem is fixable, not just the symptom.',
+      m:'Saw a couple of reviews mentioning callback delays — that\'s the kind of thing that\'s hard to fix with just more staff. Usually it\'s a process issue. Mind if I show you what other firms do differently?' },
+    { cat:'growth', score:86,
+      s:'Brought on two associate attorneys and an office manager in the past 6 months',
+      r:'Rapid team growth without client management systems is already creating billing gaps and missed follow-ups — firms at this stage lose 15-25% of potential revenue to coordination failures.',
+      a:'Position your offer as what makes a growing team function like a mature firm — the infrastructure that turns headcount into revenue instead of overhead.',
+      m:'Growing your team that fast is impressive — usually the bottleneck shifts from "not enough people" to "not enough systems" pretty quickly. Curious where you\'re feeling that most right now.' },
+    { cat:'inefficiency', score:83,
+      s:'No client portal — all document sharing happens via email with no version control',
+      r:'Manual document workflows are creating compliance risk and client frustration right now — firms that don\'t modernize intake and communication lose clients to tech-forward competitors at renewal.',
+      a:'Don\'t pitch the feature — pitch the client experience. Ask them how their clients currently feel about the document process. The frustration they describe is your opening.',
+      m:'How are your clients currently getting documents back and forth with you? Most people we talk to are surprised how much client satisfaction is tied to that one thing.' },
+    { cat:'ad spend', score:80,
+      s:'Running legal keyword ads with no retargeting or lead nurture sequence',
+      r:'Legal decisions typically take 3-7 touchpoints — without retargeting, this firm is paying to generate intent it cannot follow up on, watching warm prospects convert elsewhere.',
+      a:'Ask how many of their consultation requests actually convert to retained clients — the gap between those two numbers is where retargeting and nurture live.',
+      m:'Legal ads are expensive — are you retargeting the people who visit but don\'t book? Most firms are paying for that traffic twice without realizing it.' },
   ],
   'gyms & fitness studios': [
-    { cat:'retention',    score:89, s:'Free trial offered but no online sign-up for it',            r:'Frictionless trial conversion is the top growth lever — every extra step loses a potential member' },
-    { cat:'reputation',   score:86, s:'Reviews mention overcrowding during peak hours',             r:'Capacity complaints signal demand that better scheduling and capacity management could monetize' },
-    { cat:'tech gap',     score:83, s:'No app or digital check-in system for members',             r:'Studios without member apps see 23% higher churn — convenience is a core retention factor' },
-    { cat:'growth',       score:80, s:'Recently launched a second class format or specialty program',r:'New program launches need promotion and enrollment automation to fill initial classes' },
-    { cat:'inefficiency', score:77, s:'Class schedule posted as image on social — no live calendar',r:'Static schedules increase admin friction and reduce bookings from mobile-first members' },
+    { cat:'retention', score:91,
+      s:'Membership trial offered on website but signup requires calling or visiting in person',
+      r:'Fitness decisions are impulse-driven — the moment of motivation is the conversion window, and every friction point between interest and enrollment is currently killing trials that would otherwise convert.',
+      a:'Walk them through the exact experience a prospect has right now — motivated, finds the site, wants to try it, hits a wall. Contrast it with what instant online enrollment feels like.',
+      m:'Tried to sign up for a trial on your site — had to call to finish it. That\'s a lot of people deciding it\'s not worth the effort. How many trial requests do you think you\'re losing there?' },
+    { cat:'inefficiency', score:88,
+      s:'Class schedule posted as a static image that hasn\'t been updated in 3 weeks',
+      r:'Members are currently showing up to classes that have changed or been canceled — this is an active retention problem, and the reviews are already starting to reflect it.',
+      a:'Screenshot the outdated schedule and open the call with it — "I was trying to figure out when your next yoga class is and found this. Thought you\'d want to know what members are seeing."',
+      m:'Noticed your online class schedule looks like it might be a few weeks out of date — members showing up to the wrong class is one of those small things that quietly drives cancellations.' },
+    { cat:'growth', score:85,
+      s:'Just launched a second class format with no promotional push to existing members',
+      r:'New program launches without automated marketing to existing members are already underperforming — the initial enrollment window is the highest-converting moment, and it\'s currently passing without capture.',
+      a:'Position your offer as the amplifier for things they\'re already investing in — they built the program, you make sure it fills.',
+      m:'Saw you just added [new format] — cool addition. Are you doing anything to let existing members know? That first wave of internal signups is usually the fastest path to a full class.' },
+    { cat:'retention', score:82,
+      s:'January intake spike with no onboarding sequence or 30-day check-in system',
+      r:'80% of January joiners churn by March without structured engagement — this gym is currently acquiring members at high cost and losing them at predictable intervals that automation would interrupt.',
+      a:'Bring the churn math: if 100 January members pay $50/month and 80% cancel by March, that\'s $4,000/month lost in 60 days. Show what even a 20% improvement looks like.',
+      m:'How many of your January signups are still active members? Most studios are surprised by the number — and there\'s a pretty reliable way to move it in the right direction.' },
+    { cat:'tech gap', score:79,
+      s:'No member app or digital check-in — attendance is tracked on a paper sign-in sheet',
+      r:'Without attendance data, this studio cannot identify at-risk members before they cancel — by the time a member stops showing up, the retention window has already closed.',
+      a:'Lead with what they\'re missing, not what you\'re selling — ask if they know which members haven\'t come in for 2+ weeks. The fact that they can\'t answer quickly is the pitch.',
+      m:'Do you have a way to see which members haven\'t checked in recently? That list is usually where the cancellations are coming from before you know it.' },
   ],
   'salons & spas': [
-    { cat:'tech gap',     score:91, s:'No online booking — clients must call or DM to book',       r:'Phone and DM booking loses clients to competitors who offer instant 24/7 online scheduling' },
-    { cat:'retention',    score:87, s:'No loyalty or referral program visible on any platform',    r:'Salons with referral programs grow 30% faster — without one, every client has to be reacquired' },
-    { cat:'reputation',   score:84, s:'Reviews mention appointment mix-ups or double bookings',    r:'Scheduling errors directly cost revenue and destroy trust — software eliminates both permanently' },
-    { cat:'growth',       score:81, s:'Recently hired a second or third stylist',                  r:'Adding staff without booking infrastructure creates scheduling chaos at a critical growth moment' },
-    { cat:'tech gap',     score:78, s:'Digital presence is only a Facebook page or link-in-bio',  r:'No owned web presence means no SEO, no direct booking, and no control over first impressions' },
+    { cat:'tech gap', score:93,
+      s:'Booking requires calling or sending a DM on Instagram — no real-time availability shown',
+      r:'Competitors with online booking are converting the same clients this salon is losing to friction — every unanswered DM at 10pm is a booking that goes to whoever responds first.',
+      a:'Do the exercise yourself: DM them at 10pm and see how long it takes to get a response. Whatever the answer is, that\'s your opener — you\'ve now experienced what their clients experience.',
+      m:'Tried to book an appointment through your Instagram last night — still waiting on a reply. Figured that\'s probably happening more than you realize with new clients.' },
+    { cat:'retention', score:89,
+      s:'No rebooking prompt or follow-up system — clients are expected to self-schedule',
+      r:'Without a rebooking trigger, this salon\'s client retention is already operating at 40-60% when it should be 80%+ — the revenue gap between those numbers compounds across every stylist\'s book.',
+      a:'Ask a stylist how many of their clients come back on their own versus how many they personally have to chase. The honest answer reveals the system gap immediately.',
+      m:'How are stylists currently keeping their books full between clients — is there a system, or is it mostly regulars and word of mouth? Usually there\'s a gap worth closing there.' },
+    { cat:'reputation', score:86,
+      s:'Recent reviews mention appointment mix-ups and double-bookings under current system',
+      r:'Scheduling errors are actively destroying trust with high-value clients — the ones who leave over a double-booking never mention it, they just don\'t come back.',
+      a:'Don\'t lead with the negative reviews — lead with a question about how they handle conflicts in the schedule right now. When they describe the manual process, you have your angle.',
+      m:'Saw a couple of reviews mentioning booking issues — that kind of problem is almost always the scheduling system, not the staff. Have you looked at what\'s actually causing the conflicts?' },
+    { cat:'growth', score:83,
+      s:'Added a second stylist or specialist in the past 90 days',
+      r:'A new chair without a full book is paid overhead — the fastest path to profitability for a new hire is an automated booking push to the existing client list.',
+      a:'Position this as a new-hire ROI question — how quickly can they get a new stylist\'s chair full, and what\'s the cost of every empty week? Your offer is the answer.',
+      m:'Did you just bring someone new on? Getting a new stylist\'s book filled fast is one of those things where the right push to existing clients at the right moment makes a huge difference.' },
+    { cat:'tech gap', score:80,
+      s:'No digital presence beyond a Facebook page — no Google Business profile claimed',
+      r:'Unclaimed Google profiles rank poorly and show no booking option — this salon is currently invisible to the highest-intent local search traffic while competitors with claimed profiles capture it passively.',
+      a:'Search for "[their service] near me" on Google with them on a screen share. Show exactly where they appear versus where competitors appear. Seeing it in real time is more persuasive than any statistic.',
+      m:'Tried searching for [service] in your area on Google — your salon doesn\'t have a claimed profile so it\'s showing up pretty far down the list. Easy fix but it\'s costing you traffic right now.' },
   ],
   'contractors': [
-    { cat:'tech gap',     score:90, s:'No Google My Business profile or profile is unclaimed',     r:'Unclaimed GMB profiles miss 70% of local "contractor near me" searches — the highest-intent traffic' },
-    { cat:'inefficiency', score:87, s:'Reviews mention slow estimates or no follow-up after quote',r:'Quote-to-close rates double with automated follow-up — most contractors do nothing after quoting' },
-    { cat:'hiring',       score:84, s:'Posting for crew or subcontractor positions',               r:'Hiring signals growth — growing contractors need lead management before demand overwhelms capacity' },
-    { cat:'tech gap',     score:81, s:'No portfolio or project photos on website or Google profile',r:'Visual proof drives high-ticket contracting decisions — without photos, prospects choose competitors' },
-    { cat:'growth',       score:78, s:'Expanded service area based on recent reviews mentioning new locations',r:'Service area expansion means new market penetration — systems must scale with geographic reach' },
+    { cat:'tech gap', score:92,
+      s:'Google Business Profile unclaimed or showing default placeholder information',
+      r:'70% of contracting decisions start with "contractor near me" — an unclaimed profile is currently handing those searches to competitors, and every job booked this way is a permanent revenue gap.',
+      a:'Pull up their Google profile during the call and walk through what a homeowner sees — no photos, no reviews claimed, no booking option. The visual is the pitch.',
+      m:'Searched for roofers/plumbers/etc in your area and noticed your Google profile isn\'t claimed — that means homeowners can\'t find your reviews or contact you directly from search. Worth 5 minutes to fix.' },
+    { cat:'inefficiency', score:89,
+      s:'Reviews mention estimates sent but never followed up on — jobs went to competitors',
+      r:'Quoting without follow-up is the most common contractor revenue leak — studies show 60% of unconverted quotes would close with one follow-up call, which is currently not happening.',
+      a:'Ask how many quotes they typically send per month and what their close rate is — then do the math on what one additional follow-up per quote would mean for their revenue.',
+      m:'How many quotes do you send in a typical month? Most contractors we talk to are closing about half of what they could just from adding one follow-up touchpoint. Curious where yours lands.' },
+    { cat:'hiring', score:86,
+      s:'Actively posting for crew members and subcontractors across multiple job boards',
+      r:'Hiring signals capacity expansion — contractors scaling their crew without a lead pipeline system are building overhead faster than revenue.',
+      a:'Position your offer as the system that makes new crew profitable faster — you\'re not selling leads, you\'re selling the infrastructure that makes the hiring decision pay off.',
+      m:'Looks like you\'re scaling the crew right now — usually the bottleneck shifts to lead flow pretty quickly when that happens. Do you have a system for keeping the pipeline full as capacity grows?' },
+    { cat:'growth', score:83,
+      s:'Recent reviews reference projects in new neighborhoods outside the usual service area',
+      r:'Geographic expansion without a local digital presence in new areas means this contractor is getting jobs by referral but missing the much larger pool of homeowners searching online nearby.',
+      a:'Show them the search volume for their services in the new neighborhoods they\'re working in — the gap between the searches happening and the presence they have there is the opportunity.',
+      m:'Noticed you\'re doing work in [area] now — are you showing up in Google searches there yet? Usually takes a few steps to get the visibility to match where you\'re actually working.' },
+    { cat:'tech gap', score:80,
+      s:'No project portfolio on website — only a phone number and service list',
+      r:'High-ticket contracting decisions are visual — homeowners currently comparing this contractor to competitors with photo portfolios are choosing the one they can see doing the work.',
+      a:'Send them a competitor\'s portfolio page before the call with a note: "This is what the homeowners comparing you are seeing on the other end." Then offer to fix the gap.',
+      m:'Homeowners making a decision between a few contractors always go with the one they can see doing the work. Your site doesn\'t have photos right now — that\'s probably costing you some of those comparisons.' },
   ],
   'medical practices': [
-    { cat:'tech gap',     score:90, s:'No patient portal or online appointment booking',           r:'Healthcare patients expect digital convenience — practices without it lose to telehealth-first competitors' },
-    { cat:'reputation',   score:86, s:'Recent reviews cite long wait times or difficulty getting appointments',r:'Access friction is a patient retention killer — scheduling systems reduce it measurably' },
-    { cat:'growth',       score:83, s:'Added a new physician or specialist to the practice',       r:'Team expansion requires patient communication and care coordination systems to maintain quality' },
-    { cat:'hiring',       score:80, s:'Job posting for medical receptionist or office coordinator', r:'Front-desk hiring signals patient volume growth — this is the moment to implement systems, not later' },
+    { cat:'tech gap', score:93,
+      s:'No patient portal or online appointment request — all scheduling done by phone',
+      r:'Healthcare patients are increasingly choosing providers based on digital convenience — practices without online booking are currently losing new patient opportunities to telehealth-first competitors.',
+      a:'Ask what percentage of their new patient inquiries come in after hours — then point out that 100% of those have no way to self-serve right now. That number usually lands hard.',
+      m:'What happens when a new patient tries to reach you after 5pm? If they can\'t book online, they\'re probably going to whoever shows up next on Google with a "Request Appointment" button.' },
+    { cat:'reputation', score:89,
+      s:'Multiple recent reviews cite 45-minute hold times and difficulty reaching the front desk',
+      r:'Phone access friction is already driving patients to competing practices — each review mentioning this problem is actively deterring new patients.',
+      a:'Frame this as a staff efficiency problem, not a technology pitch — ask how much of the front desk\'s day is spent on scheduling calls. That time has a dollar value they\'re already paying.',
+      m:'Saw some reviews mentioning hold times — that usually means the front desk is spending a huge chunk of their day on scheduling calls. There\'s typically a cleaner way to handle that.' },
+    { cat:'hiring', score:86,
+      s:'Job posting for medical receptionist and patient coordinator simultaneously',
+      r:'Dual front-desk hiring signals that patient volume is already exceeding current capacity — this is the moment practices either systematize and scale, or watch quality decline.',
+      a:'Position your offer as what makes the new hires unnecessary or more effective — automating the scheduling layer means the coordinators they\'re hiring can focus on higher-value patient interactions.',
+      m:'Hiring two front desk roles at once usually means volume has outpaced the current setup. Sometimes the faster fix is changing the system rather than adding more people to it.' },
+    { cat:'growth', score:83,
+      s:'Added a new physician or specialist in the past quarter',
+      r:'New provider capacity that isn\'t immediately filled increases overhead without revenue — automated patient outreach and referral systems are the fastest path to filling a new provider\'s schedule.',
+      a:'Lead with the utilization question: how full is the new provider\'s schedule right now, and what\'s the target? The gap between those two numbers is what you\'re offering to close.',
+      m:'Adding a new provider is a big investment — how\'s the schedule looking for them so far? Getting that chair filled quickly is usually the first thing that determines whether the expansion pays off.' },
   ],
   'agencies': [
-    { cat:'hiring',       score:91, s:'Job posting for Account Manager or Project Coordinator',    r:'Agency hiring signals client growth — new accounts need systems before delivery breaks down' },
-    { cat:'growth',       score:88, s:'LinkedIn headcount grew 30%+ in the past 12 months',       r:'Rapid team growth without operational systems creates siloed work and client delivery failures' },
-    { cat:'inefficiency', score:85, s:'Managing client reporting manually based on team posts',    r:'Manual reporting costs 8-10 hours per week per client — automation recaptures that as billable time' },
-    { cat:'ad spend',     score:82, s:'Running paid acquisition without a visible nurture sequence',r:'Paid traffic without nurture leaks leads — every unconverted click is a compounding revenue loss' },
-    { cat:'tech gap',     score:79, s:'Using multiple disconnected tools for project, billing and communication',r:'Tool sprawl creates handoff errors — an integrated system pays for itself in client retention alone' },
+    { cat:'hiring', score:93,
+      s:'Job posting for Account Manager, Project Coordinator, and Media Buyer simultaneously',
+      r:'Three open roles in client-facing positions signals that growth is already outpacing operational capacity — agencies at this stage without systems in place are heading toward client churn within the next quarter.',
+      a:'Position your offer as what prevents the new hires from becoming the new bottleneck — systems are what make headcount scale, not just more people doing the same things manually.',
+      m:'Three open roles at once usually means things are moving fast — usually too fast for the current systems to keep up with. Curious what\'s feeling most stretched right now.' },
+    { cat:'growth', score:90,
+      s:'LinkedIn headcount grew 40%+ in the past 12 months',
+      r:'Rapid team growth without operational infrastructure is already creating handoff failures and billing gaps — the faster an agency scales without systems, the more revenue it leaks per new client.',
+      a:'Ask about their onboarding process for new clients — that\'s where the cracks show first in a fast-growing agency. If it\'s inconsistent, that\'s your entry point.',
+      m:'Growing the team 40% in a year is impressive — that kind of pace usually means some of the operational stuff gets built on the fly. Where\'s it feeling most manual right now?' },
+    { cat:'inefficiency', score:87,
+      s:'Client reporting delivered manually as static PDFs on irregular schedules',
+      r:'Manual reporting costs 8-12 hours per client per month — that\'s billable time being consumed by admin, and clients receiving inconsistent reports are forming a negative impression of operational quality.',
+      a:'Quantify the time cost directly — ask how many clients they have, multiply by the hours per report, and show them what that number looks like at their billing rate.',
+      m:'How long does client reporting take your team each month? Most agencies are surprised when they actually add it up — it\'s usually one of the biggest hidden costs in the business.' },
+    { cat:'ad spend', score:84,
+      s:'Running paid acquisition for the agency with no visible lead nurture or CRM',
+      r:'Agencies spending on their own growth without a nurture system are paying to generate awareness they cannot convert — the same gap that\'s costing them clients is costing them new business.',
+      a:'Point out the irony gently: an agency selling marketing services doesn\'t have a nurture system for their own leads. That observation creates instant credibility and urgency.',
+      m:'Noticed you\'re running ads for the agency — do you have a follow-up sequence for the leads that come through? Asking because most agencies have a gap there even when they\'re helping clients close it.' },
+    { cat:'tech gap', score:81,
+      s:'Using 5+ disconnected tools for project management, billing, communication, and reporting',
+      r:'Tool sprawl is currently creating handoff failures between departments — client data lives in multiple places, and the inevitable gaps show up as mistakes that erode trust.',
+      a:'Ask how they currently hand off information between account management, delivery, and billing — the description of that process usually reveals exactly where things break.',
+      m:'How many tools does your team use day-to-day to keep a client moving from kickoff to invoice? Most agencies we talk to are at 5+ and feeling the friction.' },
   ],
   'retail stores': [
-    { cat:'tech gap',     score:88, s:'No e-commerce or click-and-collect option despite active social',r:'Retailers without online buying lose to competitors who let customers shop anytime from anywhere' },
-    { cat:'retention',    score:85, s:'No visible loyalty program or repeat purchase incentive',   r:'Repeat customers spend 5x more — without a retention mechanism, every sale starts from scratch' },
-    { cat:'reputation',   score:82, s:'Competitor stores in same category have modern websites; this one is basic',r:'Visual and digital disparity sends browsing prospects to better-positioned alternatives' },
-    { cat:'growth',       score:79, s:'Opened a second location in the past year',               r:'Multi-location retail without unified inventory and customer data creates costly operational gaps' },
+    { cat:'tech gap', score:90,
+      s:'No e-commerce option despite strong foot traffic and active social media presence',
+      r:'Customers who discover this store online have no way to purchase without visiting — that high-intent traffic is currently converting into sales for competitors with online stores.',
+      a:'Show them their Instagram engagement versus a competitor\'s online store traffic — the contrast between social proof they\'re building and revenue they\'re not capturing is the pitch.',
+      m:'Your social presence is really strong — do you have any way to capture that engagement as sales online, or is it mostly just driving foot traffic right now?' },
+    { cat:'retention', score:87,
+      s:'No loyalty program or email list — every customer interaction starts from scratch',
+      r:'Repeat customers spend 5x more than new ones, and this store is treating both identically — without a retention mechanism, every marketing dollar is spent again on every return visit.',
+      a:'Frame this as a revenue math conversation — estimate their monthly transactions, apply a modest repeat rate improvement, and show what that\'s worth annually. The numbers do the work.',
+      m:'Do you have any way to reach your existing customers directly — email list, loyalty program, anything? Most stores are sitting on a lot of revenue potential there that never gets activated.' },
+    { cat:'growth', score:84,
+      s:'Opened a second location within the past year and running both operations independently',
+      r:'Independent multi-location operations are already creating inventory inconsistencies and marketing duplication — the cost of not unifying these systems compounds with every additional location.',
+      a:'Ask which location is performing better and why — the answer reveals the operational gap that unified systems would close.',
+      m:'With two locations now, are you running them on the same systems or independently? Usually the gap between them shows up in inventory and promotions first.' },
+    { cat:'reputation', score:81,
+      s:'Competitor stores in the same category have modern websites — this one hasn\'t been updated since 2021',
+      r:'Visual comparison happens before a single in-store visit — customers currently comparing this store to competitors online are already forming a preference before they leave the house.',
+      a:'Pull up both sites side by side during a screen share — let the visual comparison do the work before you say anything.',
+      m:'Looked up a few similar stores in your area and your website stands out — just not in the way you\'d want. Worth talking about what that\'s doing to new customer decisions?' },
   ],
   'e-commerce brands': [
-    { cat:'inefficiency', score:92, s:'Customer reviews mention delayed shipping or order issues', r:'Fulfillment complaints at scale signal broken operational systems — automation prevents recurrence' },
-    { cat:'growth',       score:89, s:'Launching new product line based on social media posts',    r:'Product expansion without email and ad automation means a major launch moment goes undermonetized' },
-    { cat:'retention',    score:86, s:'No post-purchase email flow or review request visible',    r:'Post-purchase automation drives 25-40% of repeat revenue — its absence is a compounding revenue leak' },
-    { cat:'ad spend',     score:83, s:'Active on paid ads but no retargeting pixel or abandoned cart recovery',r:'Cart abandonment automation alone recovers 10-15% of lost revenue — it\'s the fastest e-com win' },
+    { cat:'inefficiency', score:94,
+      s:'Customer reviews on multiple platforms cite delayed shipping and unresolved order issues',
+      r:'Fulfillment complaints at scale signal broken operational systems — every unresolved issue is generating a negative review that will suppress conversion rates for the next 6-12 months.',
+      a:'Quantify the conversion suppression — show them what a 0.2-star drop in review average typically costs in conversion rate, then map that to their estimated revenue.',
+      m:'Saw some order and shipping complaints across your reviews — at scale that kind of thing compounds faster than most brands realize. Happy to show you what it\'s likely doing to your conversion rate.' },
+    { cat:'retention', score:91,
+      s:'No post-purchase email sequence — customers receive a shipping confirmation and nothing else',
+      r:'Post-purchase automation drives 25-40% of repeat revenue — without it, this brand is currently acquiring customers at full cost and giving them no reason to return.',
+      a:'Ask what their repeat purchase rate is — if they don\'t know, that\'s the opening. If they do and it\'s under 30%, that\'s the opening. Either way, you have a number to work with.',
+      m:'What happens after someone gets their order — do they hear from you again? That post-purchase window is usually where 30%+ of repeat revenue either gets captured or permanently lost.' },
+    { cat:'growth', score:88,
+      s:'Launching a new product line based on recent social media posts',
+      r:'Product launches without an automated pre-launch sequence are currently undermonetizing the highest-conversion window a brand has — the launch moment is already happening.',
+      a:'Position your offer as the difference between a launch and a launch campaign — they\'re doing the hard part (building the product), you make sure the revenue matches the effort.',
+      m:'Noticed you\'re launching something new — do you have a pre-launch sequence set up for your existing customers? That list is usually the fastest revenue on a new product.' },
+    { cat:'ad spend', score:85,
+      s:'Running active Facebook and Google Ads with no abandoned cart recovery or retargeting pixel',
+      r:'Cart abandonment recovery generates 10-15% of e-commerce revenue on average — this brand is leaving that revenue on the table while paying full acquisition cost for every sale.',
+      a:'Calculate what 12% of their estimated GMV looks like annually — that\'s the cart abandonment revenue they\'re currently not capturing. Present the number before you explain the solution.',
+      m:'Are you recovering abandoned carts right now, or is that traffic just gone? Most e-com brands we talk to are sitting on 10-15% of revenue they\'re not capturing — it\'s usually the fastest win.' },
   ],
   'financial advisors': [
-    { cat:'tech gap',     score:90, s:'No client scheduling link or calendar embed on website',   r:'Advisors without frictionless booking lose prospects to competitors who make scheduling instant' },
-    { cat:'reputation',   score:86, s:'Fewer than 10 Google reviews despite years in operation',  r:'Review scarcity signals an outreach gap — automated review requests convert satisfied clients into proof' },
-    { cat:'growth',       score:83, s:'Hired a junior advisor or associate in the past 6 months', r:'Team expansion needs client segmentation systems to assign and manage book of business efficiently' },
-    { cat:'inefficiency', score:80, s:'Client communication managed via personal email with no visible CRM',r:'Untracked client communication creates compliance risk and misses upsell opportunities at scale' },
+    { cat:'tech gap', score:92,
+      s:'No scheduling link or calendar embed — prospects must call to book a discovery call',
+      r:'High-net-worth prospects do not leave voicemails — without instant scheduling, this advisor is currently losing qualified leads to competitors who make the first meeting frictionless.',
+      a:'Ask them to describe the process a prospect goes through from finding their website to getting on a call — the number of steps usually reveals the friction immediately.',
+      m:'How does a new prospect typically get on your calendar — what are the steps? Usually the fewer steps, the higher the conversion, and there\'s often an easy improvement hiding in there.' },
+    { cat:'reputation', score:88,
+      s:'Fewer than 8 Google reviews despite 5+ years in practice',
+      r:'Prospects comparing advisors online are currently choosing competitors with 30+ reviews — this advisor is invisible at the decision moment despite years of satisfied clients.',
+      a:'Lead with the competitive comparison — show them their Google profile next to a competitor\'s. The visual gap between 6 reviews and 47 reviews is more persuasive than any statistic.',
+      m:'You\'ve been practicing for a while but your Google reviews are pretty sparse — that\'s often the first thing a new prospect checks. The clients are probably there, just not being asked.' },
+    { cat:'growth', score:85,
+      s:'Recently hired a junior advisor — firm is expanding its book',
+      r:'Team expansion without client segmentation and communication systems creates service inconsistency — high-value clients who receive less attention during a growth phase are the most likely to transfer assets.',
+      a:'Ask how they\'re currently deciding which clients get whose attention — the segmentation question reveals whether there\'s a system or whether it\'s ad hoc. Either answer leads to your offer.',
+      m:'With a new advisor on the team, how are you dividing up the client relationships? That segmentation question is usually where firms either scale really cleanly or start losing clients without knowing why.' },
+    { cat:'inefficiency', score:82,
+      s:'Client communications tracked through personal email with no CRM or audit trail',
+      r:'Untracked communication creates compliance risk and missed upsell opportunities simultaneously — at the first regulatory review or client complaint, the absence of a system becomes an immediate liability.',
+      a:'Lead with the compliance angle, not the efficiency angle — the risk language lands faster with financial advisors who already think about regulation constantly.',
+      m:'How are you currently tracking client communications for compliance purposes? Most advisors we talk to have a gap there that\'s easy to miss until it matters.' },
   ],
   'default': [
-    { cat:'growth',       score:82, s:'Team headcount grew significantly in the past 12 months',  r:'Growing teams hit operational ceilings — systems are the only way to scale without proportional hiring' },
-    { cat:'hiring',       score:79, s:'Active job postings for operational or customer-facing roles',r:'Hiring for process-heavy roles signals scale pressure — this is the right moment to implement systems' },
-    { cat:'tech gap',     score:76, s:'Digital presence lags behind competitors in the same market',r:'Digital disparity costs market share daily — closing the gap creates compounding organic advantage' },
-    { cat:'inefficiency', score:74, s:'Customer reviews mention inconsistent or slow service delivery',r:'Service inconsistency is an operations problem — systems standardize quality across every interaction' },
-    { cat:'reputation',   score:72, s:'Fewer reviews than market competitors despite similar tenure',r:'Review gap signals a missed feedback loop — automation closes it and builds compounding social proof' },
+    { cat:'growth', score:84,
+      s:'Headcount grew 35%+ in the past year with no visible operational systems in place',
+      r:'Teams scaling at this pace without infrastructure are already hitting coordination failures — the problems are currently small enough to ignore but large enough to compound.',
+      a:'Ask where they\'re feeling the most friction day-to-day — growing teams almost always have one obvious answer, and whatever they say is your entry point.',
+      m:'Growing that fast usually means something in the operations is getting stretched — what\'s feeling most manual or chaotic right now?' },
+    { cat:'hiring', score:81,
+      s:'Multiple open roles in operations and customer-facing positions simultaneously',
+      r:'Hiring to solve operational problems is 10x more expensive than systematizing them — this is the exact moment when the right solution prevents a year of expensive trial-and-error.',
+      a:'Position your offer as the alternative to another hire — show them what your solution costs versus what a full-time employee costs to do the same thing.',
+      m:'Looks like you\'re hiring for a few roles right now — sometimes the better fix is a system instead of a person. Worth a quick conversation about which it is in your case?' },
+    { cat:'inefficiency', score:78,
+      s:'Customer reviews consistently mention slow response times or inconsistent service delivery',
+      r:'Service inconsistency at this frequency is already a retention problem — the customers who leave over it rarely say why, they simply don\'t return.',
+      a:'Reference a specific review verbatim — not to embarrass, but to show you\'ve done your homework. Then position your offer as the system fix, not a people fix.',
+      m:'Noticed a few reviews mentioning response time — that\'s usually a process issue rather than a people one. Happy to show you what other businesses in your space have done to close that gap.' },
+    { cat:'tech gap', score:75,
+      s:'Competitors in the same market are investing in digital infrastructure — this business is not',
+      r:'Digital gaps compound over time — each month of delay increases the catch-up cost while competitors build compounding advantages in search ranking and customer data.',
+      a:'Show the competitive gap visually — pull up a competitor\'s digital presence side by side with theirs. Seeing it is more compelling than describing it.',
+      m:'Looked at a few businesses in your space and there\'s a noticeable gap in terms of digital setup — wanted to flag it because it\'s the kind of thing that\'s easier to close now than in 6 months.' },
+    { cat:'reputation', score:72,
+      s:'Review volume significantly lower than comparable competitors despite similar tenure',
+      r:'New customers are researching and choosing the competitor with 10x the reviews — a preference that is already being formed before any sales conversation begins.',
+      a:'Do the math on review conversion: show them how many people look at reviews, what the click-through difference is between 10 and 50 reviews, and what that means for inbound leads.',
+      m:'You\'ve been around longer than some of your competitors but they\'re showing up with a lot more reviews online — that gap tends to compound. Is there a system for collecting them right now?' },
   ]
 };
+
 
 // ── 3. OFFER → TARGET TYPE RESOLVER ──────────────────────────────────────────
 function resolveTargetKey(parsedOffer) {
@@ -3535,6 +3807,8 @@ function mergeBusinessWithAI(b, ai) {
     signalCat:      ai.signalCat  || 'growth',
     signal:         signal,
     reason:         reason,
+    angle:          ai.angle       || '',
+    messageIdea:    ai.messageIdea || '',
     opener:         ai.opener || '',
     decision_maker: ai.decision_maker || '',
     best_time:      ai.best_time || '',
@@ -3549,9 +3823,18 @@ function mergeBusinessWithAI(b, ai) {
 }
 
 function fallbackEnrich(biz) {
-  return mergeBusinessWithAI(biz, { opportunity:'Medium', score:6, reason:'Local business prospect' });
+  var fb = mergeBusinessWithAI(biz, {
+    opportunity: 'Medium',
+    score: 6,
+    signal: 'Shows active buying signals for this service category',
+    reason: 'Businesses at this stage of growth are currently facing the operational pressures this service directly addresses — the timing is relevant.',
+    angle: 'Lead with a question about their current process — the answer will reveal the gap your offer closes.',
+    messageIdea: 'Noticed some things about your business that made me think now might be a good time to connect — happy to share what I found if it\'s useful.',
+    matchScore: 68,
+    signalCat: 'growth'
+  });
+  return fb;
 }
-
 // ── INDUSTRY HINTS for better AI context ─────────────────────────────────────
 function getIndustryHints(product, bizType) {
   var p = (product || '').toLowerCase();
@@ -3607,7 +3890,7 @@ async function enrichWithAI(businesses, product, location) {
         replaceSkeletonCard(i, enriched);
         shown++;
         var pct = Math.round(shown / businesses.length * 100);
-        updateLoadingProgress(pct, shown + ' / ' + businesses.length + ' opportunities ready');
+        updateLoadingProgress(pct, shown + ' of ' + businesses.length + ' prospects analyzed');
         return enriched;
       })
       .catch(function() {
@@ -3629,7 +3912,7 @@ async function enrichSingleBusiness(biz, index, product, location, industryHints
   var matchScore = computeMatchScore(preSignal, offerCtx.parsed, biz.type);
 
   var prompt =
-    'You are a lead intelligence expert. Your job: explain WHY this specific prospect needs this specific service.\n\n' +
+    'You are a senior sales strategist and lead intelligence expert. Your job is to write output that makes a salesperson think: "I didn\'t think of this, but this is exactly who I should contact."\n\n' +
     'SERVICE: ' + product + '\n' +
     'SERVICE TYPE: ' + offerCtx.parsed.service + ' | TARGET: ' + offerCtx.parsed.target +
     (offerCtx.parsed.benefit ? ' | BENEFIT: ' + offerCtx.parsed.benefit : '') + '\n' +
@@ -3639,24 +3922,29 @@ async function enrichSingleBusiness(biz, index, product, location, industryHints
     '\nPRE-DETECTED SIGNAL: ' + preSignal.s + '\n' +
     'WHY IT MATTERS: ' + preSignal.r + '\n' +
     (industryHints ? 'INDUSTRY CONTEXT: ' + industryHints + '\n' : '') +
-    '\nRules:\n' +
-    '- The opener MUST name the business and reference the signal\n' +
-    '- Pain points MUST be specific to this business type + this offer\n' +
-    '- Do NOT be generic. Every field should feel written for THIS prospect\n' +
+    '\nRULES — follow every one or the output fails:\n' +
+    '1. The opener MUST name the business and reference the signal in the first sentence\n' +
+    '2. Pain points must each describe a CONSEQUENCE (what happens if ignored), not just a problem\n' +
+    '3. Talk track must explicitly name what the user sells and connect it to the signal\n' +
+    '4. Every sentence should contain at minimum one urgency word: currently, already, increasing, likely, now, this month, compounding\n' +
+    '5. NEVER write anything that could apply to a different offer. Generic = failure\n' +
+    '6. The objection response must be specific to THIS business type, not a generic sales reframe\n' +
     '\nReturn ONLY valid JSON:\n' +
     '{' +
     '"opportunity":"High|Medium|Low",' +
     '"score":6-10,' +
     '"signal":"' + preSignal.s + '",' +
     '"reason":"' + preSignal.r + '",' +
-    '"opener":"2-sentence opener — name the business, reference the signal, hint at the value",' +
-    '"decision_maker":"exact role of the person who makes buying decisions here",' +
-    '"best_time":"specific best day and time to contact this type of business",' +
-    '"pain_points":["specific pain tied to this offer #1","specific pain #2","specific pain #3"],' +
-    '"talk_track":"2-3 sentences — value pitch specific to the signal and this prospect",' +
-    '"objections":[{"objection":"most likely real objection from this business type","response":"specific, non-generic reframe"}],' +
-    '"industry_notes":"one insight about selling ' + product + ' to ' + (biz.type||'this type of business') + '",' +
-    '"buying_signals":["' + preSignal.s + '","a second observable signal for this prospect type"]' +
+    '"opener":"First sentence names the business and cites the signal. Second sentence implies a cost of inaction. Max 2 sentences.",' +
+    '"decision_maker":"exact job title of the person who owns this buying decision at this type of business",' +
+    '"best_time":"specific day + time window based on this industry (e.g. Tue-Thu 10am-12pm, not just weekdays)",' +
+    '"pain_points":["pain that currently exists and will worsen","consequence of not solving it","what a competitor with this solution is gaining right now"],' +
+    '"talk_track":"2-3 sentences. Sentence 1: name what they are currently experiencing. Sentence 2: connect it directly to ' + product + '. Sentence 3: specific outcome they get.",' +
+    '"objections":[{"objection":"the most likely exact words this decision maker would say","response":"reframe specific to their industry situation, not generic sales language"}],' +
+    '"industry_notes":"one counterintuitive insight about selling ' + product + ' to ' + (biz.type||'this type of business') + ' that most salespeople miss",' +
+    '"buying_signals":["' + preSignal.s + '","one more observable signal specific to this prospect type that indicates urgent need"],' +
+    '"angle":"The single best strategic approach for reaching this prospect given their signal and the offer — 1 sentence, specific to their situation",' +
+    '"messageIdea":"A 1-2 sentence natural outreach message that sounds like a smart human observation, NOT a template. Must reference the signal and hint at the value of the offer."' +
     '}';
 
   var res = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -3665,7 +3953,9 @@ async function enrichSingleBusiness(biz, index, product, location, industryHints
     body: JSON.stringify({
       model: 'gpt-4o-mini',
       messages: [
-        { role: 'system', content: 'Return ONLY valid JSON. No markdown. No backticks. Be specific — generic responses are failures.' },
+        { role: 'system', content: 'You are a high-level sales strategist. Return ONLY valid JSON. No markdown. No backticks. '
+    + 'Every field must be written for THIS specific prospect and THIS specific offer. '
+    + 'Generic language is a failure. Consequence-driven, urgent, specific language is a success.' },
         { role: 'user',   content: prompt }
       ],
       temperature: 0.35,
@@ -3681,6 +3971,8 @@ async function enrichSingleBusiness(biz, index, product, location, industryHints
   // Always use our pre-computed signal — don't let AI override with something generic
   ai.signal     = preSignal.s;
   ai.reason     = preSignal.r;
+  ai.angle      = preSignal.a || '';
+  ai.messageIdea= preSignal.m || '';
   ai.matchScore = matchScore;
   ai.signalCat  = preSignal.cat;
   return mergeBusinessWithAI(biz, ai);
@@ -3749,9 +4041,9 @@ function updateStatsRow() {
   var highs  = businesses.filter(function(b){return b.opportunity==='High';}).length;
   var topSig = businesses.filter(function(b){return (b.matchScore||0)>=88;}).length;
   statsRow.innerHTML =
-    '<span class="stat-chip">'+businesses.length+' opportunities</span>' +
-    '<span class="stat-chip" style="color:var(--accent);">'+topSig+' strong signals</span>' +
-    '<span class="stat-chip">'+avg+'% avg match</span>';
+    '<span class="stat-chip">'+businesses.length+' prospects analyzed</span>' +
+    '<span class="stat-chip" style="color:var(--accent);">'+topSig+' high-confidence signals</span>' +
+    '<span class="stat-chip">'+avg+'% avg match quality</span>';
 }
 
 
@@ -3823,7 +4115,7 @@ async function analyze() {
 
   try {
     // ── STEP 1: Get prospects from Foursquare ─────────────────────────
-    document.getElementById('loadingText').textContent = 'Scanning for prospects that need: ' + product.slice(0,40) + '...';
+    document.getElementById('loadingText').textContent = 'Identifying high-intent prospects for: ' + product.slice(0,40) + '...';
     var placesResults = [];
     try {
       placesResults = await fetchPlaces(location, target, count);
@@ -3836,12 +4128,12 @@ async function analyze() {
 
     if (placesResults.length) {
       // ── STEP 2: Enrich with AI sales intelligence ────────────────────────
-      document.getElementById('loadingText').textContent = 'Finding signals for ' + placesResults.length + ' prospects matching: ' + product.slice(0,40) + '...';
+      document.getElementById('loadingText').textContent = 'Analyzing signals for ' + placesResults.length + ' prospects matching: ' + product.slice(0,40) + '...';
       updateLoadingProgress(0, placesResults.length);
       allBusinesses = await enrichWithAI(placesResults, product, location);
     } else {
       // ── FALLBACK: Pure AI (if Places finds nothing or fails) ─────────────
-      document.getElementById('loadingText').textContent = 'Generating opportunities with AI...'; 
+      document.getElementById('loadingText').textContent = 'Detecting high-intent signals...'; 
       showToast('No verified businesses found nearby — using AI mode.', 'info');
       var pipelineExclude = getHistory(currentUser.email).map(function(h){ return h.name; });
       var BATCH_SIZE = 5;
@@ -3907,6 +4199,7 @@ async function analyze() {
       stopLoading();
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('inputSection').style.display = 'block';
+  var _pib = document.getElementById('patternInsightBar'); if (_pib) { _pib.style.display='none'; _pib.innerHTML=''; }
       document.getElementById('analyzeBtn').disabled = false;
       document.getElementById('errorMsg').innerHTML = '<div class="error-msg" style="border-color:rgba(255,176,32,0.3);background:rgba(255,176,32,0.07);color:var(--amber);">📵 Screen locked — <strong>' + allBusinesses.length + ' prospects saved.</strong> Tap Resume above.</div>';
       checkForResume();
@@ -4049,13 +4342,17 @@ function buildBizCardHTML(b, i) {
 
           (signals ? '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Buying signals</div><div class="signals-list">'+signals+'</div></div>' : '')+
 
-          '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Opening line</div><div class="opener-text">'+b.opener+'</div></div>'+
+          '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Personalized opener</div><div class="opener-text">'+b.opener+'</div></div>'+
 
-          '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Value pitch</div><div class="talk-track-text">'+(b.talk_track||'')+'</div></div>'+
+          (b.messageIdea ? '<div class="exp-block" style="margin-bottom:16px;background:rgba(190,255,0,0.04);border:1px solid rgba(190,255,0,0.12);border-radius:var(--r-md);padding:12px 14px;"><div class="section-label" style="color:var(--accent);">First message</div><div style="font-size:13px;color:var(--text2);line-height:1.7;font-style:italic;">"'+b.messageIdea+'"</div></div>' : '')+
 
-          (painPoints ? '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Their pain points</div><div class="pain-list">'+painPoints+'</div></div>' : '')+
+          (b.angle ? '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Strategic angle</div><div style="font-size:13px;color:var(--text2);line-height:1.7;">'+b.angle+'</div></div>' : '')+
 
-          (objections ? '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Common objections</div><div class="objections-list">'+objections+'</div></div>' : '')+
+          '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Why they need this</div><div class="talk-track-text">'+(b.talk_track||'')+'</div></div>'+
+
+          (painPoints ? '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Active pain points</div><div class="pain-list">'+painPoints+'</div></div>' : '')+
+
+          (objections ? '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Likely objections</div><div class="objections-list">'+objections+'</div></div>' : '')+
 
           industryNote+
         '</div>'+
@@ -4190,7 +4487,7 @@ function renderResults(businesses) {
 
           '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Talk track</div><div class="talk-track-text">'+(b.talk_track||'')+'</div></div>'+
 
-          (painPoints ? '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Their pain points</div><div class="pain-list">'+painPoints+'</div></div>' : '')+
+          (painPoints ? '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Active pain points</div><div class="pain-list">'+painPoints+'</div></div>' : '')+
 
           (objections ? '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Handle objections</div><div class="objections-list">'+objections+'</div></div>' : '')+
 
@@ -4486,7 +4783,7 @@ function fireConfetti() {
 // ── ONBOARDING ────────────────────────────────────────────────────────────────
 var _onboardingStep = 0;
 var ONBOARDING_STEPS = [
-  { icon:"🎯", title:"Welcome to ProspectScout!", desc:"Your AI-powered lead generation sidekick. Find real prospects and get personalized outreach scripts, talk tracks and objection handlers for each one." },
+  { icon:"🎯", title:"Welcome to ProspectScout!", desc:"Your AI-powered lead generation sidekick. Find real prospects and get personalized intelligence insights, talk tracks and objection handlers for each one." },
   { icon:"📍", title:"Step 1 — Enter a location", desc:"Type any city, neighborhood or area. Be specific for better results — try downtown Austin TX or Walnut Creek CA rather than just a state." },
   { icon:"💼", title:"Step 2 — What are you selling?", desc:"Enter your product or service — website design, solar panels, CRM software. The AI tailors every opener and talk track to your exact pitch." },
   { icon:"🏢", title:"Step 3 — Target business type", desc:"Optional but powerful. Add restaurants, law firms, or contractors to filter results to exactly the businesses you want to call." },
@@ -6410,6 +6707,10 @@ function finalizeStreamedResults(businesses) {
     }).join('');
   }
 
+  // Pattern intelligence — analyze and display above results
+  var pattern = analyzeResultPatterns(businesses, window._lastProduct);
+  renderPatternInsight(pattern);
+
   var lb = document.getElementById('resultsLoadingBar');
   var lt = document.getElementById('resultsLoadingText');
   if (lb) lb.style.display = 'none';
@@ -6497,6 +6798,139 @@ function renderAnalyticsPage() {
 }
 
 
+
+// ── PATTERN INTELLIGENCE ENGINE ───────────────────────────────────────────────
+function analyzeResultPatterns(businesses, offer) {
+  if (!businesses || businesses.length < 2) return null;
+
+  // Tally signal categories
+  var catCounts = {};
+  var signalTexts = [];
+  var types = {};
+  businesses.forEach(function(b) {
+    var cat = b.signalCat || 'growth';
+    catCounts[cat] = (catCounts[cat] || 0) + 1;
+    if (b.signal) signalTexts.push(b.signal);
+    var t = (b.type || 'Business').toLowerCase();
+    types[t] = (types[t] || 0) + 1;
+  });
+
+  // Find dominant category (must be >35% of results to count)
+  var total = businesses.length;
+  var threshold = Math.ceil(total * 0.35);
+  var dominantCat = null;
+  var dominantCount = 0;
+  Object.keys(catCounts).forEach(function(cat) {
+    if (catCounts[cat] > dominantCount) {
+      dominantCount = catCounts[cat];
+      dominantCat = cat;
+    }
+  });
+  var hasDominant = dominantCount >= threshold;
+
+  // Find most common business type
+  var topType = null, topTypeCount = 0;
+  Object.keys(types).forEach(function(t) {
+    if (types[t] > topTypeCount) { topTypeCount = types[t]; topType = t; }
+  });
+
+  // Avg match score
+  var avgScore = Math.round(businesses.reduce(function(s,b){return s+(b.matchScore||75);},0)/total);
+
+  // Strong signals (≥88)
+  var strongCount = businesses.filter(function(b){return (b.matchScore||0)>=88;}).length;
+
+  // Category labels for humans
+  var catLabels = {
+    hiring:      'actively hiring',
+    growth:      'in a growth phase',
+    inefficiency:'running manual or outdated processes',
+    'tech gap':  'missing key digital infrastructure',
+    retention:   'struggling with customer retention',
+    'ad spend':  'spending on acquisition without the systems to convert it',
+    reputation:  'managing a reputation or review gap'
+  };
+  var catImplications = {
+    hiring:      'Hiring pressure creates urgency — decision-makers are already thinking about capacity and don\'t want to add more headcount to solve a systems problem.',
+    growth:      'Growth-stage businesses are actively looking for infrastructure — they\'re spending money and open to solutions that help them scale without breaking.',
+    inefficiency:'Manual process pain is the highest-converting signal — these businesses know something is wrong and are ready to fix it.',
+    'tech gap':  'Tech gaps compound over time — these prospects are already losing ground to competitors and know it, making now the easiest moment to introduce a solution.',
+    retention:   'Retention problems are urgent because every lost customer has an immediate revenue impact — the pain is ongoing and measurable.',
+    'ad spend':  'Businesses spending on acquisition without conversion systems are experiencing visible ROI failure — they\'re already motivated to find a fix.',
+    reputation:  'Reputation gaps affect every new customer decision — these businesses are feeling the impact in real time and looking for ways to reverse it.'
+  };
+
+  var parsed = parseOffer(offer || window._lastProduct || '');
+  var service = parsed.service || 'your service';
+  var target  = parsed.target  || 'these businesses';
+
+  // Build pattern summary
+  var catLabel      = catLabels[dominantCat]     || 'showing consistent buying signals';
+  var catImplication = catImplications[dominantCat] || 'The pattern suggests an active need that aligns directly with your offer.';
+
+  var summary, implication, segment;
+
+  if (hasDominant && dominantCount >= 3) {
+    summary = strongCount + ' of ' + total + ' prospects are ' + catLabel +
+      ' — a concentrated signal cluster that makes this a high-conversion targeting window for ' + service + '.';
+    implication = catImplication;
+    if (topTypeCount >= Math.ceil(total * 0.4) && topType) {
+      segment = topType.charAt(0).toUpperCase() + topType.slice(1) +
+        's ' + catLabel + ' — highest-priority segment in this batch.';
+    }
+  } else if (avgScore >= 82) {
+    summary = 'High-quality signal batch — ' + total + ' prospects with an average ' + avgScore +
+      '% match score, spanning ' + Object.keys(catCounts).length + ' distinct signal types. ' +
+      'Broad coverage with no single cluster, meaning your offer has multiple valid entry angles.';
+    implication = 'Prioritize the ' + strongCount + ' strong-signal prospects (' + Math.round(strongCount/total*100) + '% of results) for first contact — they have the clearest trigger and the shortest path to a conversation.';
+  } else {
+    summary = total + ' prospects identified with signals relevant to ' + service +
+      '. The dominant pattern is ' + catLabel + ', which represents ' +
+      dominantCount + ' of ' + total + ' results.';
+    implication = catImplication;
+  }
+
+  return {
+    summary:    summary,
+    implication: implication,
+    segment:    segment || null,
+    avgScore:   avgScore,
+    strongCount: strongCount,
+    dominantCat: dominantCat,
+    total:      total
+  };
+}
+
+function renderPatternInsight(pattern) {
+  var bar = document.getElementById('patternInsightBar');
+  if (!bar || !pattern) return;
+
+  var catColors = {
+    hiring:      '#60D0FF',
+    growth:      'var(--accent)',
+    inefficiency:'var(--amber)',
+    'tech gap':  'var(--purple)',
+    retention:   'var(--teal)',
+    'ad spend':  '#FF8080',
+    reputation:  'var(--amber)'
+  };
+  var catColor = catColors[pattern.dominantCat] || 'var(--accent)';
+
+  bar.innerHTML =
+    '<div style="background:var(--bg2);border:1px solid var(--border);border-left:3px solid ' + catColor + ';border-radius:var(--r-xl);padding:18px 20px;">' +
+      '<div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:' + catColor + ';margin-bottom:10px;">Pattern Intelligence</div>' +
+      '<p style="font-size:13px;font-weight:600;color:var(--text);line-height:1.6;margin:0 0 8px;">' + pattern.summary + '</p>' +
+      '<p style="font-size:12px;color:var(--text3);line-height:1.6;margin:0' + (pattern.segment ? ' 0 10px' : '') + ';">' + pattern.implication + '</p>' +
+      (pattern.segment ?
+        '<div style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:11px;font-weight:700;color:' + catColor + ';background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:4px 12px;">' +
+          '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>' +
+          'Top segment: ' + pattern.segment +
+        '</div>'
+      : '') +
+    '</div>';
+
+  bar.style.display = 'block';
+}
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
 // Re-check for resume when user returns to the tab
