@@ -3167,6 +3167,96 @@ async function fetchPlaces(location, target, count) {
 }
 
 // ── STEP 2: GPT — generate sales intelligence for real businesses ─────────────
+// ── FINALIZE STREAMED RESULTS ──────────────────────────────────────────────
+function finalizeStreamedResults(businesses) {
+  window._currentBusinesses = businesses;
+  var lb = document.getElementById('resultsLoadingBar');
+  var lt = document.getElementById('resultsLoadingText');
+  if (lb) lb.style.display = 'none';
+  if (lt) lt.style.display = 'none';
+  updateStatsRow();
+  var activeFilter = window._currentScoreFilter || 0;
+  if (activeFilter > 0 && typeof setScoreFilter === 'function') setScoreFilter(activeFilter, null);
+}
+
+// ── ANALYTICS PAGE ──────────────────────────────────────────────────────────
+function openAnalyticsPage() {
+  renderAnalyticsPage();
+  showPage('analytics');
+}
+
+function renderAnalyticsPage() {
+  if (!currentUser) return;
+  var history = getHistory(currentUser.email);
+  var searches = JSON.parse(localStorage.getItem('ps_searches_' + currentUser.email) || '[]');
+  var manualCalls = JSON.parse(localStorage.getItem('ps_manual_calls_' + currentUser.email) || '{}');
+  var byDow = [0,0,0,0,0,0,0];
+  var byHour = new Array(24).fill(0);
+  var outcomeMap = {};
+  var locationMap = {};
+  var industryMap = {};
+  var totalCalls = 0, totalConnects = 0;
+  history.forEach(function(h) {
+    if (!h.callLog) return;
+    var loc = (h.searchLocation||'Unknown').split(',')[0].trim();
+    var ind = (h.type||'Unknown');
+    h.callLog.forEach(function(c) {
+      totalCalls++;
+      var d = new Date(c.ts);
+      byDow[d.getDay()]++;
+      byHour[d.getHours()]++;
+      outcomeMap[c.outcome] = (outcomeMap[c.outcome]||0)+1;
+      if (!locationMap[loc]) locationMap[loc]={calls:0,connects:0};
+      locationMap[loc].calls++;
+      if (!industryMap[ind]) industryMap[ind]={calls:0,connects:0,score:0,count:0};
+      industryMap[ind].calls++;
+      if (c.outcome==='conversation'||c.outcome==='callback') {
+        totalConnects++;
+        locationMap[loc].connects++;
+        industryMap[ind].connects++;
+      }
+    });
+    if (h.score) { industryMap[ind] = industryMap[ind]||{calls:0,connects:0,score:0,count:0}; industryMap[ind].score+=h.score; industryMap[ind].count++; }
+  });
+  Object.keys(manualCalls).forEach(function(k) {
+    var p=k.split('-'); var d=new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));
+    byDow[d.getDay()]+=(manualCalls[k].count||0); totalCalls+=(manualCalls[k].count||0);
+  });
+  var connectRate = totalCalls>0?Math.round(totalConnects/totalCalls*100):0;
+  var DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var hourLabels=['12a','1a','2a','3a','4a','5a','6a','7a','8a','9a','10a','11a','12p','1p','2p','3p','4p','5p','6p','7p','8p','9p','10p','11p'];
+  var el = document.getElementById('analyticsContent');
+  if (!el) return;
+  if (!totalCalls && !searches.length) {
+    el.innerHTML='<div class="pipeline-empty"><div class="pipeline-empty-icon">📊</div><div class="pipeline-empty-text">Start scouting and logging calls to see your analytics here.</div></div>';
+    return;
+  }
+  var topLocs=Object.entries(locationMap).sort(function(a,b){return(b[1].connects/Math.max(b[1].calls,1))-(a[1].connects/Math.max(a[1].calls,1));}).slice(0,5);
+  var topInds=Object.entries(industryMap).filter(function(e){return e[1].calls>=2;}).sort(function(a,b){return(b[1].connects/Math.max(b[1].calls,1))-(a[1].connects/Math.max(a[1].calls,1));}).slice(0,5);
+  var maxDow=Math.max.apply(null,byDow.concat([1]));
+  var workHours=byHour.slice(8,19); var maxWork=Math.max.apply(null,workHours.concat([1]));
+  function anStat(v,l,c){return '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 12px;text-align:center;"><div style="font-size:22px;font-weight:800;color:'+c+';line-height:1;margin-bottom:4px;">'+v+'</div><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600;">'+l+'</div></div>';}
+  var statsHtml='<div class="stats-4-grid" style="margin-bottom:24px;">'+anStat(totalCalls,'Total calls','var(--accent)')+anStat(totalConnects,'Connects','var(--teal)')+anStat(connectRate+'%','Connect rate','var(--amber)')+anStat(searches.length,'Searches','var(--purple)')+'</div>';
+  var dowHtml='<div class="campaign-detail"><div class="campaign-detail-title">📅 Best days to call</div><div style="display:flex;align-items:flex-end;gap:6px;height:80px;margin-bottom:8px;">'+byDow.map(function(v,i){var h=maxDow>0?Math.max(4,Math.round(v/maxDow*100)):4;var isBest=v===maxDow&&v>0;return'<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="font-size:9px;color:'+(isBest?'var(--accent)':'var(--text4)')+';">'+(v||'')+'</div><div style="width:100%;height:'+h+'%;background:'+(isBest?'var(--accent)':'rgba(190,255,0,0.25)')+';border-radius:4px 4px 0 0;min-height:4px;"></div><div style="font-size:10px;color:'+(isBest?'var(--accent)':'var(--text4)')+';font-weight:'+(isBest?'700':'600')+';">'+DAYS[i]+'</div></div>';}).join('')+'</div><div style="font-size:12px;color:var(--text3);">Best day: <span style="color:var(--accent);font-weight:700;">'+DAYS[byDow.indexOf(maxDow)]+'</span></div></div>';
+  var hourHtml='<div class="campaign-detail"><div class="campaign-detail-title">🕐 Best hours to call</div><div style="display:flex;align-items:flex-end;gap:4px;height:70px;margin-bottom:8px;">'+workHours.map(function(v,i){var h=maxWork>0?Math.max(4,Math.round(v/maxWork*100)):4;var isBest=v===maxWork&&v>0;var hr=i+8;return'<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;"><div style="font-size:8px;color:'+(isBest?'var(--accent)':'var(--text4)')+';">'+(v||'')+'</div><div style="width:100%;height:'+h+'%;background:'+(isBest?'var(--accent)':'rgba(190,255,0,0.25)')+';border-radius:3px 3px 0 0;min-height:4px;"></div><div style="font-size:9px;color:'+(isBest?'var(--accent)':'var(--text4)')+';">'+hourLabels[hr]+'</div></div>';}).join('')+'</div><div style="font-size:12px;color:var(--text3);">Best hour: <span style="color:var(--accent);font-weight:700;">'+hourLabels[byHour.indexOf(Math.max.apply(null,byHour))]+'</span></div></div>';
+  var locHtml=topLocs.length?'<div class="campaign-detail"><div class="campaign-detail-title">📍 Top performing areas</div>'+topLocs.map(function(e){var rate=e[1].calls>0?Math.round(e[1].connects/e[1].calls*100):0;return'<div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--text2);font-weight:600;">'+e[0]+'</span><span style="color:var(--accent);font-weight:700;">'+rate+'% connect · '+e[1].calls+' calls</span></div><div style="height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+Math.max(4,rate)+'%;background:linear-gradient(90deg,var(--accent),#8FFF00);border-radius:3px;"></div></div></div>';}).join('')+'</div>':'';
+  var indHtml=topInds.length?'<div class="campaign-detail"><div class="campaign-detail-title">🏢 Top industries</div>'+topInds.map(function(e){var rate=e[1].calls>0?Math.round(e[1].connects/e[1].calls*100):0;return'<div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--text2);font-weight:600;">'+e[0]+'</span><span style="color:var(--text3);">'+rate+'% connect · '+e[1].calls+' calls</span></div><div style="height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+Math.max(4,rate)+'%;background:linear-gradient(90deg,var(--teal),#00E5A0);border-radius:3px;"></div></div></div>';}).join('')+'</div>':'';
+  var OUTCOME_LABELS={no_answer:'No answer',voicemail:'Voicemail',gatekeeper:'Gatekeeper',conversation:'Conversation',callback:'Callback',not_interested:'Not interested',wrong_number:'Wrong number'};
+  var outcomeTotal=Object.values(outcomeMap).reduce(function(a,b){return a+b;},0)||1;
+  var outcomeHtml=Object.keys(outcomeMap).length?'<div class="campaign-detail"><div class="campaign-detail-title">📞 Outcome breakdown</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'+Object.entries(outcomeMap).sort(function(a,b){return b[1]-a[1];}).map(function(e){var pct=Math.round(e[1]/outcomeTotal*100);var colors={conversation:'var(--accent)',callback:'var(--teal)',no_answer:'var(--text4)',voicemail:'var(--purple)',not_interested:'#FF8080',gatekeeper:'var(--amber)'};return'<div style="background:var(--bg3);border-radius:var(--r-md);padding:10px 12px;"><div style="font-size:18px;font-weight:800;color:'+(colors[e[0]]||'var(--text2)')+';">'+pct+'%</div><div style="font-size:11px;color:var(--text3);">'+(OUTCOME_LABELS[e[0]]||e[0])+'</div><div style="font-size:10px;color:var(--text4);margin-top:2px;">'+e[1]+' calls</div></div>';}).join('')+'</div></div>':'';
+  var bestDay=DAYS[byDow.indexOf(maxDow)];
+  var bestHr=hourLabels[byHour.indexOf(Math.max.apply(null,byHour))];
+  var recs=[];
+  if(maxDow>0)recs.push('📅 Your best calling day is <strong>'+bestDay+'</strong> — schedule your biggest call blocks then.');
+  if(bestHr)recs.push('🕐 You get the most connects at <strong>'+bestHr+'</strong> — protect that time slot.');
+  if(topLocs.length)recs.push('📍 <strong>'+topLocs[0][0]+'</strong> is your highest-converting area.');
+  if(connectRate<15)recs.push('📞 Try calling Tue–Thu 10am–12pm for better pickup rates.');
+  if(!recs.length)recs.push('Keep logging call outcomes to get personalized recommendations.');
+  var recHtml='<div class="campaign-detail" style="background:rgba(190,255,0,0.04);border-color:rgba(190,255,0,0.15);"><div class="campaign-detail-title">✦ Recommendations</div>'+recs.map(function(r){return'<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);line-height:1.6;">'+r+'</div>';}).join('')+'</div>';
+  el.innerHTML=statsHtml+dowHtml+hourHtml+locHtml+indHtml+outcomeHtml+recHtml;
+}
+
+
 // ── PARALLEL STREAMING ENRICHMENT (fast mode) ────────────────────────────────
 async function enrichWithAI(businesses, product, location) {
   if (!businesses.length) return [];
@@ -3310,7 +3400,7 @@ function getIndustryHints(product, bizType) {
 
 // ── SKELETON CARD RENDERING ───────────────────────────────────────────────────
 function renderSkeletonCards(count) {
-  var resultsEl = document.getElementById('resultsList');
+  var resultsEl = document.getElementById('bizList');
   if (!resultsEl) return;
   var skeletons = '';
   for (var i = 0; i < count; i++) {
@@ -3374,19 +3464,7 @@ function updateStatsRow() {
     '<span class="stat-chip" style="color:var(--accent);">'+highs+' high opp</span>';
 }
 
-function updateLoadingProgress(pct, text) {
-  // Update progress in the slim loading indicator at top of results
-  var prog = document.getElementById('resultsLoadingProg');
-  if (prog) {
-    prog.style.width = pct + '%';
-    if (pct >= 100) {
-      var bar = document.getElementById('resultsLoadingBar');
-      if (bar) setTimeout(function(){ bar.style.display='none'; }, 500);
-    }
-  }
-  var txt = document.getElementById('resultsLoadingText');
-  if (txt) txt.textContent = text;
-}
+
 
 
 // ── LEGACY: pure AI batch (fallback if Places fails) ─────────────────────────
@@ -5710,6 +5788,8 @@ function toggleStatusExpand() {
 
 function updateSlimBar() {
   if (!currentUser) return;
+  var bar2 = document.getElementById('slimStatusBar');
+  if (!bar2) return;
   var bar = document.getElementById('slimStatusBar');
   if (!bar) return;
 
@@ -5996,245 +6076,19 @@ function pickCampaignAndAdd(bizIndex, campaignId, campaignName) {
 }
 
 
-// ── PARALLEL STREAMING ENRICHMENT (fast mode) ────────────────────────────────
-async function enrichWithAI(businesses, product, location) {
-  if (!businesses.length) return [];
-
-  // Industry-specific system prompts for better openers
-  var industryHints = getIndustryHints(product, businesses[0] && businesses[0].type);
-
-  // Run ALL businesses in parallel — show each result as it arrives
-  var results = new Array(businesses.length).fill(null);
-  var shown   = 0;
-
-  // Show skeleton cards immediately
-  renderSkeletonCards(businesses.length);
-
-  var promises = businesses.map(function(biz, i) {
-    return enrichSingleBusiness(biz, i, product, location, industryHints)
-      .then(function(enriched) {
-        results[i] = enriched;
-        // Render this card immediately as it arrives
-        replaceSkeletonCard(i, enriched);
-        shown++;
-        var pct = Math.round(shown / businesses.length * 100);
-        updateLoadingProgress(pct, shown + ' / ' + businesses.length + ' prospects ready');
-        return enriched;
-      })
-      .catch(function() {
-        // On failure, use the raw business data
-        results[i] = fallbackEnrich(biz);
-        replaceSkeletonCard(i, results[i]);
-        return results[i];
-      });
-  });
-
-  await Promise.allSettled(promises);
-  return results.filter(Boolean);
-}
-
-async function enrichSingleBusiness(biz, index, product, location, industryHints) {
-  var prompt = 'You are a cold calling expert. Analyze this business and return a JSON object.\n\n' +
-    'Business: ' + biz.name + '\n' +
-    'Type: ' + (biz.type || 'Business') + '\n' +
-    'Location: ' + (biz.address || location) + '\n' +
-    'Rating: ' + (biz.rating || 'unknown') + '\n' +
-    'Product being sold: ' + product + '\n' +
-    (industryHints ? 'Industry context: ' + industryHints + '\n' : '') +
-    '\nReturn ONLY this JSON (no markdown):\n' +
-    '{"opportunity":"High|Medium|Low","score":1-10,"reason":"why this is a good prospect (10 words)","opener":"personalized 2-sentence opener using business name","decision_maker":"likely title","best_time":"best time to call","pain_points":["pain1","pain2","pain3"],"talk_track":"2-3 sentence value pitch","objections":[{"objection":"likely pushback","response":"how to handle it"}],"industry_notes":"one specific insight","buying_signals":["signal1","signal2"]}';
-
-  var res = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENAI_KEY },
-    body: JSON.stringify({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: 'Return ONLY valid JSON. No markdown. No backticks.' },
-        { role: 'user',   content: prompt }
-      ],
-      temperature: 0.25,
-      max_tokens: 500
-    })
-  });
-
-  if (!res.ok) throw new Error('API error ' + res.status);
-  var data = await res.json();
-  var text = (data.choices[0].message.content || '').replace(/```json|```/g, '').trim();
-  var match = text.match(/\{[\s\S]*\}/);
-  var ai = match ? JSON.parse(match[0]) : {};
-
-  return mergeBusinessWithAI(biz, ai);
-}
-
-function mergeBusinessWithAI(b, ai) {
-  return {
-    name:           b.name,
-    type:           b.type || 'Business',
-    address:        b.address || '',
-    phone:          b.phone || '',
-    website:        b.website || '',
-    googlemaps:     b.googlemaps || '',
-    rating:         b.rating,
-    review_count:   b.review_count,
-    opportunity:    ai.opportunity || 'Medium',
-    score:          typeof ai.score === 'number' ? ai.score : 7,
-    reason:         ai.reason || '',
-    opener:         ai.opener || '',
-    decision_maker: ai.decision_maker || '',
-    best_time:      ai.best_time || '',
-    pain_points:    Array.isArray(ai.pain_points) ? ai.pain_points : [],
-    talk_track:     ai.talk_track || '',
-    objections:     Array.isArray(ai.objections) ? ai.objections : [],
-    industry_notes: ai.industry_notes || '',
-    company_size:   ai.company_size || '',
-    annual_revenue: ai.annual_revenue || '',
-    buying_signals: Array.isArray(ai.buying_signals) ? ai.buying_signals : []
-  };
-}
-
-function fallbackEnrich(biz) {
-  return mergeBusinessWithAI(biz, { opportunity:'Medium', score:6, reason:'Local business prospect' });
-}
-
-// ── INDUSTRY HINTS for better AI context ─────────────────────────────────────
-function getIndustryHints(product, bizType) {
-  var p = (product || '').toLowerCase();
-  var t = (bizType  || '').toLowerCase();
-  var hints = {
-    'seo|digital marketing|website|web design|social media': {
-      restaurants: 'Restaurants need online ordering, Google ranking, and review management. Pain: losing customers to DoorDash fees.',
-      salon: 'Salons lose 40% of bookings to competitors with better online presence. Pain: Instagram algorithm changes.',
-      dental: 'Dental offices need new patient acquisition. Pain: insurance reimbursements dropping.',
-      retail: 'Local retail competes with Amazon. Pain: foot traffic declining 30% post-COVID.',
-      contractor: 'Contractors need local SEO to rank on "contractor near me." Pain: seasonal slowdowns.',
-      default: 'Small businesses spend $0 on marketing but need customers. Focus on ROI and lead generation.'
-    },
-    'crm|software|saas|automation|ai': {
-      default: 'Focus on time saved and revenue recovered. Decision maker is often the owner/GM. Best objection: "we already use spreadsheets."'
-    },
-    'solar|energy|roofing|hvac|windows': {
-      default: 'High-ticket home services. Homeowners want savings + sustainability. Best time: Saturday mornings.'
-    },
-    'insurance|financial|loans|credit': {
-      default: 'Business owners want protection and tax advantages. Pain: rising costs eating into margins.'
-    },
-    'cleaning|janitorial|pest|security': {
-      default: 'B2B services. Pain: unreliable current vendors. Selling point: consistency and accountability.'
-    }
-  };
-
-  // Match product to hint category
-  for (var pattern in hints) {
-    if (new RegExp(pattern).test(p)) {
-      var cats = hints[pattern];
-      for (var cat in cats) {
-        if (cat !== 'default' && t.includes(cat)) return cats[cat];
-      }
-      return cats.default || '';
-    }
-  }
-  return '';
-}
-
-// ── SKELETON CARD RENDERING ───────────────────────────────────────────────────
-function renderSkeletonCards(count) {
-  var resultsEl = document.getElementById('resultsList');
-  if (!resultsEl) return;
-  var skeletons = '';
-  for (var i = 0; i < count; i++) {
-    skeletons += '<div id="skel-'+i+'" class="biz-card" style="pointer-events:none;">' +
-      '<div class="biz-card-top">' +
-        '<div style="width:32px;height:32px;border-radius:var(--r-sm);background:var(--bg4);flex-shrink:0;"></div>' +
-        '<div style="flex:1;margin-left:12px;">' +
-          '<div class="skeleton-line" style="width:60%;height:16px;margin-bottom:8px;"></div>' +
-          '<div class="skeleton-line" style="width:40%;height:12px;"></div>' +
-        '</div>' +
-        '<div style="width:40px;height:40px;border-radius:50%;background:var(--bg4);"></div>' +
-      '</div>' +
-      '<div style="margin-top:14px;">' +
-        '<div class="skeleton-line" style="width:90%;height:12px;margin-bottom:6px;"></div>' +
-        '<div class="skeleton-line" style="width:70%;height:12px;"></div>' +
-      '</div>' +
-    '</div>';
-  }
-  resultsEl.innerHTML = skeletons;
-
-  // Show results section immediately
-  document.getElementById('results').style.display = 'block';
-  document.getElementById('inputSection').style.display = 'none';
-  document.getElementById('loadingState').style.display = 'none';
-  renderCampaignResultsBanner();
-}
-
-function replaceSkeletonCard(index, biz) {
-  // Store in global results array
-  if (!window._currentBusinesses) window._currentBusinesses = [];
-  window._currentBusinesses[index] = biz;
-
-  var skelEl = document.getElementById('skel-'+index);
-  if (!skelEl) return;
-
-  // Build the full card HTML (reuse existing renderResults logic for single card)
-  var cardHtml = buildBizCardHTML(biz, index);
-  var wrapper = document.createElement('div');
-  wrapper.innerHTML = cardHtml;
-  var newCard = wrapper.firstElementChild;
-  if (newCard && skelEl.parentNode) {
-    newCard.style.animationDelay = '0ms'; // Already waited — no delay
-    skelEl.parentNode.replaceChild(newCard, skelEl);
-  }
-
-  // Update score filter if needed
-  var sfWrap = document.getElementById('scoreFilterWrap');
-  if (sfWrap) sfWrap.style.display = 'flex';
-  updateStatsRow();
-}
-
-function updateStatsRow() {
-  if (!window._currentBusinesses) return;
-  var businesses = window._currentBusinesses.filter(Boolean);
-  var statsRow = document.getElementById('statsRow');
-  if (!statsRow) return;
-  var avg = businesses.length ? (businesses.reduce(function(s,b){return s+(b.score||0);},0)/businesses.length).toFixed(1) : 0;
-  var highs = businesses.filter(function(b){return b.opportunity==='High';}).length;
-  statsRow.innerHTML = '<span class="stat-chip">'+businesses.length+' prospects</span>' +
-    '<span class="stat-chip">'+avg+' avg score</span>' +
-    '<span class="stat-chip" style="color:var(--accent);">'+highs+' high opp</span>';
-}
-
-function updateLoadingProgress(pct, text) {
-  // Update progress in the slim loading indicator at top of results
-  var prog = document.getElementById('resultsLoadingProg');
-  if (prog) {
-    prog.style.width = pct + '%';
-    if (pct >= 100) {
-      var bar = document.getElementById('resultsLoadingBar');
-      if (bar) setTimeout(function(){ bar.style.display='none'; }, 500);
-    }
-  }
-  var txt = document.getElementById('resultsLoadingText');
-  if (txt) txt.textContent = text;
-}
-
-// ── FINALIZE STREAMED RESULTS ─────────────────────────────────────────────────
+// ── FINALIZE STREAMED RESULTS ──────────────────────────────────────────────
 function finalizeStreamedResults(businesses) {
   window._currentBusinesses = businesses;
-  // Hide progress bar
   var lb = document.getElementById('resultsLoadingBar');
   var lt = document.getElementById('resultsLoadingText');
   if (lb) lb.style.display = 'none';
   if (lt) lt.style.display = 'none';
-  // Update stats row
   updateStatsRow();
-  // Apply current score filter
   var activeFilter = window._currentScoreFilter || 0;
-  if (activeFilter > 0) setScoreFilter(activeFilter, null);
-  // Re-render with full data to ensure correct ordering
-  renderResults(businesses);
+  if (activeFilter > 0 && typeof setScoreFilter === 'function') setScoreFilter(activeFilter, null);
 }
 
-// ── ANALYTICS PAGE ────────────────────────────────────────────────────────────
+// ── ANALYTICS PAGE ──────────────────────────────────────────────────────────
 function openAnalyticsPage() {
   renderAnalyticsPage();
   showPage('analytics');
@@ -6245,17 +6099,12 @@ function renderAnalyticsPage() {
   var history = getHistory(currentUser.email);
   var searches = JSON.parse(localStorage.getItem('ps_searches_' + currentUser.email) || '[]');
   var manualCalls = JSON.parse(localStorage.getItem('ps_manual_calls_' + currentUser.email) || '{}');
-
-  // ── Build data ────────────────────────────────────────────────────────────
-  // Calls by day of week
   var byDow = [0,0,0,0,0,0,0];
   var byHour = new Array(24).fill(0);
   var outcomeMap = {};
   var locationMap = {};
   var industryMap = {};
-  var totalCalls = 0;
-  var totalConnects = 0;
-
+  var totalCalls = 0, totalConnects = 0;
   history.forEach(function(h) {
     if (!h.callLog) return;
     var loc = (h.searchLocation||'Unknown').split(',')[0].trim();
@@ -6265,10 +6114,10 @@ function renderAnalyticsPage() {
       var d = new Date(c.ts);
       byDow[d.getDay()]++;
       byHour[d.getHours()]++;
-      outcomeMap[c.outcome] = (outcomeMap[c.outcome]||0) + 1;
-      locationMap[loc] = locationMap[loc] || {calls:0, connects:0};
+      outcomeMap[c.outcome] = (outcomeMap[c.outcome]||0)+1;
+      if (!locationMap[loc]) locationMap[loc]={calls:0,connects:0};
       locationMap[loc].calls++;
-      industryMap[ind] = industryMap[ind] || {calls:0, connects:0, score:0, count:0};
+      if (!industryMap[ind]) industryMap[ind]={calls:0,connects:0,score:0,count:0};
       industryMap[ind].calls++;
       if (c.outcome==='conversation'||c.outcome==='callback') {
         totalConnects++;
@@ -6276,233 +6125,48 @@ function renderAnalyticsPage() {
         industryMap[ind].connects++;
       }
     });
-    if (h.score) {
-      industryMap[ind] = industryMap[ind] || {calls:0, connects:0, score:0, count:0};
-      industryMap[ind].score += h.score;
-      industryMap[ind].count++;
-    }
+    if (h.score) { industryMap[ind] = industryMap[ind]||{calls:0,connects:0,score:0,count:0}; industryMap[ind].score+=h.score; industryMap[ind].count++; }
   });
-
-  // Add manual calls
   Object.keys(manualCalls).forEach(function(k) {
-    var parts = k.split('-');
-    var d = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
-    byDow[d.getDay()] += (manualCalls[k].count || 0);
-    totalCalls += (manualCalls[k].count || 0);
+    var p=k.split('-'); var d=new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));
+    byDow[d.getDay()]+=(manualCalls[k].count||0); totalCalls+=(manualCalls[k].count||0);
   });
-
-  var connectRate = totalCalls > 0 ? Math.round(totalConnects/totalCalls*100) : 0;
-  var DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-
-  // ── Top locations ─────────────────────────────────────────────────────────
-  var topLocs = Object.entries(locationMap)
-    .sort(function(a,b){ return (b[1].connects/Math.max(b[1].calls,1)) - (a[1].connects/Math.max(a[1].calls,1)); })
-    .slice(0, 5);
-
-  // ── Top industries ────────────────────────────────────────────────────────
-  var topInds = Object.entries(industryMap)
-    .filter(function(e){ return e[1].calls >= 2; })
-    .sort(function(a,b){ return (b[1].connects/Math.max(b[1].calls,1)) - (a[1].connects/Math.max(a[1].calls,1)); })
-    .slice(0, 5);
-
-  // ── Best hours ────────────────────────────────────────────────────────────
-  var maxHour = Math.max.apply(null, byHour.concat([1]));
-  var hourLabels = ['12a','1a','2a','3a','4a','5a','6a','7a','8a','9a','10a','11a',
-                    '12p','1p','2p','3p','4p','5p','6p','7p','8p','9p','10p','11p'];
-
-  // ── Best days ─────────────────────────────────────────────────────────────
-  var maxDow = Math.max.apply(null, byDow.concat([1]));
-
+  var connectRate = totalCalls>0?Math.round(totalConnects/totalCalls*100):0;
+  var DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var hourLabels=['12a','1a','2a','3a','4a','5a','6a','7a','8a','9a','10a','11a','12p','1p','2p','3p','4p','5p','6p','7p','8p','9p','10p','11p'];
   var el = document.getElementById('analyticsContent');
   if (!el) return;
-
   if (!totalCalls && !searches.length) {
-    el.innerHTML = '<div class="pipeline-empty"><div class="pipeline-empty-icon">📊</div><div class="pipeline-empty-text">Start scouting and logging calls to see your analytics here.</div></div>';
+    el.innerHTML='<div class="pipeline-empty"><div class="pipeline-empty-icon">📊</div><div class="pipeline-empty-text">Start scouting and logging calls to see your analytics here.</div></div>';
     return;
   }
-
-  // ── Stats header ──────────────────────────────────────────────────────────
-  var statsHtml = '<div class="stats-4-grid" style="margin-bottom:24px;">' +
-    _anStat(totalCalls, 'Total calls', 'var(--accent)') +
-    _anStat(totalConnects, 'Connects', 'var(--teal)') +
-    _anStat(connectRate+'%', 'Connect rate', 'var(--amber)') +
-    _anStat(searches.length, 'Searches run', 'var(--purple)') +
-  '</div>';
-
-  // ── Best days bar chart ───────────────────────────────────────────────────
-  var dowHtml = '<div class="campaign-detail"><div class="campaign-detail-title">📅 Best days to call</div>' +
-    '<div style="display:flex;align-items:flex-end;gap:6px;height:80px;margin-bottom:8px;">' +
-    byDow.map(function(v, i) {
-      var h = maxDow > 0 ? Math.max(4, Math.round(v/maxDow*100)) : 4;
-      var isWeekend = i===0||i===6;
-      var isBest = v === maxDow && v > 0;
-      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">' +
-        '<div style="font-size:9px;color:'+(isBest?'var(--accent)':'var(--text4)')+';font-weight:'+(isBest?'700':'400')+';">'+(v||'')+'</div>' +
-        '<div style="width:100%;height:'+h+'%;background:'+(isBest?'var(--accent)':isWeekend?'rgba(190,255,0,0.1)':'rgba(190,255,0,0.25)')+';border-radius:4px 4px 0 0;min-height:4px;"></div>' +
-        '<div style="font-size:10px;color:'+(isBest?'var(--accent)':'var(--text4)')+';font-weight:'+(isBest?'700':'600')+';">'+DAYS[i]+'</div>' +
-      '</div>';
-    }).join('') +
-    '</div>' +
-    '<div style="font-size:12px;color:var(--text3);">Best day: <span style="color:var(--accent);font-weight:700;">'+DAYS[byDow.indexOf(Math.max.apply(null,byDow))]+'</span></div>' +
-  '</div>';
-
-  // ── Best hours heatmap (8am-6pm) ──────────────────────────────────────────
-  var workHours = byHour.slice(8, 19);
-  var maxWork = Math.max.apply(null, workHours.concat([1]));
-  var hourHtml = '<div class="campaign-detail"><div class="campaign-detail-title">🕐 Best hours to call</div>' +
-    '<div style="display:flex;align-items:flex-end;gap:4px;height:70px;margin-bottom:8px;">' +
-    workHours.map(function(v, i) {
-      var h = maxWork > 0 ? Math.max(4, Math.round(v/maxWork*100)) : 4;
-      var isBest = v === maxWork && v > 0;
-      var hr = i + 8;
-      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">' +
-        '<div style="font-size:8px;color:'+(isBest?'var(--accent)':'var(--text4)')+';font-weight:'+(isBest?'700':'400')+';">'+(v||'')+'</div>' +
-        '<div style="width:100%;height:'+h+'%;background:'+(isBest?'var(--accent)':'rgba(190,255,0,0.25)')+';border-radius:3px 3px 0 0;min-height:4px;"></div>' +
-        '<div style="font-size:9px;color:'+(isBest?'var(--accent)':'var(--text4)')+';font-weight:'+(isBest?'700':'400')+';">'+hourLabels[hr]+'</div>' +
-      '</div>';
-    }).join('') +
-    '</div>' +
-    '<div style="font-size:12px;color:var(--text3);">Best hour: <span style="color:var(--accent);font-weight:700;">'+hourLabels[byHour.indexOf(Math.max.apply(null,byHour))]+'</span></div>' +
-  '</div>';
-
-  // ── Top locations ─────────────────────────────────────────────────────────
-  var locHtml = topLocs.length ? '<div class="campaign-detail"><div class="campaign-detail-title">📍 Top performing areas</div>' +
-    topLocs.map(function(e) {
-      var loc = e[0], d = e[1];
-      var rate = d.calls > 0 ? Math.round(d.connects/d.calls*100) : 0;
-      var pct = Math.max(4, rate);
-      return '<div style="margin-bottom:12px;">' +
-        '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;">' +
-          '<span style="color:var(--text2);font-weight:600;">'+loc+'</span>' +
-          '<span style="color:var(--accent);font-weight:700;">'+rate+'% connect · '+d.calls+' calls</span>' +
-        '</div>' +
-        '<div style="height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;">' +
-          '<div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,var(--accent),#8FFF00);border-radius:3px;"></div>' +
-        '</div>' +
-      '</div>';
-    }).join('') +
-  '</div>' : '';
-
-  // ── Top industries ────────────────────────────────────────────────────────
-  var indHtml = topInds.length ? '<div class="campaign-detail"><div class="campaign-detail-title">🏢 Top performing industries</div>' +
-    topInds.map(function(e) {
-      var ind = e[0], d = e[1];
-      var rate = d.calls > 0 ? Math.round(d.connects/d.calls*100) : 0;
-      var avgScore = d.count > 0 ? (d.score/d.count).toFixed(1) : '—';
-      var pct = Math.max(4, rate);
-      return '<div style="margin-bottom:12px;">' +
-        '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;">' +
-          '<span style="color:var(--text2);font-weight:600;">'+ind+'</span>' +
-          '<span style="color:var(--text3);">'+rate+'% connect · avg score '+avgScore+' · '+d.calls+' calls</span>' +
-        '</div>' +
-        '<div style="height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;">' +
-          '<div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,var(--teal),#00E5A0);border-radius:3px;"></div>' +
-        '</div>' +
-      '</div>';
-    }).join('') +
-  '</div>' : '';
-
-  // ── Outcome breakdown ─────────────────────────────────────────────────────
-  var OUTCOME_LABELS = {
-    no_answer:'No answer', voicemail:'Voicemail', gatekeeper:'Gatekeeper',
-    conversation:'Conversation', callback:'Callback', not_interested:'Not interested', wrong_number:'Wrong number'
-  };
-  var outcomeTotal = Object.values(outcomeMap).reduce(function(a,b){return a+b;},0) || 1;
-  var outcomeHtml = Object.keys(outcomeMap).length ? '<div class="campaign-detail"><div class="campaign-detail-title">📞 Call outcome breakdown</div>' +
-    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">' +
-    Object.entries(outcomeMap).sort(function(a,b){return b[1]-a[1];}).map(function(e) {
-      var pct = Math.round(e[1]/outcomeTotal*100);
-      var colors = {conversation:'var(--accent)',callback:'var(--teal)',no_answer:'var(--text4)',voicemail:'var(--purple)',not_interested:'#FF8080',gatekeeper:'var(--amber)'};
-      return '<div style="background:var(--bg3);border-radius:var(--r-md);padding:10px 12px;">' +
-        '<div style="font-size:18px;font-weight:800;color:'+(colors[e[0]]||'var(--text2)')+';">'+pct+'%</div>' +
-        '<div style="font-size:11px;color:var(--text3);">'+(OUTCOME_LABELS[e[0]]||e[0])+'</div>' +
-        '<div style="font-size:10px;color:var(--text4);margin-top:2px;">'+e[1]+' calls</div>' +
-      '</div>';
-    }).join('') +
-    '</div></div>' : '';
-
-  // ── AI recommendations ────────────────────────────────────────────────────
-  var recHtml = '<div class="campaign-detail" style="background:rgba(190,255,0,0.04);border-color:rgba(190,255,0,0.15);">' +
-    '<div class="campaign-detail-title">✦ AI recommendations</div>' +
-    _genRecommendations(byDow, byHour, topLocs, topInds, connectRate, DAYS, hourLabels) +
-  '</div>';
-
-  el.innerHTML = statsHtml + dowHtml + hourHtml + locHtml + indHtml + outcomeHtml + recHtml;
-}
-
-function _anStat(val, label, color) {
-  return '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 12px;text-align:center;">' +
-    '<div style="font-size:22px;font-weight:800;color:'+color+';line-height:1;margin-bottom:4px;">'+val+'</div>' +
-    '<div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600;">'+label+'</div>' +
-  '</div>';
-}
-
-function _genRecommendations(byDow, byHour, topLocs, topInds, connectRate, DAYS, hourLabels) {
-  var recs = [];
-  var bestDay = DAYS[byDow.indexOf(Math.max.apply(null,byDow))];
-  var bestHour = hourLabels[byHour.indexOf(Math.max.apply(null,byHour))];
-  if (bestDay && Math.max.apply(null,byDow) > 0) recs.push('📅 Your best calling day is <strong>'+bestDay+'</strong> — schedule your biggest call blocks then.');
-  if (bestHour) recs.push('🕐 You get the most connects at <strong>'+bestHour+'</strong> — protect that time slot.');
-  if (topLocs.length) recs.push('📍 <strong>'+topLocs[0][0]+'</strong> is your highest-converting area — scout more businesses there.');
-  if (topInds.length) recs.push('🏢 <strong>'+topInds[0][0]+'</strong> converts best for you — add more of these to your pipeline.');
-  if (connectRate < 15) recs.push('📞 Your connect rate is '+connectRate+'% — try calling Tuesday-Thursday 10am-12pm for better pickup rates.');
-  if (connectRate >= 25) recs.push('🎯 Strong '+connectRate+'% connect rate! Focus on converting those conversations to meetings.');
-  if (!recs.length) recs.push('Keep logging call outcomes to get personalized recommendations here.');
-  return recs.map(function(r){ return '<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);line-height:1.6;"><span style="flex-shrink:0;"></span>'+r+'</div>'; }).join('');
+  var topLocs=Object.entries(locationMap).sort(function(a,b){return(b[1].connects/Math.max(b[1].calls,1))-(a[1].connects/Math.max(a[1].calls,1));}).slice(0,5);
+  var topInds=Object.entries(industryMap).filter(function(e){return e[1].calls>=2;}).sort(function(a,b){return(b[1].connects/Math.max(b[1].calls,1))-(a[1].connects/Math.max(a[1].calls,1));}).slice(0,5);
+  var maxDow=Math.max.apply(null,byDow.concat([1]));
+  var workHours=byHour.slice(8,19); var maxWork=Math.max.apply(null,workHours.concat([1]));
+  function anStat(v,l,c){return '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 12px;text-align:center;"><div style="font-size:22px;font-weight:800;color:'+c+';line-height:1;margin-bottom:4px;">'+v+'</div><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600;">'+l+'</div></div>';}
+  var statsHtml='<div class="stats-4-grid" style="margin-bottom:24px;">'+anStat(totalCalls,'Total calls','var(--accent)')+anStat(totalConnects,'Connects','var(--teal)')+anStat(connectRate+'%','Connect rate','var(--amber)')+anStat(searches.length,'Searches','var(--purple)')+'</div>';
+  var dowHtml='<div class="campaign-detail"><div class="campaign-detail-title">📅 Best days to call</div><div style="display:flex;align-items:flex-end;gap:6px;height:80px;margin-bottom:8px;">'+byDow.map(function(v,i){var h=maxDow>0?Math.max(4,Math.round(v/maxDow*100)):4;var isBest=v===maxDow&&v>0;return'<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="font-size:9px;color:'+(isBest?'var(--accent)':'var(--text4)')+';">'+(v||'')+'</div><div style="width:100%;height:'+h+'%;background:'+(isBest?'var(--accent)':'rgba(190,255,0,0.25)')+';border-radius:4px 4px 0 0;min-height:4px;"></div><div style="font-size:10px;color:'+(isBest?'var(--accent)':'var(--text4)')+';font-weight:'+(isBest?'700':'600')+';">'+DAYS[i]+'</div></div>';}).join('')+'</div><div style="font-size:12px;color:var(--text3);">Best day: <span style="color:var(--accent);font-weight:700;">'+DAYS[byDow.indexOf(maxDow)]+'</span></div></div>';
+  var hourHtml='<div class="campaign-detail"><div class="campaign-detail-title">🕐 Best hours to call</div><div style="display:flex;align-items:flex-end;gap:4px;height:70px;margin-bottom:8px;">'+workHours.map(function(v,i){var h=maxWork>0?Math.max(4,Math.round(v/maxWork*100)):4;var isBest=v===maxWork&&v>0;var hr=i+8;return'<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;"><div style="font-size:8px;color:'+(isBest?'var(--accent)':'var(--text4)')+';">'+(v||'')+'</div><div style="width:100%;height:'+h+'%;background:'+(isBest?'var(--accent)':'rgba(190,255,0,0.25)')+';border-radius:3px 3px 0 0;min-height:4px;"></div><div style="font-size:9px;color:'+(isBest?'var(--accent)':'var(--text4)')+';">'+hourLabels[hr]+'</div></div>';}).join('')+'</div><div style="font-size:12px;color:var(--text3);">Best hour: <span style="color:var(--accent);font-weight:700;">'+hourLabels[byHour.indexOf(Math.max.apply(null,byHour))]+'</span></div></div>';
+  var locHtml=topLocs.length?'<div class="campaign-detail"><div class="campaign-detail-title">📍 Top performing areas</div>'+topLocs.map(function(e){var rate=e[1].calls>0?Math.round(e[1].connects/e[1].calls*100):0;return'<div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--text2);font-weight:600;">'+e[0]+'</span><span style="color:var(--accent);font-weight:700;">'+rate+'% connect · '+e[1].calls+' calls</span></div><div style="height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+Math.max(4,rate)+'%;background:linear-gradient(90deg,var(--accent),#8FFF00);border-radius:3px;"></div></div></div>';}).join('')+'</div>':'';
+  var indHtml=topInds.length?'<div class="campaign-detail"><div class="campaign-detail-title">🏢 Top industries</div>'+topInds.map(function(e){var rate=e[1].calls>0?Math.round(e[1].connects/e[1].calls*100):0;return'<div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--text2);font-weight:600;">'+e[0]+'</span><span style="color:var(--text3);">'+rate+'% connect · '+e[1].calls+' calls</span></div><div style="height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+Math.max(4,rate)+'%;background:linear-gradient(90deg,var(--teal),#00E5A0);border-radius:3px;"></div></div></div>';}).join('')+'</div>':'';
+  var OUTCOME_LABELS={no_answer:'No answer',voicemail:'Voicemail',gatekeeper:'Gatekeeper',conversation:'Conversation',callback:'Callback',not_interested:'Not interested',wrong_number:'Wrong number'};
+  var outcomeTotal=Object.values(outcomeMap).reduce(function(a,b){return a+b;},0)||1;
+  var outcomeHtml=Object.keys(outcomeMap).length?'<div class="campaign-detail"><div class="campaign-detail-title">📞 Outcome breakdown</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'+Object.entries(outcomeMap).sort(function(a,b){return b[1]-a[1];}).map(function(e){var pct=Math.round(e[1]/outcomeTotal*100);var colors={conversation:'var(--accent)',callback:'var(--teal)',no_answer:'var(--text4)',voicemail:'var(--purple)',not_interested:'#FF8080',gatekeeper:'var(--amber)'};return'<div style="background:var(--bg3);border-radius:var(--r-md);padding:10px 12px;"><div style="font-size:18px;font-weight:800;color:'+(colors[e[0]]||'var(--text2)')+';">'+pct+'%</div><div style="font-size:11px;color:var(--text3);">'+(OUTCOME_LABELS[e[0]]||e[0])+'</div><div style="font-size:10px;color:var(--text4);margin-top:2px;">'+e[1]+' calls</div></div>';}).join('')+'</div></div>':'';
+  var bestDay=DAYS[byDow.indexOf(maxDow)];
+  var bestHr=hourLabels[byHour.indexOf(Math.max.apply(null,byHour))];
+  var recs=[];
+  if(maxDow>0)recs.push('📅 Your best calling day is <strong>'+bestDay+'</strong> — schedule your biggest call blocks then.');
+  if(bestHr)recs.push('🕐 You get the most connects at <strong>'+bestHr+'</strong> — protect that time slot.');
+  if(topLocs.length)recs.push('📍 <strong>'+topLocs[0][0]+'</strong> is your highest-converting area.');
+  if(connectRate<15)recs.push('📞 Try calling Tue–Thu 10am–12pm for better pickup rates.');
+  if(!recs.length)recs.push('Keep logging call outcomes to get personalized recommendations.');
+  var recHtml='<div class="campaign-detail" style="background:rgba(190,255,0,0.04);border-color:rgba(190,255,0,0.15);"><div class="campaign-detail-title">✦ Recommendations</div>'+recs.map(function(r){return'<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);line-height:1.6;">'+r+'</div>';}).join('')+'</div>';
+  el.innerHTML=statsHtml+dowHtml+hourHtml+locHtml+indHtml+outcomeHtml+recHtml;
 }
 
 
-// ── INIT
-// Re-check for resume when user returns to the tab
-document.addEventListener('visibilitychange', function() {
-  if (!document.hidden && currentUser) { checkForResume(); }
-});
-initLightMode();
-restoreSession();
-updateNav();
-renderPricingGrid('homePricingGrid');
-renderPricingGrid('pricingGrid');
-if (currentUser) { showPage('dashboard'); updateDashboard(); renderDashSections(); renderGoalTracker(); updateOverdueBadge(); setTimeout(checkOnboarding, 600); } else { showPage('home'); }
-
-document.getElementById('authModal').addEventListener('click',e=>{ if(e.target===document.getElementById('authModal')) closeModal(); });
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); if((e.ctrlKey||e.metaKey)&&e.key==='Enter') analyze(); });
+// ── PARALLEL STREAMING ENRICHMENT (fast mode) ────────────────────────────────
 </script>
-<!-- ONBOARDING OVERLAY -->
-<div class="onboarding-overlay" id="onboardingOverlay">
-  <div class="onboarding-modal" id="onboardingModal">
-    <div class="onboarding-steps" id="onboardingSteps"></div>
-    <div class="onboarding-icon" id="onboardingIcon"></div>
-    <div class="onboarding-title" id="onboardingTitle"></div>
-    <div class="onboarding-desc" id="onboardingDesc"></div>
-    <div class="onboarding-btns">
-      <button class="onboarding-btn-skip" id="onboardingSkip" onclick="skipOnboarding()">Skip</button>
-      <button class="onboarding-btn-primary" id="onboardingNext" onclick="nextOnboarding()">Next →</button>
-    </div>
-  </div>
-</div>
-
-<!-- CALL TIMER FAB -->
-<button class="timer-fab" id="timerFab" onclick="toggleTimer()" title="Call timer">
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-</button>
-
-<!-- CALL TIMER PANEL -->
-<div class="call-timer-wrap" id="callTimerWrap">
-  <div class="call-timer">
-    <div class="call-timer-header">
-      <span class="call-timer-label">📞 Call Timer</span>
-      <button class="call-timer-close" onclick="toggleTimer()">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div class="call-timer-display" id="timerDisplay">0:00</div>
-    <div class="call-timer-btns">
-      <button class="timer-btn timer-btn-start" id="timerStartBtn" onclick="startTimer()">Start</button>
-      <button class="timer-btn timer-btn-stop"  id="timerStopBtn"  onclick="stopTimer()" style="display:none;">Stop</button>
-      <button class="timer-btn timer-btn-reset" onclick="resetTimer()">Reset</button>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
