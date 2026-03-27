@@ -990,6 +990,18 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
 #statusExpanded { animation:fadeSlideIn 0.2s ease both; }
 #slimStatusBar:hover { background:var(--bg3) !important; }
 
+@media(max-width:640px) {
+  #page-home [style*="grid-template-columns:repeat(3,1fr)"] {
+    grid-template-columns: 1fr !important;
+  }
+  #page-home [style*="grid-template-columns:repeat(3,1fr)"] > div {
+    border-right: none !important;
+  }
+  #example-output [style*="max-width:680px"] {
+    margin: 0 !important;
+  }
+}
+
 /* ── COMPREHENSIVE MOBILE FIXES ── */
 @media(max-width:600px) {
   .campaign-detail { padding:16px 14px; }
@@ -1099,30 +1111,236 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 
 <!-- HOME -->
 <div class="page" id="page-home">
+
+  <!-- ── HERO ──────────────────────────────────────────────────────────── -->
   <div class="container">
-    <div class="hero">
-      <div class="hero-eyebrow"><span class="hero-eyebrow-dot"></span>AI Cold Call Intelligence</div>
-      <h1>Close more deals.<br><em>Call smarter.</em></h1>
-      <p class="hero-sub">Find real local businesses, get personalized openers, objection handlers and talk tracks — then track every deal from first call to close. Results start appearing in seconds.</p>
-      <div class="hero-btns">
-        <button class="btn-primary" onclick="openModal('signup')">Start free — no card needed →</button>
-        <button class="btn-ghost" onclick="showPage('pricing')">See pricing</button>
+    <div class="hero" style="padding:80px 0 60px;">
+
+      <div class="hero-eyebrow">
+        <span class="hero-eyebrow-dot"></span>
+        Built for freelancers &amp; agency owners
+      </div>
+
+      <h1 style="font-size:clamp(32px,7vw,58px);line-height:1.1;letter-spacing:-1.5px;margin-bottom:20px;">
+        Find businesses that already<br><em>need your service.</em>
+      </h1>
+
+      <p class="hero-sub" style="max-width:520px;font-size:clamp(15px,2.5vw,18px);color:var(--text2);line-height:1.7;margin:0 auto 36px;">
+        Tell us what you sell. We find real businesses showing signals they need it right now — with a reason for every lead.
+      </p>
+
+      <div class="hero-btns" style="flex-wrap:wrap;gap:12px;margin-bottom:48px;">
+        <button class="btn-primary" style="font-size:15px;padding:15px 32px;" onclick="openModal('signup')">
+          Generate Leads →
+        </button>
+        <button class="btn-ghost" style="font-size:15px;padding:15px 28px;" onclick="document.getElementById('example-output').scrollIntoView({behavior:'smooth'})">
+          See Example
+        </button>
+      </div>
+
+      <!-- Trust bar -->
+      <div style="display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;">
+        <span style="font-size:12px;color:var(--text4);display:flex;align-items:center;gap:6px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          No static database
+        </span>
+        <span style="font-size:12px;color:var(--text4);display:flex;align-items:center;gap:6px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Tailored to your offer
+        </span>
+        <span style="font-size:12px;color:var(--text4);display:flex;align-items:center;gap:6px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Free to start
+        </span>
       </div>
     </div>
-    <div class="features">
-      <div class="feature"><div class="feature-icon">🎯</div><div class="feature-title">AI-written call scripts</div><div class="feature-desc">Personalized openers, full talk tracks and objection handlers for every prospect.</div></div>
-      <div class="feature"><div class="feature-icon">📊</div><div class="feature-title">Built-in CRM pipeline</div><div class="feature-desc">Track every deal from first call to closed — with notes, reminders and deal values.</div></div>
-      <div class="feature"><div class="feature-icon">⚡</div><div class="feature-title">Real contact info</div><div class="feature-desc">Phone numbers, addresses and Maps links so you can dial in one tap.</div></div>
-    </div>
-    <div style="padding-bottom:60px;">
-      <div class="section-heading">Simple pricing</div>
-      <div class="section-sub">Start free. Upgrade when you're ready.</div>
-      <div id="homePricingGrid"></div>
+  </div>
+
+  <!-- ── HOW IT WORKS ───────────────────────────────────────────────────── -->
+  <div style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:64px 0;">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:48px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">How it works</div>
+        <h2 style="font-family:Syne,sans-serif;font-size:clamp(22px,4vw,32px);font-weight:800;letter-spacing:-0.5px;">Three steps. Zero guesswork.</h2>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);">
+
+        <div style="background:var(--bg2);padding:32px 28px;position:relative;">
+          <div style="font-family:Syne,sans-serif;font-size:42px;font-weight:800;color:var(--accent);opacity:0.15;line-height:1;margin-bottom:16px;">01</div>
+          <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:10px;">Describe your offer</div>
+          <p style="font-size:13px;color:var(--text3);line-height:1.7;margin:0;">Enter what you sell and where. Web design, SMMA, AI automation — whatever it is. Be specific.</p>
+        </div>
+
+        <div style="background:var(--bg2);padding:32px 28px;position:relative;">
+          <div style="font-family:Syne,sans-serif;font-size:42px;font-weight:800;color:var(--accent);opacity:0.15;line-height:1;margin-bottom:16px;">02</div>
+          <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:10px;">We scan for real signals</div>
+          <p style="font-size:13px;color:var(--text3);line-height:1.7;margin:0;">We pull real businesses from your target area and analyze each one — ratings, reviews, gaps, missed opportunities.</p>
+        </div>
+
+        <div style="background:var(--bg2);padding:32px 28px;position:relative;">
+          <div style="font-family:Syne,sans-serif;font-size:42px;font-weight:800;color:var(--accent);opacity:0.15;line-height:1;margin-bottom:16px;">03</div>
+          <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:10px;">Get qualified leads instantly</div>
+          <p style="font-size:13px;color:var(--text3);line-height:1.7;margin:0;">Each lead comes with a score, a reason it fits your offer, and a personalized opener. Ready to call.</p>
+        </div>
+
+      </div>
     </div>
   </div>
+
+  <!-- ── EXAMPLE OUTPUT ─────────────────────────────────────────────────── -->
+  <div id="example-output" style="padding:72px 0;">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:48px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">Example output</div>
+        <h2 style="font-family:Syne,sans-serif;font-size:clamp(22px,4vw,32px);font-weight:800;letter-spacing:-0.5px;">This is what you actually get.</h2>
+        <p style="font-size:15px;color:var(--text3);margin-top:10px;">Real lead. Real reasoning. No filler.</p>
+      </div>
+
+      <div style="max-width:680px;margin:0 auto;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+
+        <!-- Card header -->
+        <div style="background:var(--bg3);padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:36px;height:36px;background:var(--accent-dim);border:1px solid rgba(190,255,0,0.2);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--accent);">1</div>
+            <div>
+              <div style="font-size:15px;font-weight:700;color:var(--text);">Bella Vita Salon &amp; Spa</div>
+              <div style="font-size:12px;color:var(--text3);">Day Spa · Austin, TX</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;font-weight:700;padding:4px 10px;background:rgba(190,255,0,0.1);color:var(--accent);border:1px solid rgba(190,255,0,0.2);border-radius:20px;">High opportunity</span>
+            <span style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:var(--accent);">9</span>
+          </div>
+        </div>
+
+        <div style="padding:24px;">
+
+          <!-- Signal -->
+          <div style="margin-bottom:20px;">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text4);margin-bottom:8px;">Signal detected</div>
+            <div style="background:var(--bg3);border-left:3px solid var(--accent);border-radius:0 var(--r-md) var(--r-md) 0;padding:12px 16px;font-size:13px;color:var(--text2);line-height:1.65;">
+              4.2★ rating with 3 reviews mentioning "hard to find online" and "no website." Competitors in the same zip code rank on page 1 of Google. Bella Vita does not appear at all.
+            </div>
+          </div>
+
+          <!-- Why it matters -->
+          <div style="margin-bottom:20px;">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text4);margin-bottom:8px;">Why it matters</div>
+            <p style="font-size:13px;color:var(--text2);line-height:1.65;margin:0;">They're losing walk-in traffic to better-ranked competitors. The owner knows the problem — customers are already telling them. They just don't know how to fix it.</p>
+          </div>
+
+          <!-- Opportunity -->
+          <div style="margin-bottom:24px;">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text4);margin-bottom:8px;">Your opportunity</div>
+            <p style="font-size:13px;color:var(--text2);line-height:1.65;margin:0;">Walk in with a screenshot of their competitors' Google rankings. Offer a website + local SEO package. This is a 15-minute conversation with a clear problem and a clear fix.</p>
+          </div>
+
+          <!-- Opener -->
+          <div style="background:rgba(190,255,0,0.04);border:1px solid rgba(190,255,0,0.15);border-radius:var(--r-md);padding:14px 16px;margin-bottom:20px;">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:8px;">Generated opener</div>
+            <p style="font-size:13px;color:var(--text2);line-height:1.7;margin:0;font-style:italic;">"Hi, is the owner available? I was searching for day spas in Austin and noticed Bella Vita isn't showing up online — three of your competitors on the same street are ranking on page 1. I help salons fix that in about 2 weeks. Worth a 5-minute chat?"</p>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text3);">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Best time: Tue–Thu, 10am–12pm
+            </div>
+            <span style="color:var(--border2);">·</span>
+            <div style="font-size:12px;color:var(--text3);">Decision maker: Owner / Manager</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:32px;">
+        <button class="btn-primary" onclick="openModal('signup')" style="font-size:15px;padding:14px 32px;">Generate leads like this →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CORE FEATURES ──────────────────────────────────────────────────── -->
+  <div style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:72px 0;">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:48px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">What makes it different</div>
+        <h2 style="font-family:Syne,sans-serif;font-size:clamp(22px,4vw,32px);font-weight:800;letter-spacing:-0.5px;">Not a list. Not a database. Not a guess.</h2>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
+
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-xl);padding:28px 24px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(190,255,0,0.2)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="font-size:28px;margin-bottom:16px;">🎯</div>
+          <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px;">Offer-based targeting</div>
+          <p style="font-size:13px;color:var(--text3);line-height:1.7;margin:0;">You describe your service. We find businesses that match — not a generic list of "small businesses in your city." Every lead is relevant to what you actually sell.</p>
+        </div>
+
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-xl);padding:28px 24px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(190,255,0,0.2)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="font-size:28px;margin-bottom:16px;">📡</div>
+          <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px;">Real-time signals</div>
+          <p style="font-size:13px;color:var(--text3);line-height:1.7;margin:0;">Leads are generated fresh every time — from live business data, reviews, and competitive gaps. Not last year's export from a CSV someone sold you.</p>
+        </div>
+
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-xl);padding:28px 24px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(190,255,0,0.2)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="font-size:28px;margin-bottom:16px;">💡</div>
+          <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px;">Built-in lead reasoning</div>
+          <p style="font-size:13px;color:var(--text3);line-height:1.7;margin:0;">Every lead tells you why it was selected, what the problem is, and how to open the conversation. You walk in knowing more than they expect.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── WHY NOT TRADITIONAL TOOLS ─────────────────────────────────────── -->
+  <div style="padding:72px 0;">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:48px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">Why not traditional tools</div>
+        <h2 style="font-family:Syne,sans-serif;font-size:clamp(22px,4vw,32px);font-weight:800;letter-spacing:-0.5px;">The old way doesn't work anymore.</h2>
+      </div>
+
+      <div style="max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:12px;">
+
+        <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-xl);padding:20px 24px;">
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Static lead databases</div>
+            <div style="font-size:13px;color:var(--text3);">Contacts are months or years old. Half are wrong. You have no idea if they actually need you right now.</div>
+          </div>
+          <div style="font-size:20px;flex-shrink:0;">❌</div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-xl);padding:20px 24px;">
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">Generic outreach lists</div>
+            <div style="font-size:13px;color:var(--text3);">No context, no reason, no fit. You're cold-messaging businesses that have no connection to what you sell. Reply rates tank.</div>
+          </div>
+          <div style="font-size:20px;flex-shrink:0;">❌</div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;background:rgba(190,255,0,0.04);border:1px solid rgba(190,255,0,0.2);border-radius:var(--r-xl);padding:20px 24px;">
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:4px;">ProspectScout</div>
+            <div style="font-size:13px;color:var(--text2);">Fresh leads every time. Matched to your offer. With a reason they need you and a script to open the call. Show up prepared, not hopeful.</div>
+          </div>
+          <div style="font-size:20px;flex-shrink:0;">✅</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FINAL CTA ──────────────────────────────────────────────────────── -->
+  <div style="background:var(--bg2);border-top:1px solid var(--border);padding:80px 0;">
+    <div class="container" style="text-align:center;">
+      <h2 style="font-family:Syne,sans-serif;font-size:clamp(24px,5vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:16px;">Stop guessing.<br>Start targeting the right businesses.</h2>
+      <p style="font-size:15px;color:var(--text3);max-width:440px;margin:0 auto 36px;line-height:1.7;">Your next client is already out there showing signals they need you. You just need to find them.</p>
+      <button class="btn-primary" onclick="openModal('signup')" style="font-size:16px;padding:17px 40px;border-radius:var(--r-xl);">Generate Leads →</button>
+      <p style="font-size:12px;color:var(--text4);margin-top:16px;">Free plan available. No credit card required.</p>
+    </div>
+  </div>
+
 </div>
 
-<!-- PRICING -->
 <div class="page" id="page-pricing">
   <div class="container">
     <div style="padding:60px 0 20px; text-align:center;">
