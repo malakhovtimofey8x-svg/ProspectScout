@@ -956,10 +956,341 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
 .campaign-name, .dash-greeting, .history-item-name { word-break:break-word; overflow-wrap:break-word; }
 input[type="text"]:not(.goal-input), input[type="email"], input[type="password"],
 input[type="number"]:not(.goal-input), input[type="date"], textarea, select { font-size:16px; }
+
+/* ── CARD V2 ── */
+.card-v2{padding:0;overflow:hidden;cursor:pointer;}
+.cv2-insight{padding:16px 18px 14px;border-bottom:1px solid var(--border);}
+.cv2-label{display:flex;align-items:center;gap:6px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text4);margin-bottom:9px;}
+.cv2-label-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+.cv2-score{margin-left:auto;font-size:10px;font-weight:700;color:var(--accent);opacity:0.65;}
+.cv2-signal{font-size:13px;font-weight:700;color:var(--accent);line-height:1.45;margin-bottom:7px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.cv2-reason{font-size:12px;color:var(--text3);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.cv2-core{display:flex;align-items:center;gap:10px;padding:11px 18px;border-bottom:1px solid var(--border);}
+.cv2-biz-row{flex:1;min-width:0;}
+.cv2-name-wrap{display:flex;align-items:center;gap:7px;margin-bottom:4px;}
+.cv2-rank{font-size:10px;font-weight:700;color:var(--text4);opacity:0.5;flex-shrink:0;min-width:14px;}
+.cv2-name{font-family:Syne,sans-serif;font-size:14px;font-weight:700;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-0.2px;}
+.cv2-meta-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap;padding-left:21px;}
+.cv2-expand-icon{flex-shrink:0;color:var(--text4);opacity:0.5;transition:transform 0.2s;}
+.cv2-expand-icon.rotated{transform:rotate(180deg);}
+.cv2-action{padding:13px 18px 14px;}
+.cv2-action-block{margin-bottom:10px;}
+.cv2-action-label{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text4);margin-bottom:4px;}
+.cv2-action-text{font-size:12px;color:var(--text2);line-height:1.6;}
+.cv2-clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.cv2-clamp1{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;color:var(--text3);}
+.cv2-contact{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:11px;padding-top:11px;border-top:1px solid var(--border);}
+.cv2-contact-btn{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--text3);background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-sm);padding:4px 9px;text-decoration:none;cursor:pointer;}
+.cv2-save-btn{margin-left:auto;font-size:11px;font-weight:700;color:var(--accent);background:rgba(190,255,0,0.07);border:1px solid rgba(190,255,0,0.2);border-radius:var(--r-sm);padding:4px 10px;cursor:pointer;}
+.cv2-detail-divider{height:1px;background:var(--border);margin:0 18px;}
+.cv2-detail-grid{padding:14px 18px 16px;display:flex;flex-direction:column;gap:14px;}
+.cv2-detail-label{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text4);margin-bottom:5px;}
+.cv2-detail-text{font-size:12px;color:var(--text2);line-height:1.65;}
+.card-v2.active{border-color:rgba(190,255,0,0.18);}
+.card-v2.active .cv2-expand-icon{transform:rotate(180deg);}
+@media(max-width:600px){.cv2-insight{padding:14px 14px 12px;}.cv2-core{padding:10px 14px;}.cv2-action{padding:12px 14px 13px;}.cv2-detail-grid{padding:12px 14px 14px;}.cv2-detail-divider{margin:0 14px;}.cv2-name{font-size:13px;}}
+
+#matrixCanvas { display:block; }
+.nav, .page, .modal-overlay, .onboarding-overlay, .call-timer-wrap, .timer-fab { position:relative; z-index:1; }
+
+/* ── BIZ-CARD: ACTION-FIRST DECISION UNIT ───────────────────────── */
+.biz-card {
+  display: grid;
+  grid-template-columns: 1fr 160px;
+  grid-template-rows: auto auto;
+  gap: 0 20px;
+  align-items: center;
+  padding: 16px 16px 0;
+  transition: transform 0.15s, box-shadow 0.15s;
+  cursor: default;
+  overflow: hidden;
+}
+.biz-card:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+.biz-card:hover .call-main {
+  box-shadow: 0 0 40px rgba(190,255,0,0.6);
+}
+
+/* LEFT column */
+.bc-left {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding-bottom: 16px;
+}
+
+.bc-signal {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.4;
+}
+.bc-dot {
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.bc-signal-txt {
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.bc-pct {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+  opacity: 0.5;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.bc-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: Syne, sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bc-rank {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text4);
+  opacity: 0.4;
+  flex-shrink: 0;
+}
+
+.bc-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 12px;
+}
+.bc-rating { font-size: 11px; color: var(--text4); }
+
+.bc-opener-wrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding-left: 12px;
+}
+.bc-opener {
+  flex: 1;
+  font-size: 11px;
+  color: var(--text3);
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bc-copy {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--text4);
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s;
+}
+.bc-copy:hover { color: var(--accent); border-color: rgba(190,255,0,0.3); }
+
+.bc-chevron {
+  position: absolute;
+  bottom: 14px;
+  right: 180px;
+  color: var(--text4);
+  opacity: 0.35;
+  transition: transform 0.2s;
+  pointer-events: none;
+}
+
+/* RIGHT column — action panel */
+.action-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 16px;
+  align-self: start;
+  padding-top: 2px;
+}
+
+.call-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: var(--accent);
+  color: #08080D;
+  font-weight: 700;
+  padding: 13px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  box-shadow: 0 0 20px rgba(190,255,0,0.25);
+  transition: all 0.15s;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  letter-spacing: 0.1px;
+}
+.call-main:hover {
+  box-shadow: 0 0 30px rgba(190,255,0,0.45);
+  transform: translateY(-1px);
+  background: #d4ff00;
+}
+.call-main:active { transform: scale(0.97); }
+
+.opener-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: border-color 0.12s, color 0.12s;
+}
+.opener-btn:hover { border-color: var(--border3); color: var(--text); }
+
+.bc-save-btn {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text4);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  width: 100%;
+  transition: color 0.12s, border-color 0.12s;
+}
+.bc-save-btn:hover { color: var(--accent); border-color: rgba(190,255,0,0.25); }
+.bc-save-btn[data-added="1"] { color: var(--accent); border-color: rgba(190,255,0,0.25); }
+
+/* Expanded — spans full width below both columns */
+.bc-expanded {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--border);
+  margin: 0 -16px;
+  padding: 14px 16px 16px;
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+}
+.bc-expanded.open { display: flex; }
+.bc-exp-block {}
+.bc-exp-links {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Active */
+.biz-card.active { border-color: rgba(190,255,0,0.2); }
+.biz-card.active .bc-chevron { transform: rotate(180deg); }
+
+@media(max-width:600px) {
+  .biz-card { grid-template-columns: 1fr 130px; gap: 0 12px; padding: 13px 13px 0; }
+  .bc-name  { font-size: 14px; }
+  .call-main { padding: 11px 10px; font-size: 13px; }
+  .bc-chevron { right: 150px; }
+}
+
+
+
+/* ── PRICING: CONVERSION PRESSURE ───────────────────────────────── */
+.pricing-card.featured {
+  transform: scale(1.04);
+  box-shadow: 0 0 40px rgba(190,255,0,0.2), 0 0 0 1px rgba(190,255,0,0.2);
+  position: relative;
+  z-index: 1;
+}
+.pricing-card.featured::before {
+  content: 'Most popular';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #08080D;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+/* ── SCROLL ANIMATIONS ───────────────────────────────────────────── */
+/* Hero — fires immediately on load */
+.hero-animate {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.hero-animate.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Global scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered biz-cards — index set via JS data-attr */
+.biz-card.reveal-card {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.biz-card.reveal-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Reduced motion — respect accessibility + performance */
+@media (prefers-reduced-motion: reduce) {
+  .hero-animate, .reveal, .biz-card.reveal-card {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
 </style>
 <script src="/api/env"></script>
 </head>
 <body style="background:#08080D;">
+<canvas id="matrixCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.18;pointer-events:none;"></canvas>
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
 <div class="screen-lock-banner" id="screenLockBanner">📵 Keep screen on while searching</div>
@@ -1037,20 +1368,20 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   <div class="container">
     <div class="hero" style="padding:80px 0 60px;">
 
-      <div class="hero-eyebrow">
+      <div class="hero-eyebrow hero-animate" style="transition-delay:0ms;">
         <span class="hero-eyebrow-dot"></span>
         Lead intelligence for freelancers &amp; agency owners
       </div>
 
-      <h1 style="font-size:clamp(32px,7vw,58px);line-height:1.1;letter-spacing:-1.5px;margin-bottom:20px;">
+      <h1 class="hero-animate" style="font-size:clamp(32px,7vw,58px);line-height:1.1;letter-spacing:-1.5px;margin-bottom:20px;transition-delay:80ms;">
         Find prospects that already<br><em>need your service.</em>
       </h1>
 
-      <p class="hero-sub" style="max-width:520px;font-size:clamp(15px,2.5vw,18px);color:var(--text2);line-height:1.7;margin:0 auto 36px;">
+      <p class="hero-sub hero-animate" style="max-width:520px;font-size:clamp(15px,2.5vw,18px);color:var(--text2);line-height:1.7;margin:0 auto 36px;transition-delay:160ms;">
         Tell us what you sell. We find prospects showing signals they need it right now — with a reason for every lead.
       </p>
 
-      <div class="hero-btns" style="flex-wrap:wrap;gap:12px;margin-bottom:48px;">
+      <div class="hero-btns hero-animate" style="flex-wrap:wrap;gap:12px;margin-bottom:48px;transition-delay:240ms;">
         <button class="btn-primary" style="font-size:15px;padding:15px 32px;" onclick="openModal('signup')">
           Generate Leads →
         </button>
@@ -1060,7 +1391,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
       </div>
 
       <!-- Trust bar -->
-      <div style="display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;">
+      <div class="hero-animate" style="display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;transition-delay:320ms;">
         <span style="font-size:12px;color:var(--text4);display:flex;align-items:center;gap:6px;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
           No static database
@@ -1080,7 +1411,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   <!-- ── HOW IT WORKS ───────────────────────────────────────────────────── -->
   <div style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:64px 0;">
     <div class="container">
-      <div style="text-align:center;margin-bottom:48px;">
+      <div class="reveal" style="text-align:center;margin-bottom:48px;">
         <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">How it works</div>
         <h2 style="font-family:Syne,sans-serif;font-size:clamp(22px,4vw,32px);font-weight:800;letter-spacing:-0.5px;">Three steps. Zero guesswork.</h2>
       </div>
@@ -1112,7 +1443,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   <!-- ── EXAMPLE OUTPUT ─────────────────────────────────────────────────── -->
   <div id="example-output" style="padding:72px 0;">
     <div class="container">
-      <div style="text-align:center;margin-bottom:48px;">
+      <div class="reveal" style="text-align:center;margin-bottom:48px;">
         <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">Example output</div>
         <h2 style="font-family:Syne,sans-serif;font-size:clamp(22px,4vw,32px);font-weight:800;letter-spacing:-0.5px;">This is what you actually get.</h2>
         <p style="font-size:15px;color:var(--text3);margin-top:10px;">Real lead. Real reasoning. No filler.</p>
@@ -1183,7 +1514,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   <!-- ── CORE FEATURES ──────────────────────────────────────────────────── -->
   <div style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:72px 0;">
     <div class="container">
-      <div style="text-align:center;margin-bottom:48px;">
+      <div class="reveal" style="text-align:center;margin-bottom:48px;">
         <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">What makes it different</div>
         <h2 style="font-family:Syne,sans-serif;font-size:clamp(22px,4vw,32px);font-weight:800;letter-spacing:-0.5px;">Not a list. Not a database. Not a guess.</h2>
       </div>
@@ -1215,7 +1546,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   <!-- ── WHY NOT TRADITIONAL TOOLS ─────────────────────────────────────── -->
   <div style="padding:72px 0;">
     <div class="container">
-      <div style="text-align:center;margin-bottom:48px;">
+      <div class="reveal" style="text-align:center;margin-bottom:48px;">
         <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">Why not traditional tools</div>
         <h2 style="font-family:Syne,sans-serif;font-size:clamp(22px,4vw,32px);font-weight:800;letter-spacing:-0.5px;">The old way doesn't work anymore.</h2>
       </div>
@@ -1253,7 +1584,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   <!-- ── FINAL CTA ──────────────────────────────────────────────────────── -->
   <div style="background:var(--bg2);border-top:1px solid var(--border);padding:80px 0;">
     <div class="container" style="text-align:center;">
-      <h2 style="font-family:Syne,sans-serif;font-size:clamp(24px,5vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:16px;">Stop guessing.<br>Start targeting the right businesses.</h2>
+      <h2 class="reveal" style="font-family:Syne,sans-serif;font-size:clamp(24px,5vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:16px;">Stop guessing.<br>Start targeting the right businesses.</h2>
       <p style="font-size:15px;color:var(--text3);max-width:440px;margin:0 auto 36px;line-height:1.7;">Your next client is already out there showing signals they need you. You just need to find them.</p>
       <button class="btn-primary" onclick="openModal('signup')" style="font-size:16px;padding:17px 40px;border-radius:var(--r-xl);">Generate Leads →</button>
       <p style="font-size:12px;color:var(--text4);margin-top:16px;">Free plan available. No credit card required.</p>
@@ -1342,7 +1673,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
     </div>
 
     <!-- SCOUT FORM -->
-    <div class="scout-card" id="inputSection">
+    <div class="scout-card reveal" id="inputSection">
       <!-- Empty state hero -->
       <div style="text-align:center;padding:4px 0 20px;">
         <div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.5px;color:var(--text);margin-bottom:8px;line-height:1.2;">Find exactly who needs<br>what you sell.</div>
@@ -1427,6 +1758,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
           <button class="score-filter-btn" onclick="setScoreFilter(9,this)">9+</button>
         </div>
       </div>
+      <div id="patternInsightBar" style="display:none;margin-bottom:16px;"></div>
       <div id="patternInsightBar" style="display:none;margin-bottom:16px;"></div>
       <div id="bizList"></div>
     </div>
@@ -1927,7 +2259,7 @@ function closeProfileMenu() {
 document.addEventListener('click', function() { closeProfileMenu(); });
 
 // PAGES
-function showPage(name) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(`page-${name}`).classList.add('active'); window.scrollTo(0,0); }
+function showPage(name) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); var pg=document.getElementById('page-'+name); if(pg) pg.classList.add('active'); window.scrollTo(0,0); }
 function goHome()        { currentUser ? showPage('dashboard') : showPage('home'); }
 let _logoTaps = 0, _logoTimer = null;
 function handleLogoClick() {
@@ -2808,19 +3140,8 @@ function closeReminderPopover() {
 }
 
 // Override setReminder to update pill without full re-render
-function setReminder(id, val) {
-  if (!currentUser) return;
-  var history = getHistory(currentUser.email);
-  var item = history.find(function(h){ return h.id===id; });
-  if (!item) return;
-  if (!val || val === 'clear') { item.reminderAt = null; }
-  else { item.reminderAt = Date.now() + parseInt(val) * 86400000; }
-  saveHistory(currentUser.email, history);
-  var wrap = document.getElementById('rbwrap-' + id);
-  if (wrap) wrap.innerHTML = buildReminderBtn(item);
-  renderHistoryStats();
-  renderOverdueAlert();
-}
+
+
 
 // ── ADMIN PANEL ────────────────────────────────────────────────────────────────
 function openAdminPanel() {
@@ -3087,6 +3408,7 @@ function resetSearch() {
   document.getElementById('results').style.display='none';
   var sfWrap = document.getElementById('scoreFilterWrap'); if(sfWrap) sfWrap.style.display='none';
   document.getElementById('inputSection').style.display='block';
+  var _pib=document.getElementById('patternInsightBar'); if(_pib){_pib.style.display='none';_pib.innerHTML='';}  
   document.getElementById('errorMsg').innerHTML='';
   var ds = document.getElementById('dashSections'); if(ds) ds.style.display='block';
   updateDashboard();
@@ -3166,8 +3488,12 @@ function finalizeStreamedResults(businesses) {
   if (lb) lb.style.display = 'none';
   if (lt) lt.style.display = 'none';
   updateStatsRow();
+  // Stagger-animate newly rendered cards
+  if (typeof window.applyCardReveal === 'function') window.applyCardReveal();
   var activeFilter = window._currentScoreFilter || 0;
   if (activeFilter > 0 && typeof setScoreFilter === 'function') setScoreFilter(activeFilter, null);
+  // Stagger-animate newly rendered cards
+  setTimeout(function() { if (typeof window.applyCardReveal === 'function') window.applyCardReveal(); }, 20);
 }
 
 // ── ANALYTICS PAGE ──────────────────────────────────────────────────────────
@@ -4199,7 +4525,7 @@ async function analyze() {
       stopLoading();
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('inputSection').style.display = 'block';
-  var _pib = document.getElementById('patternInsightBar'); if (_pib) { _pib.style.display='none'; _pib.innerHTML=''; }
+  var _pib=document.getElementById('patternInsightBar'); if(_pib){_pib.style.display='none';_pib.innerHTML='';}
       document.getElementById('analyzeBtn').disabled = false;
       document.getElementById('errorMsg').innerHTML = '<div class="error-msg" style="border-color:rgba(255,176,32,0.3);background:rgba(255,176,32,0.07);color:var(--amber);">📵 Screen locked — <strong>' + allBusinesses.length + ' prospects saved.</strong> Tap Resume above.</div>';
       checkForResume();
@@ -4275,87 +4601,81 @@ function buildBizCardHTML(b, i) {
     var industryPreview = b.industry_notes ? b.industry_notes.split(/\.\s+/)[0] + '.' : '';
 
     return (
-      '<div class="biz-card" id="card-'+i+'" style="animation-delay:'+(i*80)+'ms;" onclick="toggleCard('+i+')">'+
+      '<div class="biz-card" id="card-'+i+'" style="animation-delay:'+(i*80)+'ms;">'+
 
-        // ── SIGNAL FIRST — the insight is the product ──
-        '<div class="card-insight">'+
+        // ── LEFT: information ──────────────────────────────────────
+        '<div class="bc-left" onclick="toggleCard('+i+')">'+
 
-          // Opportunity label
-          '<div class="insight-label">Opportunity Insight</div>'+
-
-          // Signal — primary visual element
-          (topSignal ?
-            '<div class="preview-signal">'+
-              '<span class="signal-dot"></span>'+
-              '<div style="flex:1;">'+
-                '<span class="signal-text">'+topSignal+'</span>'+
-                (b.signalCat ? '<span class="signal-cat">'+b.signalCat+'</span>' : '')+
-                (b.matchScore ? '<span class="signal-score">'+b.matchScore+'%</span>' : '')+
-              '</div>'+
-            '</div>'
-          : '')+
-
-          // Reason — why it matters
-          '<div class="preview-reason">'+b.reason+'</div>'+
-
-        '</div>'+
-
-        // ── COMPANY ROW — secondary ──
-        '<div class="biz-card-bottom-row">'+
-          '<div class="rank-badge '+(isTop?'top':'')+'" style="opacity:0.45;font-size:11px;min-width:22px;height:22px;">'+( i+1)+'</div>'+
-          '<div class="biz-info" style="flex:1;min-width:0;">'+
-            '<div class="biz-name">'+b.name+'</div>'+
-            '<div class="biz-meta">'+
-              '<span class="type-tag">'+b.type+'</span>'+
-              '<span class="sep">·</span>'+
-              '<span class="opp-badge '+oppClass+'">'+b.opportunity+'</span>'+
-              (b.rating ? '<span class="sep">·</span><span class="rating-badge">★ '+b.rating+'</span>' : '')+
-              (b._yelpId ? '<span class="sep">·</span><span class="verified-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Verified</span>' : '')+
-            '</div>'+
+          // Signal — 1 line
+          '<div class="bc-signal">'+
+            '<span class="bc-dot"></span>'+
+            '<span class="bc-signal-txt">'+topSignal+'</span>'+
+            (b.matchScore ? '<span class="bc-pct">'+b.matchScore+'%</span>' : '')+
           '</div>'+
-          '<div class="card-right">'+
-            '<div class="score-block" style="opacity:0.5;"><div class="score-num" style="font-size:16px;color:'+scoreColor+';">'+b.score+'</div><div class="score-label">/ 10</div></div>'+
-            '<div class="expand-icon" id="chevron-'+i+'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>'+
+
+          // Business name
+          '<div class="bc-name">'+
+            '<span class="bc-rank">'+(i+1)+'</span>'+
+            b.name+
+          '</div>'+
+
+          // One tag only
+          '<div class="bc-meta">'+
+            '<span class="type-tag">'+b.type+'</span>'+
+            (b.rating ? '<span class="bc-rating">★'+b.rating+'</span>' : '')+
+          '</div>'+
+
+          // Opener tool — 1 line + copy
+          '<div class="bc-opener-wrap">'+
+            '<span class="bc-opener" id="opener-txt-'+i+'">'+(b.messageIdea||b.opener||'')+'</span>'+
+            '<button class="bc-copy" id="copy-btn-'+i+'" onclick="event.stopPropagation();copyOpener('+i+')" title="Copy">Copy</button>'+
+          '</div>'+
+
+          // Expand chevron
+          '<span class="bc-chevron" id="chevron-'+i+'">'+
+            '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>'+
+          '</span>'+
+
+        '</div>'+
+
+        // ── RIGHT: action panel ────────────────────────────────────
+        '<div class="action-panel" onclick="event.stopPropagation()">'+
+
+          (b.phone ?
+            '<a href="tel:'+b.phone.replace(/\D/g,'')+'" class="call-main">'+
+              '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>'+
+              'Call now'+
+            '</a>'
+          :
+            '<button class="call-main" onclick="toggleCard('+i+')">'+
+              '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>'+
+              'Use opener'+
+            '</button>'
+          )+
+
+          '<button class="opener-btn" onclick="toggleCard('+i+')">'+
+            'Details'+
+          '</button>'+
+
+          '<button class="bc-save-btn" id="pipe-btn-'+i+'" onclick="showCampaignPicker('+i+')">+ Save</button>'+
+
+        '</div>'+
+
+        // ── EXPANDED ───────────────────────────────────────────────
+        '<div class="card-expanded bc-expanded" id="expanded-'+i+'">'+
+          (b.reason    ? '<div class="bc-exp-block"><div class="cv2-detail-label">Why this</div><div class="cv2-detail-text">'+b.reason+'</div></div>' : '')+
+          (b.opener    ? '<div class="bc-exp-block"><div class="cv2-detail-label">Full opener</div><div class="cv2-detail-text">'+b.opener+'</div></div>' : '')+
+          (b.angle     ? '<div class="bc-exp-block"><div class="cv2-detail-label">Approach</div><div class="cv2-detail-text">'+b.angle+'</div></div>' : '')+
+          (b.talk_track? '<div class="bc-exp-block"><div class="cv2-detail-label">Pitch</div><div class="cv2-detail-text">'+b.talk_track+'</div></div>' : '')+
+          (painPoints  ? '<div class="bc-exp-block"><div class="cv2-detail-label">Pain points</div><div class="pain-list">'+painPoints+'</div></div>' : '')+
+          (objections  ? '<div class="bc-exp-block"><div class="cv2-detail-label">Objections</div><div class="objections-list">'+objections+'</div></div>' : '')+
+          '<div class="bc-exp-links">'+
+            (b.phone      ? '<a href="tel:'+b.phone.replace(/\D/g,'')+'" class="cv2-contact-btn" onclick="event.stopPropagation()">'+b.phone+'</a>' : '')+
+            (b.website    ? '<a href="'+b.website+'" target="_blank" rel="noopener" class="cv2-contact-btn" onclick="event.stopPropagation()">Website</a>' : '')+
+            (b.googlemaps ? '<a href="'+b.googlemaps+'" target="_blank" rel="noopener" class="cv2-contact-btn" onclick="event.stopPropagation()">Maps</a>' : '')+
           '</div>'+
         '</div>'+
 
-        // ── CARD PREVIEW — collapsed detail ──
-        '<div class="card-preview">'+
-
-          // Industry note
-          (industryPreview ? '<div class="preview-industry"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;margin-top:1px;color:var(--text4);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'+industryPreview+'</div>' : '')+
-
-          // Meta chips
-          (metaChips ? '<div class="info-chips-row">'+metaChips+'</div>' : '')+
-
-          // Contact row — lowest priority
-          '<div class="contact-row" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);opacity:0.65;">'+
-            phoneBtn+websiteBtn+mapsBtn+
-            '<button class="pipeline-add-btn" id="pipe-btn-'+i+'" onclick="event.stopPropagation();showCampaignPicker('+i+')">+ Save prospect</button>'+
-          '</div>'+
-          addressLine+
-        '</div>'+
-
-        // ── EXPANDED DETAIL ──
-        '<div class="card-expanded" id="expanded-'+i+'">'+
-          '<div class="biz-divider"></div>'+
-
-          (signals ? '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Buying signals</div><div class="signals-list">'+signals+'</div></div>' : '')+
-
-          '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Personalized opener</div><div class="opener-text">'+b.opener+'</div></div>'+
-
-          (b.messageIdea ? '<div class="exp-block" style="margin-bottom:16px;background:rgba(190,255,0,0.04);border:1px solid rgba(190,255,0,0.12);border-radius:var(--r-md);padding:12px 14px;"><div class="section-label" style="color:var(--accent);">First message</div><div style="font-size:13px;color:var(--text2);line-height:1.7;font-style:italic;">"'+b.messageIdea+'"</div></div>' : '')+
-
-          (b.angle ? '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Strategic angle</div><div style="font-size:13px;color:var(--text2);line-height:1.7;">'+b.angle+'</div></div>' : '')+
-
-          '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Why they need this</div><div class="talk-track-text">'+(b.talk_track||'')+'</div></div>'+
-
-          (painPoints ? '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Active pain points</div><div class="pain-list">'+painPoints+'</div></div>' : '')+
-
-          (objections ? '<div class="exp-block" style="margin-bottom:16px;"><div class="section-label">Likely objections</div><div class="objections-list">'+objections+'</div></div>' : '')+
-
-          industryNote+
-        '</div>'+
       '</div>'
     );
 }
@@ -4536,19 +4856,22 @@ function addToPipeline(i) {
 
   if (btn) {
     btn.dataset.added = '1';
-    btn.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> In pipeline';
-    btn.style.color = 'var(--accent)';
-    btn.style.borderColor = 'rgba(190,255,0,0.3)';
-    btn.style.background = 'rgba(190,255,0,0.08)';
-    btn.style.cursor = 'default';
+    btn.textContent = '✓';
+    btn.title = 'Saved to pipeline';
   }
   showToast('<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:5px;"><polyline points="20 6 9 17 4 12"/></svg> Added to pipeline');
 }
 
 
 function toggleCard(i) {
-  const exp=document.getElementById(`expanded-${i}`), chev=document.getElementById(`chevron-${i}`), card=document.getElementById(`card-${i}`), open=exp.classList.contains('open');
-  exp.classList.toggle('open',!open); chev.classList.toggle('rotated',!open); card.classList.toggle('active',!open);
+  var exp  = document.getElementById('expanded-'+i);
+  var chev = document.getElementById('chevron-'+i);
+  var card = document.getElementById('card-'+i);
+  if (!exp) return;
+  var open = exp.classList.contains('open');
+  exp.classList.toggle('open', !open);
+  if (chev) chev.classList.toggle('rotated', !open);
+  if (card) card.classList.toggle('active', !open);
 }
 
 // ── LIGHT/DARK MODE ──────────────────────────────────────────────────────────
@@ -4883,6 +5206,45 @@ function updateOverdueBadge() {
 }
 
 // ── SEARCH HISTORY PAGE ───────────────────────────────────────────────────────
+
+// ── SEARCH HISTORY PAGE ───────────────────────────────────────────────────────
+function renderSearchHistoryPage() {
+  if (!currentUser) return;
+  var key = 'ps_searches_' + currentUser.email;
+  var searches = JSON.parse(localStorage.getItem(key) || '[]');
+  var sub  = document.getElementById('searchHistorySub');
+  var list = document.getElementById('searchHistoryList');
+  if (!list) return;
+
+  if (sub) sub.textContent = searches.length + ' past search' + (searches.length !== 1 ? 'es' : '');
+
+  if (!searches.length) {
+    list.innerHTML = '<div class="pipeline-empty"><div class="pipeline-empty-icon">🔍</div><div class="pipeline-empty-text">No searches yet. Run your first search to see your history here.</div></div>';
+    return;
+  }
+
+  list.innerHTML = searches.map(function(s, idx) {
+    var date = s.ts ? new Date(s.ts).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit'}) : '';
+    return '<div class="pipeline-card" style="margin-bottom:8px;cursor:default;">' +
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (s.product || s.offer || 'Search') + '</div>' +
+          '<div style="font-size:12px;color:var(--text3);display:flex;align-items:center;gap:10px;flex-wrap:wrap;">' +
+            (s.location ? '<span>' + s.location + '</span>' : '') +
+            (s.target ? '<span>· ' + s.target + '</span>' : '') +
+            (s.count ? '<span style="color:var(--accent);font-weight:600;">· ' + s.count + ' prospects</span>' : '') +
+          '</div>' +
+          (date ? '<div style="font-size:11px;color:var(--text4);margin-top:4px;">' + date + '</div>' : '') +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">' +
+          '<button onclick="redoSearchByIndex(' + idx + ');showPage(\'dashboard\')" style="font-size:12px;font-weight:600;padding:6px 12px;background:var(--accent-dim);color:var(--accent);border:1px solid rgba(190,255,0,0.2);border-radius:var(--r-sm);cursor:pointer;">Re-run</button>' +
+          '<button onclick="deleteSearchHistory(' + idx + ')" style="font-size:11px;padding:6px 10px;background:none;border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text4);cursor:pointer;">✕</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
 function openSearchHistory() {
   renderSearchHistoryPage();
   showPage('searchhistory');
@@ -6542,13 +6904,8 @@ function renderCampaignResultsBanner() {
 }
 
 // Clear active campaign context
-function clearActiveCampaign() {
-  _activeCampaignId = null;
-  _activeCampaignName = null;
-  updateCampaignContextBanner();
-  var banner = document.getElementById('campaignResultsBanner');
-  if (banner) banner.style.display = 'none';
-}
+
+
 
 // Campaign stats summary for pipeline page
 function renderCampaignPipelineStats(campaignId) {
@@ -6692,110 +7049,12 @@ function pickCampaignAndAdd(bizIndex, campaignId, campaignName) {
 
 
 // ── FINALIZE STREAMED RESULTS ──────────────────────────────────────────────
-function finalizeStreamedResults(businesses) {
-  // Sort by matchScore descending — strongest signals first
-  businesses = businesses.filter(Boolean).sort(function(a, b) {
-    return (b.matchScore || 0) - (a.matchScore || 0);
-  });
-  window._currentBusinesses = businesses;
 
-  // Re-render in sorted order
-  var bizList = document.getElementById('bizList');
-  if (bizList) {
-    bizList.innerHTML = businesses.map(function(b, i) {
-      return buildBizCardHTML(b, i);
-    }).join('');
-  }
 
-  // Pattern intelligence — analyze and display above results
-  var pattern = analyzeResultPatterns(businesses, window._lastProduct);
-  renderPatternInsight(pattern);
-
-  var lb = document.getElementById('resultsLoadingBar');
-  var lt = document.getElementById('resultsLoadingText');
-  if (lb) lb.style.display = 'none';
-  if (lt) lt.style.display = 'none';
-  updateStatsRow();
-  var activeFilter = window._currentScoreFilter || 0;
-  if (activeFilter > 0 && typeof setScoreFilter === 'function') setScoreFilter(activeFilter, null);
-}
 
 // ── ANALYTICS PAGE ──────────────────────────────────────────────────────────
-function openAnalyticsPage() {
-  renderAnalyticsPage();
-  showPage('analytics');
-}
 
-function renderAnalyticsPage() {
-  if (!currentUser) return;
-  var history = getHistory(currentUser.email);
-  var searches = JSON.parse(localStorage.getItem('ps_searches_' + currentUser.email) || '[]');
-  var manualCalls = JSON.parse(localStorage.getItem('ps_manual_calls_' + currentUser.email) || '{}');
-  var byDow = [0,0,0,0,0,0,0];
-  var byHour = new Array(24).fill(0);
-  var outcomeMap = {};
-  var locationMap = {};
-  var industryMap = {};
-  var totalCalls = 0, totalConnects = 0;
-  history.forEach(function(h) {
-    if (!h.callLog) return;
-    var loc = (h.searchLocation||'Unknown').split(',')[0].trim();
-    var ind = (h.type||'Unknown');
-    h.callLog.forEach(function(c) {
-      totalCalls++;
-      var d = new Date(c.ts);
-      byDow[d.getDay()]++;
-      byHour[d.getHours()]++;
-      outcomeMap[c.outcome] = (outcomeMap[c.outcome]||0)+1;
-      if (!locationMap[loc]) locationMap[loc]={calls:0,connects:0};
-      locationMap[loc].calls++;
-      if (!industryMap[ind]) industryMap[ind]={calls:0,connects:0,score:0,count:0};
-      industryMap[ind].calls++;
-      if (c.outcome==='conversation'||c.outcome==='callback') {
-        totalConnects++;
-        locationMap[loc].connects++;
-        industryMap[ind].connects++;
-      }
-    });
-    if (h.score) { industryMap[ind] = industryMap[ind]||{calls:0,connects:0,score:0,count:0}; industryMap[ind].score+=h.score; industryMap[ind].count++; }
-  });
-  Object.keys(manualCalls).forEach(function(k) {
-    var p=k.split('-'); var d=new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));
-    byDow[d.getDay()]+=(manualCalls[k].count||0); totalCalls+=(manualCalls[k].count||0);
-  });
-  var connectRate = totalCalls>0?Math.round(totalConnects/totalCalls*100):0;
-  var DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  var hourLabels=['12a','1a','2a','3a','4a','5a','6a','7a','8a','9a','10a','11a','12p','1p','2p','3p','4p','5p','6p','7p','8p','9p','10p','11p'];
-  var el = document.getElementById('analyticsContent');
-  if (!el) return;
-  if (!totalCalls && !searches.length) {
-    el.innerHTML='<div class="pipeline-empty"><div class="pipeline-empty-icon">📊</div><div class="pipeline-empty-text">Start scouting and logging calls to see your analytics here.</div></div>';
-    return;
-  }
-  var topLocs=Object.entries(locationMap).sort(function(a,b){return(b[1].connects/Math.max(b[1].calls,1))-(a[1].connects/Math.max(a[1].calls,1));}).slice(0,5);
-  var topInds=Object.entries(industryMap).filter(function(e){return e[1].calls>=2;}).sort(function(a,b){return(b[1].connects/Math.max(b[1].calls,1))-(a[1].connects/Math.max(a[1].calls,1));}).slice(0,5);
-  var maxDow=Math.max.apply(null,byDow.concat([1]));
-  var workHours=byHour.slice(8,19); var maxWork=Math.max.apply(null,workHours.concat([1]));
-  function anStat(v,l,c){return '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 12px;text-align:center;"><div style="font-size:22px;font-weight:800;color:'+c+';line-height:1;margin-bottom:4px;">'+v+'</div><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600;">'+l+'</div></div>';}
-  var statsHtml='<div class="stats-4-grid" style="margin-bottom:24px;">'+anStat(totalCalls,'Total calls','var(--accent)')+anStat(totalConnects,'Connects','var(--teal)')+anStat(connectRate+'%','Connect rate','var(--amber)')+anStat(searches.length,'Searches','var(--purple)')+'</div>';
-  var dowHtml='<div class="campaign-detail"><div class="campaign-detail-title">📅 Best days to call</div><div style="display:flex;align-items:flex-end;gap:6px;height:80px;margin-bottom:8px;">'+byDow.map(function(v,i){var h=maxDow>0?Math.max(4,Math.round(v/maxDow*100)):4;var isBest=v===maxDow&&v>0;return'<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="font-size:9px;color:'+(isBest?'var(--accent)':'var(--text4)')+';">'+(v||'')+'</div><div style="width:100%;height:'+h+'%;background:'+(isBest?'var(--accent)':'rgba(190,255,0,0.25)')+';border-radius:4px 4px 0 0;min-height:4px;"></div><div style="font-size:10px;color:'+(isBest?'var(--accent)':'var(--text4)')+';font-weight:'+(isBest?'700':'600')+';">'+DAYS[i]+'</div></div>';}).join('')+'</div><div style="font-size:12px;color:var(--text3);">Best day: <span style="color:var(--accent);font-weight:700;">'+DAYS[byDow.indexOf(maxDow)]+'</span></div></div>';
-  var hourHtml='<div class="campaign-detail"><div class="campaign-detail-title">🕐 Best hours to call</div><div style="display:flex;align-items:flex-end;gap:4px;height:70px;margin-bottom:8px;">'+workHours.map(function(v,i){var h=maxWork>0?Math.max(4,Math.round(v/maxWork*100)):4;var isBest=v===maxWork&&v>0;var hr=i+8;return'<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;"><div style="font-size:8px;color:'+(isBest?'var(--accent)':'var(--text4)')+';">'+(v||'')+'</div><div style="width:100%;height:'+h+'%;background:'+(isBest?'var(--accent)':'rgba(190,255,0,0.25)')+';border-radius:3px 3px 0 0;min-height:4px;"></div><div style="font-size:9px;color:'+(isBest?'var(--accent)':'var(--text4)')+';">'+hourLabels[hr]+'</div></div>';}).join('')+'</div><div style="font-size:12px;color:var(--text3);">Best hour: <span style="color:var(--accent);font-weight:700;">'+hourLabels[byHour.indexOf(Math.max.apply(null,byHour))]+'</span></div></div>';
-  var locHtml=topLocs.length?'<div class="campaign-detail"><div class="campaign-detail-title">📍 Top performing areas</div>'+topLocs.map(function(e){var rate=e[1].calls>0?Math.round(e[1].connects/e[1].calls*100):0;return'<div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--text2);font-weight:600;">'+e[0]+'</span><span style="color:var(--accent);font-weight:700;">'+rate+'% connect · '+e[1].calls+' calls</span></div><div style="height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+Math.max(4,rate)+'%;background:linear-gradient(90deg,var(--accent),#8FFF00);border-radius:3px;"></div></div></div>';}).join('')+'</div>':'';
-  var indHtml=topInds.length?'<div class="campaign-detail"><div class="campaign-detail-title">🏢 Top industries</div>'+topInds.map(function(e){var rate=e[1].calls>0?Math.round(e[1].connects/e[1].calls*100):0;return'<div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;"><span style="color:var(--text2);font-weight:600;">'+e[0]+'</span><span style="color:var(--text3);">'+rate+'% connect · '+e[1].calls+' calls</span></div><div style="height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+Math.max(4,rate)+'%;background:linear-gradient(90deg,var(--teal),#00E5A0);border-radius:3px;"></div></div></div>';}).join('')+'</div>':'';
-  var OUTCOME_LABELS={no_answer:'No answer',voicemail:'Voicemail',gatekeeper:'Gatekeeper',conversation:'Conversation',callback:'Callback',not_interested:'Not interested',wrong_number:'Wrong number'};
-  var outcomeTotal=Object.values(outcomeMap).reduce(function(a,b){return a+b;},0)||1;
-  var outcomeHtml=Object.keys(outcomeMap).length?'<div class="campaign-detail"><div class="campaign-detail-title">📞 Outcome breakdown</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'+Object.entries(outcomeMap).sort(function(a,b){return b[1]-a[1];}).map(function(e){var pct=Math.round(e[1]/outcomeTotal*100);var colors={conversation:'var(--accent)',callback:'var(--teal)',no_answer:'var(--text4)',voicemail:'var(--purple)',not_interested:'#FF8080',gatekeeper:'var(--amber)'};return'<div style="background:var(--bg3);border-radius:var(--r-md);padding:10px 12px;"><div style="font-size:18px;font-weight:800;color:'+(colors[e[0]]||'var(--text2)')+';">'+pct+'%</div><div style="font-size:11px;color:var(--text3);">'+(OUTCOME_LABELS[e[0]]||e[0])+'</div><div style="font-size:10px;color:var(--text4);margin-top:2px;">'+e[1]+' calls</div></div>';}).join('')+'</div></div>':'';
-  var bestDay=DAYS[byDow.indexOf(maxDow)];
-  var bestHr=hourLabels[byHour.indexOf(Math.max.apply(null,byHour))];
-  var recs=[];
-  if(maxDow>0)recs.push('📅 Your best calling day is <strong>'+bestDay+'</strong> — schedule your biggest call blocks then.');
-  if(bestHr)recs.push('🕐 You get the most connects at <strong>'+bestHr+'</strong> — protect that time slot.');
-  if(topLocs.length)recs.push('📍 <strong>'+topLocs[0][0]+'</strong> is your highest-converting area.');
-  if(connectRate<15)recs.push('📞 Try calling Tue–Thu 10am–12pm for better pickup rates.');
-  if(!recs.length)recs.push('Keep logging call outcomes to get personalized recommendations.');
-  var recHtml='<div class="campaign-detail" style="background:rgba(190,255,0,0.04);border-color:rgba(190,255,0,0.15);"><div class="campaign-detail-title">✦ Recommendations</div>'+recs.map(function(r){return'<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);line-height:1.6;">'+r+'</div>';}).join('')+'</div>';
-  el.innerHTML=statsHtml+dowHtml+hourHtml+locHtml+indHtml+outcomeHtml+recHtml;
-}
+
 
 
 
@@ -6932,6 +7191,23 @@ function renderPatternInsight(pattern) {
   bar.style.display = 'block';
 }
 
+// ── COPY OPENER ───────────────────────────────────────────────────────────────
+function copyOpener(i) {
+  var b = window._currentBusinesses && window._currentBusinesses[i];
+  if (!b) return;
+  var text = b.messageIdea || b.opener || '';
+  var btn  = document.getElementById('copy-btn-'+i);
+  if (navigator.clipboard && text) {
+    navigator.clipboard.writeText(text).then(function() {
+      if (btn) { btn.textContent = 'Copied!'; btn.style.color = 'var(--accent)'; }
+      setTimeout(function() { if (btn) { btn.textContent = 'Copy'; btn.style.color = ''; } }, 1500);
+    }).catch(function() {
+      if (btn) { btn.textContent = 'Copy'; }
+    });
+  }
+}
+
+
 // ── INIT ─────────────────────────────────────────────────────────────────────
 // Re-check for resume when user returns to the tab
 document.addEventListener('visibilitychange', function() {
@@ -6956,6 +7232,145 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── PARALLEL STREAMING ENRICHMENT (fast mode) ────────────────────────────────
+</script>
+<script>
+(function() {
+  var canvas = document.getElementById('matrixCanvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  var fontSize = 13;
+  var columns, drops;
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    columns = Math.floor(canvas.width / fontSize);
+    drops = drops || [];
+    for (var i = 0; i < columns; i++) {
+      if (drops[i] === undefined) drops[i] = Math.random() * -120;
+    }
+    drops.length = columns;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  function draw() {
+    ctx.fillStyle = 'rgba(8,8,13,0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = fontSize + 'px monospace';
+    for (var i = 0; i < drops.length; i++) {
+      var char = chars[Math.floor(Math.random() * chars.length)];
+      var y = drops[i] * fontSize;
+      if (Math.random() > 0.97) {
+        ctx.fillStyle = 'rgba(220,255,220,0.9)';
+      } else {
+        ctx.fillStyle = 'rgba(190,255,0,' + (0.25 + Math.random() * 0.5) + ')';
+      }
+      ctx.fillText(char, i * fontSize, y);
+      if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i] += 0.5;
+    }
+  }
+  setInterval(draw, 33);
+})();
+</script>
+<script>
+
+// ── SCROLL ANIMATIONS ─────────────────────────────────────────────────────────
+(function() {
+  var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var lowEnd = window.innerWidth < 480;
+
+  // Hero: fire after tiny delay so page paints first
+  function initHero() {
+    var els = document.querySelectorAll('.hero-animate');
+    if (!els.length) return;
+    // Small RAF delay so first paint lands before animation starts
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        els.forEach(function(el) {
+          el.classList.add('visible');
+        });
+      });
+    });
+  }
+
+  // Global IntersectionObserver for .reveal elements
+  function initReveal() {
+    if (!window.IntersectionObserver) {
+      // Fallback: just show everything
+      document.querySelectorAll('.reveal, .biz-card.reveal-card').forEach(function(el) {
+        el.classList.add('visible');
+      });
+      return;
+    }
+
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var el = entry.target;
+          var delay = el.dataset.revealDelay || 0;
+          if (delay > 0) {
+            setTimeout(function() { el.classList.add('visible'); }, parseInt(delay));
+          } else {
+            el.classList.add('visible');
+          }
+          observer.unobserve(el); // fire once only
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(function(el) {
+      observer.observe(el);
+    });
+
+    return observer;
+  }
+
+  // Stagger biz-cards when results appear
+  function initCardReveal() {
+    if (!window.IntersectionObserver) return;
+
+    var cardObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          cardObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+
+    document.querySelectorAll('.biz-card.reveal-card').forEach(function(el) {
+      cardObserver.observe(el);
+    });
+  }
+
+  // Public: call after cards are rendered to attach stagger
+  window.applyCardReveal = function() {
+    if (reducedMotion || lowEnd) return;
+    var cards = document.querySelectorAll('.biz-card');
+    cards.forEach(function(card, i) {
+      if (!card.classList.contains('reveal-card')) {
+        card.classList.add('reveal-card');
+        card.style.transitionDelay = Math.min(i * 70, 400) + 'ms';
+      }
+    });
+    setTimeout(initCardReveal, 10);
+  };
+
+  // Init on DOM ready
+  document.addEventListener('DOMContentLoaded', function() {
+    if (reducedMotion || lowEnd) {
+      // Skip animations entirely — show everything
+      document.querySelectorAll('.hero-animate, .reveal').forEach(function(el) {
+        el.classList.add('visible');
+      });
+      return;
+    }
+    initHero();
+    initReveal();
+  });
+})();
+
 </script>
 </body>
 </html>
