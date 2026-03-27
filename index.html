@@ -238,6 +238,22 @@ h1 em { font-style:normal; color:var(--accent); }
 .use-opener:active { transform:scale(0.96); }
 @media(max-width:600px){ .biz-card{grid-template-columns:1fr 108px;gap:8px;padding:13px} .call-main{padding:13px;font-size:13px} }
 
+/* FORCED ACTION — FIRST CARD */
+.biz-card.top { transform:scale(1.02); box-shadow:0 0 50px rgba(190,255,0,0.25); border-color:rgba(190,255,0,0.3); position:relative; z-index:2; }
+.biz-card.top .call-main { animation:pulseCall 1.8s infinite; }
+@keyframes pulseCall { 0%,100%{box-shadow:0 0 30px rgba(190,255,0,0.35)} 50%{box-shadow:0 0 60px rgba(190,255,0,0.7)} }
+.call-guide { font-size:13px; font-weight:600; color:var(--accent); margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+.call-guide .guide-arrow { display:inline-block; animation:bounceDown 1s ease-in-out infinite; }
+@keyframes bounceDown { 0%,100%{transform:translateY(0)} 50%{transform:translateY(3px)} }
+.call-hint { font-size:11px; color:var(--text3); text-align:center; margin-top:4px; line-height:1.3; }
+@media(max-width:600px){ .biz-card.top{transform:scale(1.01)} }
+
+/* MINI INFO — LIGHTWEIGHT REVEAL */
+.mini-info { grid-column:1/-1; margin-top:2px; padding-top:8px; border-top:1px solid var(--border); font-size:12px; color:var(--text3); line-height:1.5; display:flex; align-items:center; gap:10px; transition:opacity 0.15s ease; }
+.mini-info.hidden { display:none; }
+.mini-info .mini-phone { color:var(--teal); font-weight:600; white-space:nowrap; flex-shrink:0; }
+.mini-info .mini-reason { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
 /* DEMO MODE */
 .demo-badge { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--accent); background:var(--accent-dim); padding:5px 12px; border-radius:20px; margin-bottom:12px; border:1px solid rgba(190,255,0,0.18); letter-spacing:0.3px; animation:demoPulse 2s ease-in-out infinite; }
 .demo-badge .demo-dot { width:5px; height:5px; background:var(--accent); border-radius:50%; }
@@ -1355,6 +1371,9 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
       </div>
       <div id="patternInsightBar" style="display:none;margin-bottom:16px;"></div>
       <div id="patternInsightBar" style="display:none;margin-bottom:16px;"></div>
+      <div id="callGuide" class="call-guide" style="display:none;">
+        <span class="guide-arrow">↓</span> Your #1 match — start here
+      </div>
       <div id="bizList"></div>
       <div id="regenWrap" style="display:none;">
         <button class="regen-btn" onclick="generateMyLeads()">
@@ -1875,7 +1894,7 @@ function handleLogoClick() {
   }
   _logoTimer = setTimeout(function(){ _logoTaps=0; goHome(); }, 400);
 }
-function enterDashboard(){ updateNav(); updateDashboard(); showPage('dashboard'); checkForResume(); renderDashSections(); renderGoalTracker(); updateOverdueBadge(); if(isDemoEligible()){triggerDemoRun();}else{setTimeout(checkOnboarding, 400);} }
+function enterDashboard(){ updateNav(); updateDashboard(); showPage('dashboard'); checkForResume(); renderDashSections(); renderGoalTracker(); updateOverdueBadge(); if(isDemoEligible()){scheduleDemoRun();}else{setTimeout(checkOnboarding, 400);} }
 
 // DASHBOARD STATE
 function updateEmptyHint() { /* disabled — search form is always visible */ }
@@ -2861,6 +2880,7 @@ function stopLoading()  { clearInterval(loadingInterval); }
 
 function resetSearch() {
   hideDemoUI();
+  dismissFirstCardFlow();
   document.getElementById('results').style.display='none';
   var sfWrap = document.getElementById('scoreFilterWrap'); if(sfWrap) sfWrap.style.display='none';
   document.getElementById('inputSection').style.display='block';
@@ -2954,14 +2974,12 @@ function finalizeStreamedResults(businesses) {
   // Demo mode: show badge + regen CTA + smooth scroll
   if (window._isDemoRun) {
     showDemoUI();
-    setTimeout(function() {
-      var resultsEl = document.getElementById('results');
-      if (resultsEl) resultsEl.scrollIntoView({ behavior:'smooth', block:'start' });
-    }, 300);
   } else {
     hideDemoUI();
     markHasGenerated();
   }
+  // Forced action: highlight first card and scroll to it
+  activateFirstCardFlow();
 }
 
 // ── ANALYTICS PAGE ──────────────────────────────────────────────────────────
@@ -4011,6 +4029,12 @@ function buildBizCardHTML(b, i) {
   var words = sig.trim().split(/\s+/);
   var insight = words.slice(0, 8).join(' ') + (words.length > 8 ? '\u2026' : '');
 
+  // Mini-info: phone + one short reason line
+  var phone = b.phone || '';
+  var reason = b.reason || b.opener || '';
+  var reasonWords = reason.trim().split(/\s+/);
+  var shortReason = reasonWords.slice(0, 12).join(' ') + (reasonWords.length > 12 ? '\u2026' : '');
+
   return (
     '<div class="biz-card'+(isTop?' top':'')+'" id="card-'+i+'">'+
       '<div class="left">'+
@@ -4018,21 +4042,32 @@ function buildBizCardHTML(b, i) {
         '<div class="biz-name">'+b.name+'</div>'+
       '</div>'+
       '<div class="right" onclick="event.stopPropagation()">'+
-        (b.phone ?
-          '<a href="tel:'+b.phone.replace(/\D/g,'')+'" class="call-main">'+
+        (phone ?
+          '<a href="tel:'+phone.replace(/\D/g,'')+'" class="call-main" onclick="dismissFirstCardFlow()">'+
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>'+
             'Call now'+
           '</a>'
         :
-          '<button class="call-main" onclick="copyOpener('+i+')">'+
+          '<button class="call-main" onclick="dismissFirstCardFlow();copyOpener('+i+')">'+
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>'+
             'Use opener'+
           '</button>'
         )+
-        '<button class="use-opener" id="copy-'+i+'" onclick="copyOpener('+i+')">Copy opener</button>'+
+        '<button class="use-opener" id="copy-'+i+'" onclick="dismissFirstCardFlow();toggleMiniInfo('+i+');copyOpener('+i+')">Copy opener</button>'+
+        (isTop ? '<div class="call-hint">Highest-match signal — tap to start</div>' : '')+
+      '</div>'+
+      '<div class="mini-info hidden" id="mini-'+i+'">'+
+        (phone ? '<span class="mini-phone">'+phone+'</span>' : '')+
+        (shortReason ? '<span class="mini-reason">'+shortReason+'</span>' : '')+
       '</div>'+
     '</div>'
   );
+}
+
+function toggleMiniInfo(i) {
+  var el = document.getElementById('mini-'+i);
+  if (!el) return;
+  el.classList.toggle('hidden');
 }
 
 
@@ -4054,14 +4089,12 @@ function renderResults(businesses) {
   // Demo mode handling
   if (window._isDemoRun) {
     showDemoUI();
-    setTimeout(function() {
-      var resultsEl = document.getElementById('results');
-      if (resultsEl) resultsEl.scrollIntoView({ behavior:'smooth', block:'start' });
-    }, 300);
   } else {
     hideDemoUI();
     markHasGenerated();
   }
+  // Forced action: highlight first card and scroll to it
+  activateFirstCardFlow();
 }
 
 
@@ -6442,8 +6475,48 @@ document.addEventListener('visibilitychange', function() {
   if (!document.hidden && currentUser) checkForResume();
 });
 
-// ── DEMO MODE — INSTANT FIRST VALUE ──────────────────────────────────────────
+// ── FORCED ACTION FLOW — FIRST CARD GUIDANCE ─────────────────────────────────
+function activateFirstCardFlow() {
+  var guide = document.getElementById('callGuide');
+  if (guide) guide.style.display = 'flex';
+  // Scroll to first card after a beat so animation lands
+  setTimeout(function() {
+    var first = document.querySelector('.biz-card.top');
+    if (first) {
+      first.scrollIntoView({ behavior:'smooth', block:'center' });
+    }
+  }, 500);
+}
+
+function dismissFirstCardFlow() {
+  // Remove .top class from first card
+  var topCard = document.querySelector('.biz-card.top');
+  if (topCard) {
+    topCard.classList.remove('top');
+    // Kill pulse by removing animation
+    var btn = topCard.querySelector('.call-main');
+    if (btn) btn.style.animation = 'none';
+    // Remove hint
+    var hint = topCard.querySelector('.call-hint');
+    if (hint) hint.remove();
+  }
+  // Hide guide text
+  var guide = document.getElementById('callGuide');
+  if (guide) guide.style.display = 'none';
+}
+
+// ── DEMO MODE — DELAYED CONTROLLABLE AUTO-RUN ───────────────────────────────
 window._isDemoRun = false;
+window._userInteracted = false;
+window._demoTimer = null;
+
+// Track user interaction — any click/key/scroll cancels auto-run
+['click','keydown','scroll','touchstart'].forEach(function(evt) {
+  window.addEventListener(evt, function() {
+    window._userInteracted = true;
+    if (window._demoTimer) { clearTimeout(window._demoTimer); window._demoTimer = null; }
+  }, { once: true, passive: true });
+});
 
 function isDemoEligible() {
   if (!currentUser) return false;
@@ -6479,13 +6552,20 @@ function prefillDemoInputs() {
   toggleAnalyzeBtn();
 }
 
-function triggerDemoRun() {
+function scheduleDemoRun() {
   if (!isDemoEligible()) return;
-  window._isDemoRun = true;
+  // Pre-fill immediately so user sees the form is ready
   prefillDemoInputs();
-  setTimeout(function() {
+  // Delayed auto-run — only fires if user hasn't touched anything
+  window._demoTimer = setTimeout(function() {
+    if (window._userInteracted) return;
+    if (!isDemoEligible()) return;
+    // Verify we're still on dashboard
+    var dashPage = document.getElementById('page-dashboard');
+    if (!dashPage || !dashPage.classList.contains('active')) return;
+    window._isDemoRun = true;
     analyze();
-  }, 350);
+  }, 2500);
 }
 
 function generateMyLeads() {
@@ -6511,9 +6591,9 @@ document.addEventListener('DOMContentLoaded', function() {
     renderGoalTracker();
     updateOverdueBadge();
     updateSlimBar();
-    // Demo auto-run: if user has never generated, fire immediately
+    // Demo: delayed auto-run with cancellation
     if (isDemoEligible()) {
-      triggerDemoRun();
+      scheduleDemoRun();
     } else {
       setTimeout(checkOnboarding, 600);
     }
