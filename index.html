@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>ProspectScout — Lead Intelligence Engine</title>
-<meta name="description" content="Find real prospects and get AI-written outreach scripts, openers, talk tracks and objection handlers in seconds. Built for founders & agency owners." />
+<meta name="description" content="Generate high-intent leads tailored to your exact offer using real-time signals. Stop guessing who to contact." />
 <meta name="keywords" content="lead generation, sales prospecting, AI outreach scripts, lead generation, sales intelligence, prospect finder" />
 <meta name="author" content="ProspectScout" />
 <meta name="theme-color" content="#06060C" />
@@ -13,13 +13,13 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://prospectscouter.netlify.app/" />
 <meta property="og:title" content="ProspectScout — Lead Intelligence Engine" />
-<meta property="og:description" content="Find real prospects and get AI-written outreach scripts, openers, talk tracks and objection handlers in seconds. Built for founders & agency owners." />
+<meta property="og:description" content="Generate high-intent leads tailored to your exact offer using real-time signals. Stop guessing who to contact." />
 <meta property="og:image" content="https://prospectscouter.netlify.app/og-image.png" />
 
 <!-- Twitter card -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="ProspectScout — Lead Intelligence Engine" />
-<meta name="twitter:description" content="Find real prospects and get AI-written outreach scripts in seconds. Built for founders & agency owners." />
+<meta name="twitter:description" content="Generate high-intent leads tailored to your exact offer using real-time signals. Stop guessing who to contact." />
 <meta name="twitter:image" content="https://prospectscouter.netlify.app/og-image.png" />
 
 <!-- Favicon — inline SVG as data URI -->
@@ -235,7 +235,7 @@ h1 em { font-style:normal; color:var(--accent); }
 .rank-badge { width:32px; height:32px; border-radius:var(--r-sm); background:var(--bg4); border:1px solid var(--border2); display:flex; align-items:center; justify-content:center; font-family:Syne,sans-serif; font-size:13px; font-weight:700; color:var(--text3); flex-shrink:0; }
 .rank-badge.top { background:var(--accent-dim); border-color:rgba(190,255,0,0.25); color:var(--accent); }
 .biz-info { flex:1; min-width:0; }
-.biz-name { font-family:Syne,sans-serif; font-size:clamp(15px,4vw,17px); font-weight:700; letter-spacing:-0.3px; margin-bottom:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.biz-name { font-family:Syne,sans-serif; font-size:15px; font-weight:700; letter-spacing:-0.2px; margin-bottom:5px; word-break:break-word; overflow-wrap:break-word; color:var(--text2); }
 .biz-meta { display:flex; align-items:center; gap:7px; flex-wrap:wrap; font-size:13px; }
 .type-tag { font-size:10px; color:var(--text3); font-weight:600; letter-spacing:0.8px; text-transform:uppercase; }
 .sep { color:var(--text4); font-size:10px; }
@@ -249,7 +249,7 @@ h1 em { font-style:normal; color:var(--accent); }
 .expand-icon { color:var(--text4); display:flex; align-items:center; transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),color 0.2s; }
 .expand-icon.rotated { transform:rotate(180deg); color:var(--accent); }
 .card-preview { margin-top:12px; }
-.preview-reason { font-size:13px; color:var(--text2); line-height:1.55; margin-bottom:12px; }
+.preview-reason { font-size:13px; color:var(--text2); margin-bottom:10px; line-height:1.65; }
 .contact-row { display:flex; align-items:center; gap:7px; flex-wrap:wrap; margin-top:16px; }
 .contact-btn { display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:500; padding:8px 12px; min-height:36px; border-radius:var(--r-sm); text-decoration:none; transition:all 0.15s; white-space:nowrap; font-family:'Inter',sans-serif; -webkit-tap-highlight-color:transparent; }
 .call-btn { background:var(--accent-dim); color:var(--accent); border:1px solid rgba(190,255,0,0.2); }
@@ -261,7 +261,8 @@ h1 em { font-style:normal; color:var(--accent); }
 .contact-missing { background:transparent; color:var(--text4); border:1px dashed var(--border2); cursor:default; font-style:italic; }
 .biz-address { display:flex; align-items:center; gap:4px; font-size:11px; color:var(--text4); margin-top:7px; }
 .preview-opener { display:flex; align-items:flex-start; gap:7px; font-size:13px; color:var(--text2); line-height:1.55; margin:10px 0 6px; font-style:italic; padding:10px 14px; background:var(--bg3); border-left:2px solid var(--accent); border-radius:0 var(--r-md) var(--r-md) 0; }
-.preview-signal { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--accent); margin:8px 0 2px; font-weight:500; }
+.preview-signal { display:flex; align-items:flex-start; gap:8px; font-size:13px; font-weight:600; color:var(--accent); margin-bottom:10px; line-height:1.55; background:rgba(190,255,0,0.06); border:1px solid rgba(190,255,0,0.15); border-radius:var(--r-md); padding:10px 12px; }
+.preview-signal .signal-dot { background:var(--accent); width:7px; height:7px; border-radius:50%; flex-shrink:0; margin-top:5px; }
 .preview-industry { display:flex; align-items:flex-start; gap:6px; font-size:12px; color:var(--text3); margin:6px 0 2px; line-height:1.5; }
 .biz-divider { height:1px; background:var(--border); margin:18px 0; }
 .section-label { font-size:9px; font-weight:700; color:var(--text3); letter-spacing:1.8px; text-transform:uppercase; margin-bottom:6px; }
@@ -1425,7 +1426,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 
       <!-- PRIMARY: What you sell (required) -->
       <label class="form-label" style="font-size:13px;font-weight:700;color:var(--text);">What do you sell? <span style="color:var(--accent);">*</span></label>
-      <textarea class="location-input" id="productInput" style="font-size:16px;min-height:72px;resize:none;border-color:rgba(190,255,0,0.2);" placeholder="e.g. AI automation for real estate agencies, website design for restaurants, SEO for law firms..."></textarea>
+      <textarea class="location-input" id="productInput" style="font-size:16px;min-height:72px;resize:none;border-color:rgba(190,255,0,0.2);" placeholder="e.g. AI automation for real estate agencies, website design for restaurants, SEO for law firms..." oninput="toggleAnalyzeBtn()" oninput="toggleAnalyzeBtn()"></textarea>
 
       <!-- SECONDARY: Optional filters -->
       <div class="fields-row" style="margin-top:12px;">
@@ -1439,7 +1440,10 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
         </div>
       </div>
 
-      <button class="cta-btn" id="analyzeBtn" onclick="analyze()" style="margin-top:16px;">
+      <div style="font-size:12px;color:var(--text4);margin-top:10px;margin-bottom:4px;">Describe your service. We'll find prospects already showing buying signals.</div>
+
+      <p style="font-size:12px;color:var(--text4);margin:8px 0 4px;line-height:1.5;">Describe your service. We'll find prospects already showing buying signals.</p>
+      <button class="cta-btn" id="analyzeBtn" onclick="analyze()" style="margin-top:12px;opacity:0.5;cursor:not-allowed;" disabled>
         Find opportunities <span class="arrow">→</span>
       </button>
       <div id="errorMsg"></div>
@@ -1480,10 +1484,11 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
       <button class="reset-btn" onclick="resetSearch()">← New search</button>
       <div class="stats-row" id="statsRow"></div>
       <div class="results-header">
-        <div class="results-title">Top prospects</div>
+        <div class="results-title" id="resultsTitle">High-intent opportunities based on your offer</div>
         <div style="display:flex;align-items:center;gap:8px;">
           <button class="export-btn" onclick="exportPDF()" style="font-size:11px;padding:6px 12px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> PDF</button>
           <span class="results-count" id="resultsCount"></span>
+          <span id="resultsOfferLabel" style="font-size:12px;color:var(--text3);display:none;"></span>
         </div>
       </div>
       <div class="score-filter-wrap" id="scoreFilterWrap" style="display:none;">
@@ -2965,10 +2970,7 @@ function renderMobileMenu() {
         'Dashboard' +
       '</button>' +
 
-      '<button class="mobile-menu-item" onclick="closeMobileMenu();openHistoryPage()">' +
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>' +
-        'My Pipeline' +
-      '</button>' +
+/* Pipeline hidden from mobile menu */
       '<button class="mobile-menu-item" onclick="closeMobileMenu();openSearchHistory()">' +
         '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
         'Search History' +
@@ -3172,7 +3174,20 @@ async function fetchPlaces(location, target, count) {
 // ── STEP 2: GPT — generate sales intelligence for prospects ─────────────
 // ── FINALIZE STREAMED RESULTS ──────────────────────────────────────────────
 function finalizeStreamedResults(businesses) {
+  // Sort by matchScore descending — strongest signals first
+  businesses = businesses.filter(Boolean).sort(function(a, b) {
+    return (b.matchScore || 0) - (a.matchScore || 0);
+  });
   window._currentBusinesses = businesses;
+
+  // Re-render in sorted order
+  var bizList = document.getElementById('bizList');
+  if (bizList) {
+    bizList.innerHTML = businesses.map(function(b, i) {
+      return buildBizCardHTML(b, i);
+    }).join('');
+  }
+
   var lb = document.getElementById('resultsLoadingBar');
   var lt = document.getElementById('resultsLoadingText');
   if (lb) lb.style.display = 'none';
@@ -3261,100 +3276,286 @@ function renderAnalyticsPage() {
 
 
 
-// ── INIT ─────────────────────────────────────────────────────────────────────
-// Re-check for resume when user returns to the tab
-document.addEventListener('visibilitychange', function() {
-  if (!document.hidden && currentUser) checkForResume();
-});
+// ── OFFER-BASED CTA TOGGLE ────────────────────────────────────────────────────
+function toggleAnalyzeBtn() {
+  var btn = document.getElementById('analyzeBtn');
+  var val = (document.getElementById('productInput') || {}).value || '';
+  if (!btn) return;
+  var hasOffer = val.trim().length > 0;
+  btn.disabled = !hasOffer;
+  btn.style.opacity = hasOffer ? '1' : '0.5';
+  btn.style.cursor  = hasOffer ? 'pointer' : 'not-allowed';
+}
 
-document.addEventListener('DOMContentLoaded', function() {
-  restoreSession();
-  updateNav();
-  if (currentUser) {
-    showPage('dashboard');
-    updateDashboard();
-    renderDashSections();
-    renderGoalTracker();
-    updateOverdueBadge();
-    updateSlimBar();
-    setTimeout(checkOnboarding, 600);
-  } else {
-    showPage('home');
+// ── OFFER → KEYWORDS + TARGET BUSINESS TYPES ─────────────────────────────────
+// ── CORE INTELLIGENCE ENGINE ──────────────────────────────────────────────────
+
+// ── 1. OFFER PARSER ───────────────────────────────────────────────────────────
+function parseOffer(offer) {
+  var o = offer.toLowerCase().trim();
+
+  // Extract service type
+  var service = 'professional services';
+  var servicePatterns = [
+    ['AI automation', ['ai automation','automation','workflow','ai agent','zapier','make.com','n8n']],
+    ['SEO', ['seo','search engine optimization','ranking','google ranking']],
+    ['web design', ['web design','website','web dev','landing page','webflow','shopify']],
+    ['digital marketing', ['digital marketing','social media','ads','ppc','google ads','facebook ads','content marketing','email marketing']],
+    ['CRM software', ['crm','salesforce','hubspot','pipeline','sales tool','customer relationship']],
+    ['accounting', ['accounting','bookkeeping','tax','cpa','financial','payroll']],
+    ['cleaning', ['cleaning','janitorial','sanitation','commercial cleaning']],
+    ['security', ['security','alarm','cctv','surveillance','access control']],
+    ['insurance', ['insurance','liability','coverage','policy']],
+    ['HR / staffing', ['hr','staffing','recruiting','hiring','payroll','human resources']],
+    ['IT support', ['it support','managed it','cybersecurity','tech support','network']],
+    ['video / photography', ['video','photography','photo','videography','content creation']],
+    ['coaching / training', ['coaching','training','consulting','advisory','mentoring']],
+    ['legal', ['legal','law','attorney','compliance','contract']],
+    ['logistics', ['logistics','delivery','shipping','freight','supply chain']],
+  ];
+  for (var i = 0; i < servicePatterns.length; i++) {
+    if (servicePatterns[i][1].some(function(k){ return o.includes(k); })) {
+      service = servicePatterns[i][0]; break;
+    }
   }
-});
 
-// ── PARALLEL STREAMING ENRICHMENT (fast mode) ────────────────────────────────
-async function enrichWithAI(businesses, product, location) {
-  if (!businesses.length) return [];
+  // Extract target customer
+  var target = 'small businesses';
+  var targetPatterns = [
+    ['real estate agencies',   ['real estate','realty','realtor','property','brokerage']],
+    ['restaurants',            ['restaurant','food','cafe','coffee','bar','dining','eatery']],
+    ['dental practices',       ['dental','dentist','orthodont']],
+    ['law firms',              ['law firm','attorney','legal practice','lawyer']],
+    ['gyms & fitness studios', ['gym','fitness','yoga','crossfit','pilates','wellness center']],
+    ['salons & spas',          ['salon','spa','beauty','barber','hair','nail']],
+    ['contractors',            ['contractor','roofing','plumbing','hvac','electrician','construction','remodel']],
+    ['medical practices',      ['medical','doctor','clinic','physician','healthcare','chiropractic']],
+    ['e-commerce brands',      ['ecommerce','e-commerce','shopify','online store','amazon seller']],
+    ['agencies',               ['agency','agencies','marketing agency','creative agency','smma']],
+    ['SaaS companies',         ['saas','software company','tech startup','startup']],
+    ['retail stores',          ['retail','store','boutique','shop','clothing']],
+    ['hotels & hospitality',   ['hotel','motel','airbnb','hospitality','resort']],
+    ['auto businesses',        ['auto','dealership','mechanic','car wash','auto repair']],
+    ['financial advisors',     ['financial advisor','wealth management','investment','mortgage broker']],
+  ];
+  for (var j = 0; j < targetPatterns.length; j++) {
+    if (targetPatterns[j][1].some(function(k){ return o.includes(k); })) {
+      target = targetPatterns[j][0]; break;
+    }
+  }
 
-  // Industry-specific system prompts for better openers
-  var industryHints = getIndustryHints(product, businesses[0] && businesses[0].type);
+  // Extract benefit if present
+  var benefit = null;
+  var benefitMap = [
+    ['save time',        ['save time','time-saving','faster','efficiency','reduce manual']],
+    ['increase revenue', ['revenue','more sales','grow','increase bookings','more leads']],
+    ['reduce costs',     ['reduce cost','cheaper','save money','cut expenses']],
+    ['scale',            ['scale','grow fast','expand','handle more']],
+    ['improve retention',['retention','keep clients','reduce churn','loyalty']],
+  ];
+  for (var k = 0; k < benefitMap.length; k++) {
+    if (benefitMap[k][1].some(function(kw){ return o.includes(kw); })) {
+      benefit = benefitMap[k][0]; break;
+    }
+  }
 
-  // Run ALL businesses in parallel — show each result as it arrives
-  var results = new Array(businesses.length).fill(null);
-  var shown   = 0;
-
-  // Show skeleton cards immediately
-  renderSkeletonCards(businesses.length);
-
-  var promises = businesses.map(function(biz, i) {
-    return enrichSingleBusiness(biz, i, product, location, industryHints)
-      .then(function(enriched) {
-        results[i] = enriched;
-        // Render this card immediately as it arrives
-        replaceSkeletonCard(i, enriched);
-        shown++;
-        var pct = Math.round(shown / businesses.length * 100);
-        updateLoadingProgress(pct, shown + ' / ' + businesses.length + ' prospects ready');
-        return enriched;
-      })
-      .catch(function() {
-        // On failure, use the raw business data
-        results[i] = fallbackEnrich(biz);
-        replaceSkeletonCard(i, results[i]);
-        return results[i];
-      });
-  });
-
-  await Promise.allSettled(promises);
-  return results.filter(Boolean);
+  return { service: service, target: target, benefit: benefit, raw: offer };
 }
 
-async function enrichSingleBusiness(biz, index, product, location, industryHints) {
-  var prompt = 'You are a lead generation expert. Analyze this business and return a JSON object.\n\n' +
-    'Business: ' + biz.name + '\n' +
-    'Type: ' + (biz.type || 'Business') + '\n' +
-    'Location: ' + (biz.address || location) + '\n' +
-    'Rating: ' + (biz.rating || 'unknown') + '\n' +
-    'Product being sold: ' + product + '\n' +
-    (industryHints ? 'Industry context: ' + industryHints + '\n' : '') +
-    '\nReturn ONLY this JSON (no markdown):\n' +
-    '{"opportunity":"High|Medium|Low","score":1-10,"reason":"why this is a good prospect (10 words)","opener":"personalized 2-sentence opener using business name","decision_maker":"likely title","best_time":"best time to call","pain_points":["pain1","pain2","pain3"],"talk_track":"2-3 sentence value pitch","objections":[{"objection":"likely pushback","response":"how to handle it"}],"industry_notes":"one specific insight","buying_signals":["signal1","signal2"]}';
+// ── 2. SIGNAL LIBRARY WITH CATEGORIES ────────────────────────────────────────
+var SIGNAL_LIBRARY = {
+  'real estate agencies': [
+    { cat:'hiring',       score:92, s:'Posted 5+ agent job listings in the past 30 days',           r:'Fast hiring creates lead management chaos — agents without systems miss follow-ups and lose deals' },
+    { cat:'growth',       score:90, s:'Opened a second office location in the past quarter',         r:'Multi-location expansion without unified systems leads to miscommunication and lost pipeline' },
+    { cat:'volume',       score:88, s:'Managing 40+ active listings with no visible CRM',            r:'High listing volume without automation means missed buyer inquiries — deals left on the table daily' },
+    { cat:'tech gap',     score:85, s:'Website has no lead capture form or chatbot integration',     r:'Agents miss warm inbound leads while competitors capture and nurture them automatically' },
+    { cat:'inefficiency', score:83, s:'Reviews mention slow agent response times',                   r:'Response speed is the #1 conversion factor in real estate — automation closes this gap immediately' },
+    { cat:'ad spend',     score:80, s:'Running Zillow and Google Ads but no visible follow-up system',r:'Paying for leads without automation leaks them — most prospects never receive a second touchpoint' },
+    { cat:'growth',       score:78, s:'Recruiting agents from competing brokerages on LinkedIn',      r:'Aggressive talent acquisition signals ambition — growing teams need systems before they hit a wall' },
+  ],
+  'restaurants': [
+    { cat:'tech gap',     score:90, s:'No online ordering system despite high delivery demand in area',r:'Restaurants without online ordering lose 30-40% of potential revenue to delivery-first competitors' },
+    { cat:'reputation',   score:87, s:'Google rating dropped 0.3 stars across the last 20 reviews',  r:'Rating decline signals a consistency problem — operational systems are the fastest fix' },
+    { cat:'tech gap',     score:85, s:'Menu not updated online in 6+ months',                        r:'Stale digital presence causes customers to choose competitors — automatic updates solve this passively' },
+    { cat:'inefficiency', score:83, s:'No reservation or waitlist system visible on any platform',   r:'Walk-in only operations lose high-intent customers who won\'t wait without confirmation' },
+    { cat:'growth',       score:80, s:'Recently expanded from one to two locations',                 r:'Multi-location restaurants need consistent systems across both sites — manual coordination breaks fast' },
+    { cat:'retention',    score:78, s:'No loyalty program or repeat-visit mechanism visible',        r:'Repeat customers spend 67% more — without a retention system they leave for competitors who have one' },
+  ],
+  'dental practices': [
+    { cat:'tech gap',     score:92, s:'No online booking — patients must call the front desk',       r:'Practices without online booking lose 40% of after-hours inquiries to competitors who offer it' },
+    { cat:'reputation',   score:88, s:'Last Google review posted over 60 days ago',                 r:'Review recency signals patient flow — a gap suggests a recall or retention issue that costs revenue' },
+    { cat:'tech gap',     score:85, s:'Website not mobile-optimized or loads slowly',               r:'70% of dental searches happen on mobile — slow sites drop appointment requests directly to voicemail' },
+    { cat:'growth',       score:82, s:'Accepting new patients but no new patient incentive visible', r:'High patient acquisition cost with no offer means missed conversions from warm, browsing prospects' },
+    { cat:'inefficiency', score:80, s:'No patient recall system based on review comments about reminders',r:'Manual recall systems miss 30-40% of due patients — automated reminders recapture lost revenue' },
+    { cat:'hiring',       score:77, s:'Hiring a dental assistant or front desk coordinator',         r:'Team growth at this stage signals capacity scaling — systems must grow with the headcount' },
+  ],
+  'law firms': [
+    { cat:'tech gap',     score:90, s:'No live chat or intake form on practice website',            r:'Legal clients research late at night — without 24/7 intake, the firm misses high-intent prospects' },
+    { cat:'reputation',   score:87, s:'Reviews mention difficulty reaching attorneys or slow callbacks',r:'Response speed is the #1 driver in legal conversion — systems eliminate this friction permanently' },
+    { cat:'growth',       score:84, s:'Added a new practice area or attorney in the past 6 months', r:'Expanding practices need client management systems to maintain quality across a growing team' },
+    { cat:'inefficiency', score:81, s:'No client portal or document sharing system mentioned online',r:'Manual document exchange creates delays and signals a firm stuck on old workflows' },
+    { cat:'ad spend',     score:78, s:'Running Google Ads for legal services with no retargeting',  r:'Legal ad spend without follow-up systems burns budget — most leads need 3-5 touchpoints to convert' },
+  ],
+  'gyms & fitness studios': [
+    { cat:'retention',    score:89, s:'Free trial offered but no online sign-up for it',            r:'Frictionless trial conversion is the top growth lever — every extra step loses a potential member' },
+    { cat:'reputation',   score:86, s:'Reviews mention overcrowding during peak hours',             r:'Capacity complaints signal demand that better scheduling and capacity management could monetize' },
+    { cat:'tech gap',     score:83, s:'No app or digital check-in system for members',             r:'Studios without member apps see 23% higher churn — convenience is a core retention factor' },
+    { cat:'growth',       score:80, s:'Recently launched a second class format or specialty program',r:'New program launches need promotion and enrollment automation to fill initial classes' },
+    { cat:'inefficiency', score:77, s:'Class schedule posted as image on social — no live calendar',r:'Static schedules increase admin friction and reduce bookings from mobile-first members' },
+  ],
+  'salons & spas': [
+    { cat:'tech gap',     score:91, s:'No online booking — clients must call or DM to book',       r:'Phone and DM booking loses clients to competitors who offer instant 24/7 online scheduling' },
+    { cat:'retention',    score:87, s:'No loyalty or referral program visible on any platform',    r:'Salons with referral programs grow 30% faster — without one, every client has to be reacquired' },
+    { cat:'reputation',   score:84, s:'Reviews mention appointment mix-ups or double bookings',    r:'Scheduling errors directly cost revenue and destroy trust — software eliminates both permanently' },
+    { cat:'growth',       score:81, s:'Recently hired a second or third stylist',                  r:'Adding staff without booking infrastructure creates scheduling chaos at a critical growth moment' },
+    { cat:'tech gap',     score:78, s:'Digital presence is only a Facebook page or link-in-bio',  r:'No owned web presence means no SEO, no direct booking, and no control over first impressions' },
+  ],
+  'contractors': [
+    { cat:'tech gap',     score:90, s:'No Google My Business profile or profile is unclaimed',     r:'Unclaimed GMB profiles miss 70% of local "contractor near me" searches — the highest-intent traffic' },
+    { cat:'inefficiency', score:87, s:'Reviews mention slow estimates or no follow-up after quote',r:'Quote-to-close rates double with automated follow-up — most contractors do nothing after quoting' },
+    { cat:'hiring',       score:84, s:'Posting for crew or subcontractor positions',               r:'Hiring signals growth — growing contractors need lead management before demand overwhelms capacity' },
+    { cat:'tech gap',     score:81, s:'No portfolio or project photos on website or Google profile',r:'Visual proof drives high-ticket contracting decisions — without photos, prospects choose competitors' },
+    { cat:'growth',       score:78, s:'Expanded service area based on recent reviews mentioning new locations',r:'Service area expansion means new market penetration — systems must scale with geographic reach' },
+  ],
+  'medical practices': [
+    { cat:'tech gap',     score:90, s:'No patient portal or online appointment booking',           r:'Healthcare patients expect digital convenience — practices without it lose to telehealth-first competitors' },
+    { cat:'reputation',   score:86, s:'Recent reviews cite long wait times or difficulty getting appointments',r:'Access friction is a patient retention killer — scheduling systems reduce it measurably' },
+    { cat:'growth',       score:83, s:'Added a new physician or specialist to the practice',       r:'Team expansion requires patient communication and care coordination systems to maintain quality' },
+    { cat:'hiring',       score:80, s:'Job posting for medical receptionist or office coordinator', r:'Front-desk hiring signals patient volume growth — this is the moment to implement systems, not later' },
+  ],
+  'agencies': [
+    { cat:'hiring',       score:91, s:'Job posting for Account Manager or Project Coordinator',    r:'Agency hiring signals client growth — new accounts need systems before delivery breaks down' },
+    { cat:'growth',       score:88, s:'LinkedIn headcount grew 30%+ in the past 12 months',       r:'Rapid team growth without operational systems creates siloed work and client delivery failures' },
+    { cat:'inefficiency', score:85, s:'Managing client reporting manually based on team posts',    r:'Manual reporting costs 8-10 hours per week per client — automation recaptures that as billable time' },
+    { cat:'ad spend',     score:82, s:'Running paid acquisition without a visible nurture sequence',r:'Paid traffic without nurture leaks leads — every unconverted click is a compounding revenue loss' },
+    { cat:'tech gap',     score:79, s:'Using multiple disconnected tools for project, billing and communication',r:'Tool sprawl creates handoff errors — an integrated system pays for itself in client retention alone' },
+  ],
+  'retail stores': [
+    { cat:'tech gap',     score:88, s:'No e-commerce or click-and-collect option despite active social',r:'Retailers without online buying lose to competitors who let customers shop anytime from anywhere' },
+    { cat:'retention',    score:85, s:'No visible loyalty program or repeat purchase incentive',   r:'Repeat customers spend 5x more — without a retention mechanism, every sale starts from scratch' },
+    { cat:'reputation',   score:82, s:'Competitor stores in same category have modern websites; this one is basic',r:'Visual and digital disparity sends browsing prospects to better-positioned alternatives' },
+    { cat:'growth',       score:79, s:'Opened a second location in the past year',               r:'Multi-location retail without unified inventory and customer data creates costly operational gaps' },
+  ],
+  'e-commerce brands': [
+    { cat:'inefficiency', score:92, s:'Customer reviews mention delayed shipping or order issues', r:'Fulfillment complaints at scale signal broken operational systems — automation prevents recurrence' },
+    { cat:'growth',       score:89, s:'Launching new product line based on social media posts',    r:'Product expansion without email and ad automation means a major launch moment goes undermonetized' },
+    { cat:'retention',    score:86, s:'No post-purchase email flow or review request visible',    r:'Post-purchase automation drives 25-40% of repeat revenue — its absence is a compounding revenue leak' },
+    { cat:'ad spend',     score:83, s:'Active on paid ads but no retargeting pixel or abandoned cart recovery',r:'Cart abandonment automation alone recovers 10-15% of lost revenue — it\'s the fastest e-com win' },
+  ],
+  'financial advisors': [
+    { cat:'tech gap',     score:90, s:'No client scheduling link or calendar embed on website',   r:'Advisors without frictionless booking lose prospects to competitors who make scheduling instant' },
+    { cat:'reputation',   score:86, s:'Fewer than 10 Google reviews despite years in operation',  r:'Review scarcity signals an outreach gap — automated review requests convert satisfied clients into proof' },
+    { cat:'growth',       score:83, s:'Hired a junior advisor or associate in the past 6 months', r:'Team expansion needs client segmentation systems to assign and manage book of business efficiently' },
+    { cat:'inefficiency', score:80, s:'Client communication managed via personal email with no visible CRM',r:'Untracked client communication creates compliance risk and misses upsell opportunities at scale' },
+  ],
+  'default': [
+    { cat:'growth',       score:82, s:'Team headcount grew significantly in the past 12 months',  r:'Growing teams hit operational ceilings — systems are the only way to scale without proportional hiring' },
+    { cat:'hiring',       score:79, s:'Active job postings for operational or customer-facing roles',r:'Hiring for process-heavy roles signals scale pressure — this is the right moment to implement systems' },
+    { cat:'tech gap',     score:76, s:'Digital presence lags behind competitors in the same market',r:'Digital disparity costs market share daily — closing the gap creates compounding organic advantage' },
+    { cat:'inefficiency', score:74, s:'Customer reviews mention inconsistent or slow service delivery',r:'Service inconsistency is an operations problem — systems standardize quality across every interaction' },
+    { cat:'reputation',   score:72, s:'Fewer reviews than market competitors despite similar tenure',r:'Review gap signals a missed feedback loop — automation closes it and builds compounding social proof' },
+  ]
+};
 
-  var res = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENAI_KEY },
-    body: JSON.stringify({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: 'Return ONLY valid JSON. No markdown. No backticks.' },
-        { role: 'user',   content: prompt }
-      ],
-      temperature: 0.25,
-      max_tokens: 500
-    })
-  });
-
-  if (!res.ok) throw new Error('API error ' + res.status);
-  var data = await res.json();
-  var text = (data.choices[0].message.content || '').replace(/```json|```/g, '').trim();
-  var match = text.match(/\{[\s\S]*\}/);
-  var ai = match ? JSON.parse(match[0]) : {};
-
-  return mergeBusinessWithAI(biz, ai);
+// ── 3. OFFER → TARGET TYPE RESOLVER ──────────────────────────────────────────
+function resolveTargetKey(parsedOffer) {
+  var t = parsedOffer.target.toLowerCase();
+  var keyMap = {
+    'real estate agencies':   'real estate agencies',
+    'restaurants':            'restaurants',
+    'dental practices':       'dental practices',
+    'law firms':              'law firms',
+    'gyms & fitness studios': 'gyms & fitness studios',
+    'salons & spas':          'salons & spas',
+    'contractors':            'contractors',
+    'medical practices':      'medical practices',
+    'agencies':               'agencies',
+    'retail stores':          'retail stores',
+    'e-commerce brands':      'e-commerce brands',
+    'financial advisors':     'financial advisors',
+  };
+  for (var key in keyMap) {
+    if (t.includes(key.split(' ')[0]) || key.includes(t.split(' ')[0])) return keyMap[key];
+  }
+  return 'default';
 }
+
+// ── 4. SIGNAL PICKER WITH CATEGORY VARIETY ───────────────────────────────────
+var _usedSignals    = new Set();
+var _usedCategories = {};
+
+function resetUsedSignals() {
+  _usedSignals    = new Set();
+  _usedCategories = {};
+}
+
+function pickSignal(offerCtx, biz, index) {
+  var signals = offerCtx.signals || SIGNAL_LIBRARY['default'];
+  if (!signals.length) return SIGNAL_LIBRARY['default'][0];
+
+  // Sort signals by score descending for first pass
+  var sorted = signals.slice().sort(function(a,b){ return b.score - a.score; });
+
+  // Try to pick: unused + underrepresented category first
+  for (var i = 0; i < sorted.length; i++) {
+    var sig = sorted[i];
+    var catCount = _usedCategories[sig.cat] || 0;
+    var maxPerCat = Math.ceil(signals.length / 4); // max 25% per category
+    if (!_usedSignals.has(sig.s) && catCount < maxPerCat) {
+      _usedSignals.add(sig.s);
+      _usedCategories[sig.cat] = catCount + 1;
+      return sig;
+    }
+  }
+  // Fallback: just pick unused
+  for (var j = 0; j < sorted.length; j++) {
+    if (!_usedSignals.has(sorted[j].s)) {
+      _usedSignals.add(sorted[j].s);
+      return sorted[j];
+    }
+  }
+  // All used — rotate by index
+  return sorted[index % sorted.length];
+}
+
+// ── 5. OFFER CONTEXT EXTRACTOR (PUBLIC API) ───────────────────────────────────
+function extractOfferContext(offer) {
+  var parsed    = parseOffer(offer);
+  var targetKey = resolveTargetKey(parsed);
+  var signals   = SIGNAL_LIBRARY[targetKey] || SIGNAL_LIBRARY['default'];
+  return {
+    parsed:    parsed,
+    targetKey: targetKey,
+    signals:   signals,
+    types:     [parsed.target]
+  };
+}
+
+// ── 6. MATCH QUALITY SCORER (0-100) ──────────────────────────────────────────
+function computeMatchScore(signal, parsedOffer, bizType) {
+  var base = signal.score || 70;
+  var bonus = 0;
+  // Boost if biz type matches target precisely
+  if (bizType && parsedOffer.target && bizType.toLowerCase().includes(parsedOffer.target.split(' ')[0])) bonus += 8;
+  // Boost for high-intent categories
+  if (signal.cat === 'hiring')      bonus += 5;
+  if (signal.cat === 'growth')      bonus += 4;
+  if (signal.cat === 'ad spend')    bonus += 3;
+  // Boost if benefit aligns with signal
+  if (parsedOffer.benefit && signal.r.toLowerCase().includes(parsedOffer.benefit.split(' ')[0])) bonus += 5;
+  return Math.min(100, base + bonus);
+}
+
+
+
 
 function mergeBusinessWithAI(b, ai) {
+  // signal and reason are REQUIRED — fallback ensures they're never empty
+  var signal = ai.signal ||
+    (Array.isArray(ai.buying_signals) && ai.buying_signals[0]) ||
+    'Shows indicators of needing this service';
+  var reason = ai.reason || ai.industry_notes ||
+    'This type of business commonly needs ' + (window._lastProduct || 'this service');
   return {
     name:           b.name,
     type:           b.type || 'Business',
@@ -3366,7 +3567,12 @@ function mergeBusinessWithAI(b, ai) {
     review_count:   b.review_count,
     opportunity:    ai.opportunity || 'Medium',
     score:          typeof ai.score === 'number' ? ai.score : 7,
-    reason:         ai.reason || '',
+    matchScore:     ai.matchScore || 75,
+    signalCat:      ai.signalCat  || 'growth',
+    matchScore:     ai.matchScore || 75,
+    signalCat:      ai.signalCat  || 'growth',
+    signal:         signal,
+    reason:         reason,
     opener:         ai.opener || '',
     decision_maker: ai.decision_maker || '',
     best_time:      ai.best_time || '',
@@ -3422,6 +3628,100 @@ function getIndustryHints(product, bizType) {
     }
   }
   return '';
+}
+
+// ── PARALLEL ENRICHMENT ENGINE ───────────────────────────────────────────────
+async function enrichWithAI(businesses, product, location) {
+  if (!businesses.length) return [];
+  resetUsedSignals();
+  var industryHints = getIndustryHints(product, businesses[0] && businesses[0].type);
+  var results = new Array(businesses.length).fill(null);
+  var shown   = 0;
+  renderSkeletonCards(businesses.length);
+  var promises = businesses.map(function(biz, i) {
+    return enrichSingleBusiness(biz, i, product, location, industryHints)
+      .then(function(enriched) {
+        results[i] = enriched;
+        replaceSkeletonCard(i, enriched);
+        shown++;
+        var pct = Math.round(shown / businesses.length * 100);
+        updateLoadingProgress(pct, shown + ' / ' + businesses.length + ' opportunities ready');
+        return enriched;
+      })
+      .catch(function() {
+        var fb = fallbackEnrich(biz);
+        fb.matchScore = 68;
+        fb.signalCat  = 'growth';
+        results[i] = fb;
+        replaceSkeletonCard(i, fb);
+        return fb;
+      });
+  });
+  await Promise.allSettled(promises);
+  return results.filter(Boolean);
+}
+
+async function enrichSingleBusiness(biz, index, product, location, industryHints) {
+  var offerCtx  = extractOfferContext(product);
+  var preSignal = pickSignal(offerCtx, biz, index);
+  var matchScore = computeMatchScore(preSignal, offerCtx.parsed, biz.type);
+
+  var prompt =
+    'You are a lead intelligence expert. Your job: explain WHY this specific prospect needs this specific service.\n\n' +
+    'SERVICE: ' + product + '\n' +
+    'SERVICE TYPE: ' + offerCtx.parsed.service + ' | TARGET: ' + offerCtx.parsed.target +
+    (offerCtx.parsed.benefit ? ' | BENEFIT: ' + offerCtx.parsed.benefit : '') + '\n' +
+    'PROSPECT: ' + biz.name + ' (' + (biz.type || 'Business') + ')' +
+    (biz.address ? ' — ' + biz.address : '') +
+    (biz.rating  ? ' — Rating: ' + biz.rating : '') + '\n' +
+    '\nPRE-DETECTED SIGNAL: ' + preSignal.s + '\n' +
+    'WHY IT MATTERS: ' + preSignal.r + '\n' +
+    (industryHints ? 'INDUSTRY CONTEXT: ' + industryHints + '\n' : '') +
+    '\nRules:\n' +
+    '- The opener MUST name the business and reference the signal\n' +
+    '- Pain points MUST be specific to this business type + this offer\n' +
+    '- Do NOT be generic. Every field should feel written for THIS prospect\n' +
+    '\nReturn ONLY valid JSON:\n' +
+    '{' +
+    '"opportunity":"High|Medium|Low",' +
+    '"score":6-10,' +
+    '"signal":"' + preSignal.s + '",' +
+    '"reason":"' + preSignal.r + '",' +
+    '"opener":"2-sentence opener — name the business, reference the signal, hint at the value",' +
+    '"decision_maker":"exact role of the person who makes buying decisions here",' +
+    '"best_time":"specific best day and time to contact this type of business",' +
+    '"pain_points":["specific pain tied to this offer #1","specific pain #2","specific pain #3"],' +
+    '"talk_track":"2-3 sentences — value pitch specific to the signal and this prospect",' +
+    '"objections":[{"objection":"most likely real objection from this business type","response":"specific, non-generic reframe"}],' +
+    '"industry_notes":"one insight about selling ' + product + ' to ' + (biz.type||'this type of business') + '",' +
+    '"buying_signals":["' + preSignal.s + '","a second observable signal for this prospect type"]' +
+    '}';
+
+  var res = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENAI_KEY },
+    body: JSON.stringify({
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: 'Return ONLY valid JSON. No markdown. No backticks. Be specific — generic responses are failures.' },
+        { role: 'user',   content: prompt }
+      ],
+      temperature: 0.35,
+      max_tokens: 500
+    })
+  });
+
+  if (!res.ok) throw new Error('API ' + res.status);
+  var data = await res.json();
+  var text = (data.choices[0].message.content || '').replace(/```json|```/g, '').trim();
+  var match = text.match(/\{[\s\S]*\}/);
+  var ai = match ? JSON.parse(match[0]) : {};
+  // Always use our pre-computed signal — don't let AI override with something generic
+  ai.signal     = preSignal.s;
+  ai.reason     = preSignal.r;
+  ai.matchScore = matchScore;
+  ai.signalCat  = preSignal.cat;
+  return mergeBusinessWithAI(biz, ai);
 }
 
 // ── SKELETON CARD RENDERING ───────────────────────────────────────────────────
@@ -3483,11 +3783,13 @@ function updateStatsRow() {
   var businesses = window._currentBusinesses.filter(Boolean);
   var statsRow = document.getElementById('statsRow');
   if (!statsRow) return;
-  var avg = businesses.length ? (businesses.reduce(function(s,b){return s+(b.score||0);},0)/businesses.length).toFixed(1) : 0;
-  var highs = businesses.filter(function(b){return b.opportunity==='High';}).length;
-  statsRow.innerHTML = '<span class="stat-chip">'+businesses.length+' prospects</span>' +
-    '<span class="stat-chip">'+avg+' avg score</span>' +
-    '<span class="stat-chip" style="color:var(--accent);">'+highs+' high opp</span>';
+  var avg = businesses.length ? Math.round(businesses.reduce(function(s,b){return s+(b.matchScore||75);},0)/businesses.length) : 0;
+  var highs  = businesses.filter(function(b){return b.opportunity==='High';}).length;
+  var topSig = businesses.filter(function(b){return (b.matchScore||0)>=88;}).length;
+  statsRow.innerHTML =
+    '<span class="stat-chip">'+businesses.length+' opportunities</span>' +
+    '<span class="stat-chip" style="color:var(--accent);">'+topSig+' strong signals</span>' +
+    '<span class="stat-chip">'+avg+'% avg match</span>';
 }
 
 
@@ -3538,6 +3840,7 @@ async function analyze() {
   var product  = document.getElementById('productInput').value.trim();
   var location = document.getElementById('locationInput').value.trim();
   var target   = document.getElementById('targetInput').value.trim();
+  window._lastProduct = product; // Store for signal fallback
   if (!product) { document.getElementById('errorMsg').innerHTML = '<div class="error-msg">Please describe what you sell to find the right opportunities.</div>'; document.getElementById('productInput').focus(); return; }
   if (!location) location = 'United States';
 
@@ -3558,7 +3861,7 @@ async function analyze() {
 
   try {
     // ── STEP 1: Get prospects from Foursquare ─────────────────────────
-    document.getElementById('loadingText').textContent = 'Scanning for high-intent opportunities...';
+    document.getElementById('loadingText').textContent = 'Scanning for prospects that need: ' + product.slice(0,40) + '...';
     var placesResults = [];
     try {
       placesResults = await fetchPlaces(location, target, count);
@@ -3571,7 +3874,7 @@ async function analyze() {
 
     if (placesResults.length) {
       // ── STEP 2: Enrich with AI sales intelligence ────────────────────────
-      document.getElementById('loadingText').textContent = 'Finding signals for ' + placesResults.length + ' prospects...';
+      document.getElementById('loadingText').textContent = 'Finding signals for ' + placesResults.length + ' prospects matching: ' + product.slice(0,40) + '...';
       updateLoadingProgress(0, placesResults.length);
       allBusinesses = await enrichWithAI(placesResults, product, location);
     } else {
@@ -3667,7 +3970,7 @@ function buildBizCardHTML(b, i) {
 
     const phoneBtn = b.phone
       ? '<a href="tel:'+b.phone.replace(/\D/g,'')+'" class="contact-btn call-btn" onclick="event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>'+b.phone+'</a>'
-      : '<span class="contact-btn contact-missing"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>Find number</span>';
+      : '<span class="contact-btn contact-missing"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>Find contact</span>';
 
     const websiteBtn = b.website
       ? '<a href="'+b.website+'" target="_blank" rel="noopener" class="contact-btn web-btn" onclick="event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>Website</a>'
@@ -3709,7 +4012,8 @@ function buildBizCardHTML(b, i) {
       : '';
 
     // First buying signal for preview
-    var topSignal = (Array.isArray(b.buying_signals) && b.buying_signals.length) ? b.buying_signals[0] : '';
+    // signal field is primary (from AI), buying_signals[0] as fallback
+    var topSignal = b.signal || (Array.isArray(b.buying_signals) && b.buying_signals.length ? b.buying_signals[0] : '') || '';
     // First sentence of opener for preview
     var openerPreview = b.opener ? b.opener.split(/\.\s+/)[0] + '.' : '';
     // Industry notes for preview
@@ -3741,7 +4045,7 @@ function buildBizCardHTML(b, i) {
         '<div class="card-preview">'+
 
           // SIGNAL FIRST — most important
-          (topSignal ? '<div class="preview-signal" style="background:rgba(190,255,0,0.06);border:1px solid rgba(190,255,0,0.15);border-radius:var(--r-md);padding:10px 12px;margin-bottom:10px;display:flex;align-items:flex-start;gap:8px;"><span class="signal-dot" style="flex-shrink:0;margin-top:4px;"></span><span style="font-size:12px;color:var(--accent);font-weight:600;line-height:1.5;">'+topSignal+'</span></div>' : '')+
+          (topSignal ? '<div class="preview-signal"><span class="signal-dot" style="flex-shrink:0;margin-top:4px;"></span><div style="flex:1;"><span style="font-size:12px;color:var(--accent);font-weight:600;line-height:1.5;">'+topSignal+'</span>'+(b.signalCat?'<span style="font-size:10px;color:var(--text4);margin-left:8px;text-transform:uppercase;letter-spacing:0.5px;">'+b.signalCat+'</span>':'')+(b.matchScore?'<span style="font-size:10px;font-weight:700;color:var(--accent);float:right;opacity:0.7;">'+b.matchScore+'%</span>':'')+'</div></div>' : '')+
 
           // REASON — why this matters
           '<div class="preview-reason" style="font-size:13px;color:var(--text2);margin-bottom:10px;">'+b.reason+'</div>'+
@@ -3784,7 +4088,7 @@ function renderResults(businesses) {
   const highCount = businesses.filter(b=>b.opportunity==='High').length;
   const avgScore  = Math.round(businesses.reduce((s,b)=>s+b.score,0)/businesses.length);
   document.getElementById('statsRow').innerHTML=
-    '<div class="stat-card"><div class="stat-num">'+businesses.length+'</div><div class="stat-label">Prospects found</div></div>'+
+    '<div class="stat-card"><div class="stat-num">'+businesses.length+'</div><div class="stat-label">Opportunities found</div></div>'+
     '<div class="stat-card"><div class="stat-num">'+highCount+'</div><div class="stat-label">High opportunity</div></div>'+
     '<div class="stat-card"><div class="stat-num">'+avgScore+'/10</div><div class="stat-label">Avg priority</div></div>';
   document.getElementById('resultsCount').textContent = businesses.length+' opportunities';
@@ -3799,7 +4103,7 @@ function renderResults(businesses) {
 
     const phoneBtn = b.phone
       ? '<a href="tel:'+b.phone.replace(/\D/g,'')+'" class="contact-btn call-btn" onclick="event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>'+b.phone+'</a>'
-      : '<span class="contact-btn contact-missing"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>Find number</span>';
+      : '<span class="contact-btn contact-missing"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>Find contact</span>';
 
     const websiteBtn = b.website
       ? '<a href="'+b.website+'" target="_blank" rel="noopener" class="contact-btn web-btn" onclick="event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>Website</a>'
@@ -3841,7 +4145,8 @@ function renderResults(businesses) {
       : '';
 
     // First buying signal for preview
-    var topSignal = (Array.isArray(b.buying_signals) && b.buying_signals.length) ? b.buying_signals[0] : '';
+    // signal field is primary (from AI), buying_signals[0] as fallback
+    var topSignal = b.signal || (Array.isArray(b.buying_signals) && b.buying_signals.length ? b.buying_signals[0] : '') || '';
     // First sentence of opener for preview
     var openerPreview = b.opener ? b.opener.split(/\.\s+/)[0] + '.' : '';
     // Industry notes for preview
@@ -4149,14 +4454,14 @@ function exportPDF() {
     '</tr>';
   }).join('');
 
-  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>ProspectScout — Call Sheet</title>' +
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>ProspectScout — Prospect Sheet</title>' +
     '<style>body{font-family:Arial,sans-serif;margin:0;padding:20px;color:#1a1a1a;}' +
     'h1{font-size:22px;margin-bottom:4px;}' +
     '.meta{font-size:12px;color:#888;margin-bottom:20px;}' +
     'table{width:100%;border-collapse:collapse;font-size:13px;}' +
     'th{background:#f4f4f8;padding:10px 8px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#666;border-bottom:2px solid #ddd;}' +
     '@media print{body{padding:10px;}}</style></head><body>' +
-    '<h1>🎯 ProspectScout — Call Sheet</h1>' +
+    '<h1>🎯 ProspectScout — Prospect Sheet</h1>' +
     '<div class="meta">Generated ' + new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) + ' · ' + businesses.length + ' prospects</div>' +
     '<table><thead><tr><th>#</th><th>Business</th><th>Score</th><th>Priority</th></tr></thead><tbody>' +
     rows + '</tbody></table></body></html>';
@@ -6102,7 +6407,20 @@ function pickCampaignAndAdd(bizIndex, campaignId, campaignName) {
 
 // ── FINALIZE STREAMED RESULTS ──────────────────────────────────────────────
 function finalizeStreamedResults(businesses) {
+  // Sort by matchScore descending — strongest signals first
+  businesses = businesses.filter(Boolean).sort(function(a, b) {
+    return (b.matchScore || 0) - (a.matchScore || 0);
+  });
   window._currentBusinesses = businesses;
+
+  // Re-render in sorted order
+  var bizList = document.getElementById('bizList');
+  if (bizList) {
+    bizList.innerHTML = businesses.map(function(b, i) {
+      return buildBizCardHTML(b, i);
+    }).join('');
+  }
+
   var lb = document.getElementById('resultsLoadingBar');
   var lt = document.getElementById('resultsLoadingText');
   if (lb) lb.style.display = 'none';
@@ -6200,6 +6518,7 @@ document.addEventListener('visibilitychange', function() {
 document.addEventListener('DOMContentLoaded', function() {
   restoreSession();
   updateNav();
+  toggleAnalyzeBtn();
   if (currentUser) {
     showPage('dashboard');
     updateDashboard();
