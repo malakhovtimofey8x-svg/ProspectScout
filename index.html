@@ -2830,7 +2830,12 @@ function closeReminderPopover() {
 // ── DEV PANEL — console-only access ──────────────────────────────────────────
 window.openAdminPanel = function() {
   var panel = document.getElementById('devPanel');
-  if (panel) { panel.classList.add('open'); renderDevPanel(); }
+  if (!panel) { console.warn('Admin panel not found'); return; }
+  var pwd = prompt('Enter admin password');
+  if (pwd !== 'ps-admin-7391') { alert('Access denied'); return; }
+  panel.classList.add('open');
+  renderDevPanel();
+  console.log('Admin panel opened');
 };
 function closeAdminPanel() {
   var panel = document.getElementById('devPanel');
