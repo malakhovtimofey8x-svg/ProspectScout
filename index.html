@@ -75,7 +75,7 @@ header { padding:16px 0; padding-top:max(16px, env(safe-area-inset-top)); border
 .nav-pipeline-btn { display:none; align-items:center; gap:5px; font-family:'Inter',sans-serif; font-size:12px; font-weight:600; padding:6px 12px; border-radius:var(--r-sm); border:1px solid var(--border2); background:transparent; color:var(--text3); cursor:pointer; transition:all 0.15s; }
 .nav-pipeline-btn:hover { background:var(--bg3); color:var(--text2); border-color:var(--border3); }
 .nav-pipeline-btn .pip-count { font-size:10px; font-weight:700; background:var(--bg4); color:var(--text3); padding:1px 6px; border-radius:10px; margin-left:2px; }
-.nav-btn { font-family:'Inter',sans-serif; font-size:14px; font-weight:500; padding:7px 14px; min-height:36px; border-radius:var(--r-sm); cursor:pointer; transition:all 0.15s; border:1px solid var(--border2); background:transparent; color:var(--text2); }
+.nav-btn { font-family:'Inter',sans-serif; font-size:14px; font-weight:500; padding:8px 14px; min-height:36px; border-radius:var(--r-sm); cursor:pointer; transition:all 0.15s; border:1px solid var(--border2); background:transparent; color:var(--text2); -webkit-tap-highlight-color:transparent; }
 .nav-btn:hover { background:var(--bg3); color:var(--text); }
 .nav-btn.primary { background:var(--accent); color:#08080D; border-color:transparent; font-weight:600; }
 .nav-btn.primary:hover { box-shadow:0 0 20px rgba(190,255,0,0.3); }
@@ -565,20 +565,6 @@ input, textarea, select { font-size:16px; -webkit-appearance:none; appearance:no
 .score-filter-btn:hover { border-color:var(--border3); color:var(--text2); }
 .score-filter-btn.active { background:var(--accent-dim); color:var(--accent); border-color:rgba(190,255,0,0.3); }
 
-/* ── DARK/LIGHT MODE ── */
-body.light-mode { --bg:#F4F4F8; --bg2:#FFFFFF; --bg3:#F0F0F5; --bg4:#E8E8EF; --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.12); --border3:rgba(0,0,0,0.2); --text:#0A0A14; --text2:rgba(10,10,20,0.72); --text3:rgba(10,10,20,0.46); --text4:rgba(10,10,20,0.28); --accent:#3A8C00; --accent-dim:rgba(58,140,0,0.10); --teal:#007A55; --teal-dim:rgba(0,122,85,0.10); --amber:#B87000; --amber-dim:rgba(184,112,0,0.10); --purple:#6B4FBF; --purple-dim:rgba(107,79,191,0.10); }
-body.light-mode header { background:rgba(244,244,248,0.94); }
-body.light-mode .orb1 { background:rgba(58,140,0,0.08); }
-body.light-mode .orb2 { background:rgba(0,122,85,0.06); }
-body.light-mode .cta-btn { color:#fff; }
-body.light-mode .btn-primary { color:#fff; }
-body.light-mode .modal-btn { color:#fff; }
-body.light-mode .price-btn-plus { color:#fff; }
-body.light-mode .logo-icon { background:var(--accent); }
-body.light-mode .logo-icon svg path, body.light-mode .logo-icon svg circle, body.light-mode .logo-icon svg line { stroke:#fff; }
-.mode-toggle { display:flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:var(--r-sm); border:1px solid var(--border2); background:transparent; color:var(--text3); cursor:pointer; transition:all 0.15s; flex-shrink:0; }
-.mode-toggle:hover { border-color:var(--border3); color:var(--text2); background:var(--bg3); }
-
 /* ── NOTES TEMPLATES ── */
 .notes-template-btn { display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:600; padding:3px 8px; border-radius:var(--r-sm); border:1px solid var(--border2); background:transparent; color:var(--text4); cursor:pointer; transition:all 0.15s; margin-bottom:4px; margin-right:3px; }
 .notes-template-btn:hover { border-color:var(--border3); color:var(--text2); background:var(--bg4); }
@@ -792,16 +778,13 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
   .hero { padding:32px 0 24px; }
   .hero-sub { font-size:14px; margin-bottom:24px; }
   .hero-btns { flex-direction:column; gap:10px; }
-  .hero-btns .btn-primary, .hero-btns .btn-ghost { width:100%; padding:14px; text-align:center; }
+  .hero-btns .btn-primary, .hero-btns .btn-ghost { width:100%; padding:14px; text-align:center; min-height:48px; }
   .features { grid-template-columns:1fr; }
   .pricing-grid { grid-template-columns:1fr; gap:12px; }
   .dash-header { flex-direction:column; align-items:flex-start; gap:8px; }
   .dash-greeting { font-size:20px; word-break:break-word; max-width:100%; }
   .dash-sub { font-size:12px; max-width:100%; word-break:break-word; }
   .dash-tier-badge { width:100%; justify-content:space-between; }
-  .goal-bar-wrap { padding:14px 16px; }
-  .goal-title { font-size:12px; }
-  .goal-label { font-size:10px; }
   .fields-row { grid-template-columns:1fr; gap:10px; }
   .scout-card { padding:16px 14px; }
   .cta-btn { min-height:52px; font-size:16px; }
@@ -812,14 +795,22 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
   .biz-name { font-size:14px; }
   .pipeline-controls { flex-direction:column; gap:8px; }
   .pipeline-search-wrap { width:100%; }
-  .export-btn { width:100%; justify-content:center; }
+  .pipeline-search { min-height:44px; }
+  .export-btn { width:100%; justify-content:center; min-height:44px; }
   .call-outcome-row { flex-direction:column; gap:8px; }
   .reminder-popover { right:auto; left:0; }
   .vb-row { grid-template-columns:repeat(3,1fr); }
   .modal-overlay { align-items:flex-end; padding:0; }
-  .modal { border-radius:24px 24px 0 0; width:100%; max-width:100%; padding:28px 20px 44px; max-height:90vh; overflow-y:auto; }
+  .modal { border-radius:24px 24px 0 0; width:100%; max-width:100%; padding:28px 20px calc(20px + env(safe-area-inset-bottom)); max-height:90vh; overflow-y:auto; }
   .modal-title { font-size:20px; }
-  .ps-toast { width:calc(100% - 32px); text-align:center; white-space:normal; bottom:20px; }
+  .modal-btn { min-height:48px; }
+  .modal-input { min-height:44px; }
+  .ps-toast { width:calc(100% - 32px); text-align:center; white-space:normal; bottom:calc(16px + env(safe-area-inset-bottom)); }
+  .nav-btn { min-height:44px; }
+  .dropdown-item { min-height:44px; }
+  .reset-btn { min-height:44px; }
+  .price-btn { min-height:48px; }
+  .resume-btn { min-height:44px; }
 }
 
 /* SCREEN LOCK WARNING */
@@ -1856,11 +1847,6 @@ function updateNav() {
           '<button class="dropdown-item" onclick="closeProfileMenu();showPage(&quot;pricing&quot;)">'+
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>'+
             'Pricing'+
-          '</button>'+
-          '<div class="dropdown-divider"></div>'+
-          '<button class="dropdown-item" onclick="closeProfileMenu();toggleLightMode()" id="modeToggleBtn">'+
-            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'+
-            'Toggle light mode'+
           '</button>'+
           '<div class="dropdown-divider"></div>'+
           '<button class="dropdown-item danger" onclick="closeProfileMenu();doLogout()">'+
@@ -3008,10 +2994,6 @@ function renderMobileMenu() {
         '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>' +
         'Pricing' +
       '</button>' +
-
-      '<div class="mobile-menu-divider"></div>' +
-
-      '<button class="mobile-menu-item" onclick="closeMobileMenu();toggleLightMode()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/></svg> Toggle light mode</button>' +
 
       '<div class="mobile-menu-divider"></div>' +
 
@@ -4372,20 +4354,9 @@ function addToPipeline(i) {
 }
 
 
-// ── LIGHT/DARK MODE ──────────────────────────────────────────────────────────
-function toggleLightMode() {
-  var isLight = document.body.classList.toggle('light-mode');
-  localStorage.setItem('ps_light_mode', isLight ? '1' : '0');
-  var btn = document.getElementById('modeToggleBtn');
-  if (btn) btn.innerHTML = isLight
-    ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>'
-    : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
-}
-function initLightMode() {
-  if (localStorage.getItem('ps_light_mode') === '1') {
-    document.body.classList.add('light-mode');
-  }
-}
+// ── THEME — dark mode only (light mode disabled for beta) ────────────────────
+function toggleLightMode() { /* disabled */ }
+function initLightMode() { document.body.classList.remove('light-mode'); localStorage.removeItem('ps_light_mode'); }
 
 // ── CALL TIMER ────────────────────────────────────────────────────────────────
 var _timerInterval = null;
