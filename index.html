@@ -227,19 +227,29 @@ h1 em { font-style:normal; color:var(--accent); }
 .reset-btn { display:inline-flex; align-items:center; gap:6px; font-family:'Inter',sans-serif; font-size:12px; font-weight:500; color:var(--text3); background:none; border:1px solid var(--border2); border-radius:var(--r-sm); padding:7px 13px; cursor:pointer; transition:all 0.15s; margin-bottom:22px; }
 .reset-btn:hover { color:var(--text); background:var(--bg3); }
 
-/* BIZ CARDS — HARD RESET */
-.biz-card { display:grid; grid-template-columns:1fr 120px; align-items:center; gap:12px; padding:16px; background:var(--bg2); border:1px solid var(--border); border-radius:14px; margin-bottom:8px; cursor:default; }
-.left { display:flex; flex-direction:column; gap:4px; }
-.insight { font-size:14px; font-weight:700; color:var(--accent); line-height:1.4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.biz-name { font-size:13px; color:var(--text2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.right { display:flex; flex-direction:column; gap:6px; }
-.call-main { display:flex; align-items:center; justify-content:center; gap:6px; background:var(--accent); color:#08080D; font-weight:800; padding:14px; border-radius:10px; font-size:14px; text-decoration:none; border:none; cursor:pointer; width:100%; transition:box-shadow 0.13s,transform 0.1s; box-shadow:0 0 30px rgba(190,255,0,0.35); }
-.call-main:hover { box-shadow:0 0 50px rgba(190,255,0,0.6); transform:translateY(-1px); }
+/* BIZ CARDS — BETA RELEASE */
+.results-wrap { max-width:640px; margin:0 auto; }
+.biz-card { display:flex; flex-direction:column; gap:0; padding:20px; background:var(--bg2); border:1px solid var(--border); border-radius:14px; margin-bottom:14px; cursor:default; transition:border-color 0.2s,box-shadow 0.2s; }
+.biz-card:hover { border-color:var(--border2); }
+.card-top { margin-bottom:10px; }
+.insight { font-size:14px; font-weight:700; color:var(--accent); line-height:1.45; }
+.card-mid { display:flex; align-items:baseline; gap:8px; margin-bottom:4px; flex-wrap:wrap; }
+.biz-name { font-family:Syne,sans-serif; font-size:15px; font-weight:700; color:var(--text); }
+.biz-type { font-size:11px; color:var(--text4); font-weight:500; }
+.biz-context { font-size:12px; color:var(--text3); line-height:1.5; margin-bottom:12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.card-bottom { display:flex; align-items:center; gap:8px; }
+.call-main { display:flex; align-items:center; justify-content:center; gap:6px; background:var(--accent); color:#08080D; font-weight:800; padding:12px 20px; border-radius:10px; font-size:13px; text-decoration:none; border:none; cursor:pointer; transition:box-shadow 0.13s,transform 0.1s; box-shadow:0 0 24px rgba(190,255,0,0.3); white-space:nowrap; flex-shrink:0; }
+.call-main:hover { box-shadow:0 0 40px rgba(190,255,0,0.55); transform:translateY(-1px); }
 .call-main:active { transform:scale(0.94)!important; }
-.use-opener { background:var(--bg3); border:1px solid var(--border2); padding:10px; border-radius:8px; font-size:12px; font-weight:600; color:var(--text3); cursor:pointer; width:100%; transition:color 0.12s,border-color 0.12s; }
+.use-opener { background:var(--bg3); border:1px solid var(--border2); padding:10px 14px; border-radius:8px; font-size:12px; font-weight:600; color:var(--text3); cursor:pointer; transition:color 0.12s,border-color 0.12s; white-space:nowrap; }
 .use-opener:hover { color:var(--text); border-color:var(--border3); }
 .use-opener:active { transform:scale(0.96); }
-@media(max-width:600px){ .biz-card{grid-template-columns:1fr 108px;gap:8px;padding:13px} .call-main{padding:13px;font-size:13px} }
+.save-prospect { display:flex; align-items:center; justify-content:center; gap:4px; font-family:'Inter',sans-serif; font-size:11px; font-weight:600; color:var(--text4); background:none; border:1px solid var(--border); border-radius:6px; padding:8px 10px; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+.save-prospect:hover { color:var(--accent); border-color:rgba(190,255,0,0.3); background:var(--accent-dim); }
+.save-prospect.saved { color:var(--accent); border-color:rgba(190,255,0,0.2); background:var(--accent-dim); cursor:default; pointer-events:none; }
+.save-prospect svg { flex-shrink:0; }
+.card-spacer { flex:1; }
+@media(max-width:600px){ .biz-card{padding:16px} .call-main{padding:11px 16px;font-size:12px} .card-bottom{flex-wrap:wrap} }
 
 /* FORCED ACTION — FIRST CARD */
 .biz-card.top { transform:scale(1.02); box-shadow:0 0 50px rgba(190,255,0,0.25); border-color:rgba(190,255,0,0.3); position:relative; z-index:2; }
@@ -250,12 +260,6 @@ h1 em { font-style:normal; color:var(--accent); }
 @keyframes bounceDown { 0%,100%{transform:translateY(0)} 50%{transform:translateY(3px)} }
 .call-hint { font-size:11px; color:var(--text3); text-align:center; margin-top:4px; line-height:1.3; }
 @media(max-width:600px){ .biz-card.top{transform:scale(1.01)} }
-
-/* MINI INFO — LIGHTWEIGHT REVEAL */
-.mini-info { grid-column:1/-1; margin-top:2px; padding-top:8px; border-top:1px solid var(--border); font-size:12px; color:var(--text3); line-height:1.5; display:flex; align-items:center; gap:10px; transition:opacity 0.15s ease; }
-.mini-info.hidden { display:none; }
-.mini-info .mini-phone { color:var(--teal); font-weight:600; white-space:nowrap; flex-shrink:0; }
-.mini-info .mini-reason { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
 /* DEMO MODE */
 .demo-badge { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--accent); background:var(--accent-dim); padding:5px 12px; border-radius:20px; margin-bottom:12px; border:1px solid rgba(190,255,0,0.18); letter-spacing:0.3px; animation:demoPulse 2s ease-in-out infinite; }
@@ -422,16 +426,41 @@ h1 em { font-style:normal; color:var(--accent); }
 @media(max-width:900px) { .kanban-board { grid-template-columns:1fr; } .kanban-col { min-height:auto; } .kanban-col-body { max-height:40vh; } .kanban-stats { grid-template-columns:repeat(3,1fr); } }
 @media(max-width:500px) { .kanban-stats { grid-template-columns:repeat(2,1fr); } }
 
-/* ADMIN PANEL */
-.admin-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
-@media(max-width:600px) { .admin-grid { grid-template-columns:1fr 1fr; } }
-@media(max-width:420px) { .admin-grid { grid-template-columns:1fr; } }
-.admin-card { background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r-xl); padding:22px; }
-.admin-card-title { font-family:Syne,sans-serif; font-size:14px; font-weight:700; margin-bottom:10px; color:var(--amber); }
-.admin-btn { font-family:'Inter',sans-serif; font-size:13px; font-weight:600; padding:9px 16px; border-radius:var(--r-sm); border:1px solid var(--border2); background:var(--bg3); color:var(--text2); cursor:pointer; transition:all 0.15s; }
-.admin-btn:hover { background:var(--bg4); color:var(--text); }
-.admin-btn.danger { border-color:rgba(255,80,80,0.25); color:#FF8080; background:rgba(255,80,80,0.06); }
-.admin-btn.danger:hover { background:rgba(255,80,80,0.12); }
+/* ── DEAL MOMENTUM SYSTEM ── */
+.k-progress { height:3px; background:rgba(255,255,255,0.06); border-radius:2px; margin-top:8px; overflow:hidden; }
+.k-progress-fill { height:100%; border-radius:2px; transition:width 0.4s cubic-bezier(0.16,1,0.3,1); }
+.k-card.hot { border-color:rgba(190,255,0,0.2); background:rgba(190,255,0,0.03); }
+.k-card.hot .k-card-name { color:var(--accent); }
+.momentum-bar { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:16px 20px; margin-bottom:16px; display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+.momentum-stat { display:flex; align-items:center; gap:8px; }
+.momentum-num { font-family:Syne,sans-serif; font-size:20px; font-weight:800; line-height:1; }
+.momentum-label { font-size:11px; color:var(--text3); line-height:1.3; }
+.momentum-divider { width:1px; height:28px; background:var(--border); flex-shrink:0; }
+.streak-badge { display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:700; color:var(--amber); padding:4px 10px; border-radius:8px; background:var(--amber-dim); border:1px solid rgba(255,176,32,0.15); }
+.momentum-rate { font-family:Syne,sans-serif; font-size:16px; font-weight:800; color:var(--accent); }
+.kanban-empty { text-align:center; padding:80px 20px; }
+.kanban-empty-icon { font-size:40px; margin-bottom:14px; }
+.kanban-empty-title { font-family:Syne,sans-serif; font-size:18px; font-weight:800; margin-bottom:8px; }
+.kanban-empty-text { font-size:13px; color:var(--text3); max-width:300px; margin:0 auto; line-height:1.6; }
+@media(max-width:600px) { .momentum-bar { padding:12px 14px; gap:12px; } .momentum-num { font-size:16px; } .momentum-divider { display:none; } }
+
+/* DEV ADMIN PANEL — floating, console-only */
+.dev-panel { display:none; position:fixed; bottom:16px; right:16px; width:340px; max-height:70vh; background:var(--bg); border:1px solid var(--border2); border-radius:14px; z-index:9999; box-shadow:0 12px 48px rgba(0,0,0,0.6); overflow:hidden; font-family:'Inter',sans-serif; }
+.dev-panel.open { display:flex; flex-direction:column; }
+.dev-header { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid var(--border); background:var(--bg2); }
+.dev-header-title { font-family:Syne,sans-serif; font-size:13px; font-weight:700; color:var(--amber); }
+.dev-close { background:none; border:none; color:var(--text4); cursor:pointer; padding:4px; }
+.dev-body { padding:12px 16px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:12px; }
+.dev-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text4); margin-bottom:2px; }
+.dev-row { display:flex; gap:6px; flex-wrap:wrap; }
+.dev-btn { font-family:'Inter',sans-serif; font-size:11px; font-weight:600; padding:6px 10px; border-radius:6px; border:1px solid var(--border2); background:var(--bg3); color:var(--text2); cursor:pointer; transition:all 0.12s; }
+.dev-btn:hover { background:var(--bg4); color:var(--text); }
+.dev-btn.danger { border-color:rgba(255,80,80,0.25); color:#FF8080; }
+.dev-btn.danger:hover { background:rgba(255,80,80,0.1); }
+.dev-btn.accent { border-color:rgba(190,255,0,0.25); color:var(--accent); }
+.dev-btn.accent:hover { background:var(--accent-dim); }
+.dev-log { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:10px; font-family:monospace; color:var(--text3); max-height:140px; overflow-y:auto; white-space:pre-wrap; word-break:break-all; line-height:1.5; }
+@media(max-width:500px) { .dev-panel { width:calc(100% - 24px); right:12px; bottom:12px; } }
 
 /* MOBILE / IPHONE ─────────────────────────────────────────────────────────── */
 /* ── iOS / MOBILE BASE ── */
@@ -811,7 +840,6 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
   .modal-overlay { align-items:flex-end; padding:0; }
   .modal { border-radius:24px 24px 0 0; width:100%; max-width:100%; padding:28px 20px 44px; max-height:90vh; overflow-y:auto; }
   .modal-title { font-size:20px; }
-  .admin-grid { grid-template-columns:1fr; }
   .ps-toast { width:calc(100% - 32px); text-align:center; white-space:normal; bottom:20px; }
 }
 
@@ -970,7 +998,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
     <!-- SIGNUP -->
     <div id="signupView" style="display:none;">
       <div class="modal-title">Create account</div>
-      <div class="modal-sub">Free forever. No credit card needed.</div>
+      <div class="modal-sub">Join the beta — free access included.</div>
       <div class="modal-error" id="signupError"></div>
       <div class="modal-field"><label>Full name</label><input class="modal-input" type="text" id="signupName" placeholder="Your name" /></div>
       <div class="modal-field"><label>Email</label><input class="modal-input" type="email" id="signupEmail" placeholder="you@email.com" /></div>
@@ -1241,7 +1269,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
       <h2 class="reveal" style="font-family:Syne,sans-serif;font-size:clamp(24px,5vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:16px;">Stop guessing.<br>Start targeting the right businesses.</h2>
       <p style="font-size:15px;color:var(--text3);max-width:440px;margin:0 auto 36px;line-height:1.7;">Your next client is already out there showing signals they need you. You just need to find them.</p>
       <button class="btn-primary" onclick="openModal('signup')" style="font-size:16px;padding:17px 40px;border-radius:var(--r-xl);">Generate Leads →</button>
-      <p style="font-size:12px;color:var(--text4);margin-top:16px;">Free plan available. No credit card required.</p>
+      <p style="font-size:12px;color:var(--text4);margin-top:16px;">Free beta access — start finding leads in seconds.</p>
     </div>
   </div>
 
@@ -1250,11 +1278,41 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 <div class="page" id="page-pricing">
   <div class="container">
     <div style="padding:60px 0 20px; text-align:center;">
-      <div class="hero-eyebrow" style="margin-bottom:20px;"><span class="hero-eyebrow-dot"></span>Pricing</div>
-      <div class="section-heading">Pick your plan</div>
-      <div class="section-sub">No credit card required to start. Switch plans anytime.</div>
+      <div class="hero-eyebrow" style="margin-bottom:20px;"><span class="hero-eyebrow-dot"></span>Early Access</div>
+      <div class="section-heading">Choose your plan</div>
+      <div class="section-sub">Start free today. Upgrade when you're ready.</div>
     </div>
-    <div id="pricingGrid" style="margin-bottom:60px;"></div>
+    <div id="pricingGrid" style="margin-bottom:24px;"></div>
+    <p style="text-align:center;font-size:12px;color:var(--text4);margin-bottom:60px;line-height:1.6;">Early access — pricing and features may evolve as we build.<br>You'll always be grandfathered into your plan.</p>
+  </div>
+</div>
+
+<!-- ACCESS REQUEST MODAL -->
+<div class="modal-overlay" id="accessModal">
+  <div class="modal" style="max-width:400px;">
+    <button class="modal-close" onclick="closeAccessModal()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <div id="accessModalContent">
+      <div class="modal-title" id="accessPlanTitle">Request Access</div>
+      <div class="modal-sub" id="accessPlanSub">Join the early access list. We'll reach out when your spot opens.</div>
+      <div class="modal-field">
+        <label>Name</label>
+        <input class="modal-input" type="text" id="accessName" placeholder="Your name" />
+      </div>
+      <div class="modal-field">
+        <label>Email</label>
+        <input class="modal-input" type="email" id="accessEmail" placeholder="you@example.com" />
+      </div>
+      <div class="modal-field">
+        <label>What do you sell? <span style="font-size:10px;color:var(--text4);font-weight:400;">(optional)</span></label>
+        <input class="modal-input" type="text" id="accessOffer" placeholder="e.g. web design, marketing..." />
+      </div>
+      <button class="modal-btn" onclick="submitAccessRequest()">Request Early Access</button>
+    </div>
+    <div id="accessSuccess" style="display:none;text-align:center;padding:20px 0;">
+      <div style="font-size:36px;margin-bottom:14px;">🎉</div>
+      <div class="modal-title" style="margin-bottom:8px;">Request received!</div>
+      <div class="modal-sub" style="margin-bottom:0;">We'll reach out shortly with your access details. In the meantime, keep using the free plan.</div>
+    </div>
   </div>
 </div>
 
@@ -1415,10 +1473,12 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
         </div>
       </div>
       <div id="patternInsightBar" style="display:none;margin-bottom:16px;"></div>
+      <div class="results-wrap">
       <div id="callGuide" class="call-guide" style="display:none;">
         <span class="guide-arrow">↓</span> Your #1 match — start here
       </div>
       <div id="bizList"></div>
+      </div>
       <div id="regenWrap" style="display:none;">
         <button class="regen-btn" onclick="generateMyLeads()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -1508,6 +1568,9 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
         <button class="nav-btn" onclick="showPage('dashboard')" style="font-size:13px;">← Scout more</button>
       </div>
     </div>
+
+    <!-- MOMENTUM BAR -->
+    <div id="momentumBar" class="momentum-bar" style="display:none;"></div>
 
     <!-- STATS BAR -->
     <div class="kanban-stats" id="kanbanStats"></div>
@@ -1672,51 +1735,13 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   </div>
 </div>
 
-<!-- ADMIN PANEL — secret, access by tapping logo 5x -->
-<div class="page" id="page-admin">
-  <div class="container" style="padding-top:48px; padding-bottom:100px;">
-    <div class="dash-header">
-      <div>
-        <div class="dash-greeting" style="color:var(--amber);">⚡ Admin Panel</div>
-        <div class="dash-sub">Internal tools — keep this URL private.</div>
-      </div>
-      <button class="nav-btn" onclick="showPage('dashboard')">← Back</button>
-    </div>
-    <div class="admin-grid">
-      <div class="admin-card">
-        <div class="admin-card-title">Current account</div>
-        <div id="adminAccountInfo" style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:4px;"></div>
-      </div>
-      <div class="admin-card">
-        <div class="admin-card-title">Switch tier (test)</div>
-        <div class="tier-switcher" style="margin-top:10px;">
-          <button class="tier-switch-btn" id="abtn-free" onclick="switchTier('free');if(typeof renderAdminPanel==='function')renderAdminPanel()">Free</button>
-          <button class="tier-switch-btn" id="abtn-plus" onclick="switchTier('plus');if(typeof renderAdminPanel==='function')renderAdminPanel()">Plus</button>
-          <button class="tier-switch-btn" id="abtn-pro"  onclick="switchTier('pro');if(typeof renderAdminPanel==='function')renderAdminPanel()">Pro</button>
-        </div>
-      </div>
-      <div class="admin-card">
-        <div class="admin-card-title">Usage controls</div>
-        <div style="font-size:13px;color:var(--text3);margin-bottom:12px;">Reset today's usage count for current account.</div>
-        <button class="admin-btn" onclick="adminResetUsage()">Reset daily usage</button>
-      </div>
-      <div class="admin-card">
-        <div class="admin-card-title">Registered users</div>
-        <div id="adminUserList" style="font-size:12px;color:var(--text2);line-height:2;max-height:200px;overflow-y:auto;margin-top:8px;"></div>
-      </div>
-      <div class="admin-card">
-        <div class="admin-card-title">Pipeline stats</div>
-        <div id="adminPipelineStats" style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:4px;"></div>
-      </div>
-      <div class="admin-card">
-        <div class="admin-card-title" style="color:#FF8080;">Danger zone</div>
-        <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;">
-          <button class="admin-btn danger" onclick="adminClearPipeline()">Clear my pipeline</button>
-          <button class="admin-btn danger" onclick="adminClearAll()">Nuke all local data</button>
-        </div>
-      </div>
-    </div>
+<!-- DEV PANEL — access via console: openAdminPanel() -->
+<div class="dev-panel" id="devPanel">
+  <div class="dev-header">
+    <span class="dev-header-title">⚡ Dev Panel</span>
+    <button class="dev-close" onclick="closeAdminPanel()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
+  <div class="dev-body" id="devPanelBody"></div>
 </div>
 </footer>
 
@@ -1788,59 +1813,22 @@ const TIERS = {
   pro:  { name:'Pro',   daily:100, perSearch:25, chipClass:'tier-pro',  btnClass:'active-pro'  }
 };
 
-let currentUser = null;
+let currentUser = { email:'beta@user.local', name:'User', phone:'', tier:'free' };
 
-function getUsers()    { try { return JSON.parse(localStorage.getItem('ps_users')||'{}'); } catch{ return {}; } }
-function saveUsers(u)  { localStorage.setItem('ps_users', JSON.stringify(u)); }
-function getUsage(email) { return parseInt(localStorage.getItem(`ps_usage_${email}_${new Date().toDateString()}`)||'0'); }
-function addUsage(email,n) { const k=`ps_usage_${email}_${new Date().toDateString()}`; localStorage.setItem(k,(getUsage(email)+n).toString()); }
+function getUsers()    { return {}; }
+function saveUsers(u)  { }
+function getUsage(email) { return parseInt(localStorage.getItem('ps_usage_'+new Date().toDateString())||'0'); }
+function addUsage(email,n) { var k='ps_usage_'+new Date().toDateString(); localStorage.setItem(k,(getUsage(email)+n).toString()); }
 
-// AUTH
-function openModal(view) { document.getElementById('authModal').classList.add('open'); view==='signup'?showSignup():showLogin(); }
-function closeModal()    { document.getElementById('authModal').classList.remove('open'); }
-function showLogin()     { document.getElementById('loginView').style.display=''; document.getElementById('signupView').style.display='none'; }
-function showSignup()    { document.getElementById('loginView').style.display='none'; document.getElementById('signupView').style.display=''; }
-
-function doLogin() {
-  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-  const pass  = document.getElementById('loginPassword').value;
-  const err   = document.getElementById('loginError');
-  err.style.display='none';
-  const users = getUsers();
-  if (!users[email])                      { err.textContent='No account found with that email.'; err.style.display='block'; return; }
-  if (users[email].password !== btoa(pass)) { err.textContent='Incorrect password.';              err.style.display='block'; return; }
-  currentUser = Object.assign({email:email}, users[email]);
-  localStorage.setItem('ps_session', email);
-  closeModal(); enterDashboard();
-}
-
-function doSignup() {
-  const name  = document.getElementById('signupName').value.trim();
-  const email = document.getElementById('signupEmail').value.trim().toLowerCase();
-  const phone = document.getElementById('signupPhone').value.trim();
-  const tier  = document.getElementById('signupTier').value;
-  const pass  = document.getElementById('signupPassword').value;
-  const err   = document.getElementById('signupError');
-  err.style.display='none';
-  if (!name||!email||!pass)    { err.textContent='Please fill in name, email and password.'; err.style.display='block'; return; }
-  if (pass.length<6)           { err.textContent='Password must be at least 6 characters.';   err.style.display='block'; return; }
-  const users = getUsers();
-  if (users[email])            { err.textContent='An account with that email already exists.'; err.style.display='block'; return; }
-  users[email] = {name,phone,tier,password:btoa(pass),joinedAt:Date.now()};
-  saveUsers(users);
-  currentUser = {email,name,phone,tier};
-  localStorage.setItem('ps_session',email);
-  closeModal(); enterDashboard();
-}
-
-function doLogout() { currentUser=null; localStorage.removeItem('ps_session'); updateNav(); showPage('home'); }
-
-function restoreSession() {
-  const email = localStorage.getItem('ps_session');
-  if (!email) return;
-  const users = getUsers();
-  if (users[email]) currentUser = Object.assign({email:email}, users[email]);
-}
+// AUTH — disabled for beta (no login required)
+function openModal(view) { /* beta: skip auth */ enterDashboard(); }
+function closeModal()    { var m=document.getElementById('authModal'); if(m) m.classList.remove('open'); }
+function showLogin()     { }
+function showSignup()    { }
+function doLogin()       { enterDashboard(); }
+function doSignup()      { enterDashboard(); }
+function doLogout()      { showToast('Beta mode — no login required', 'info'); }
+function restoreSession(){ /* beta: currentUser is always set */ }
 
 // NAV
 function updateNav() {
@@ -1934,20 +1922,9 @@ function closeProfileMenu() {
 document.addEventListener('click', function() { closeProfileMenu(); });
 
 // PAGES
-function showPage(name) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); var pg=document.getElementById('page-'+name); if(pg) pg.classList.add('active'); window.scrollTo(0,0); }
+function showPage(name) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); var pg=document.getElementById('page-'+name); if(pg) pg.classList.add('active'); window.scrollTo(0,0); if(name==='pricing') renderPricingGrid('pricingGrid'); }
 function goHome()        { currentUser ? showPage('dashboard') : showPage('home'); }
-let _logoTaps = 0, _logoTimer = null;
-function handleLogoClick() {
-  _logoTaps++;
-  clearTimeout(_logoTimer);
-  if (_logoTaps >= 5) {
-    _logoTaps = 0;
-    if (currentUser) { openAdminPanel(); }
-    else { showToast('Sign in to access admin panel', 'info'); }
-    return;
-  }
-  _logoTimer = setTimeout(function(){ _logoTaps=0; goHome(); }, 400);
-}
+function handleLogoClick() { showPage('dashboard'); }
 function enterDashboard(){ updateNav(); updateNavPipeline(); updateDashboard(); showPage('dashboard'); checkForResume(); renderDashSections(); renderGoalTracker(); updateOverdueBadge(); if(isDemoEligible()){scheduleDemoRun();}else{setTimeout(checkOnboarding, 400);} }
 
 // DASHBOARD STATE
@@ -2185,26 +2162,84 @@ function switchTier(newTier) {
 
 // PRICING GRID
 function renderPricingGrid(id) {
-  const plans = [
-    { id:'free', name:'Free',  price:'$0',  period:'forever',  limit:'3 prospects / search · 5/day',   badge:null,          cardCls:'',          btnCls:'price-btn-free', btnTxt:'Get started free',  checkCls:'check', features:['3 prospects per search','5 searches/day total','Contact info & maps','AI-written talk tracks','Objection handling scripts'] },
-    { id:'plus', name:'Plus',  price:'$19', period:'/month',   limit:'5 prospects / search · 25/day',  badge:'Most Popular', cardCls:'featured',  btnCls:'price-btn-plus', btnTxt:'Get early access', checkCls:'check', features:['5 prospects per search','25 searches/day total','Everything in Free','Priority business data','Search history & tracking'] },
-    { id:'pro',  name:'Pro',   price:'$49', period:'/month',   limit:'25 prospects / search · 100/day', badge:null,           cardCls:'pro-card',  btnCls:'price-btn-pro',  btnTxt:'Get early access',  checkCls:'check check-purple', features:['25 prospects per search','100 searches/day total','Everything in Plus','Export to CSV','Team sharing (soon)'] }
+  var plans = [
+    { id:'free', name:'Free',  price:'$0',  period:'forever',  badge:'Beta Access',    cardCls:'',          btnCls:'price-btn-free', btnTxt:'Join Beta', checkCls:'check',
+      limit:'3 prospects / search · 5/day',
+      features:['3 prospects per search','5 daily lead generations','Signal-based insights','Core pipeline access','AI-written pitch scripts'] },
+    { id:'plus', name:'Plus',  price:'$19', period:'/month',   badge:'Early Access',   cardCls:'featured',  btnCls:'price-btn-plus', btnTxt:'Request Access', checkCls:'check',
+      limit:'5 prospects / search · 25/day',
+      features:['5 prospects per search','25 daily lead generations','Stronger signal filtering','Full pipeline + deal tracking','Priority results & support'] },
+    { id:'pro',  name:'Pro',   price:'$49', period:'/month',   badge:'Early Access',   cardCls:'pro-card',  btnCls:'price-btn-pro',  btnTxt:'Request Access', checkCls:'check check-purple',
+      limit:'25 prospects / search · 100/day',
+      features:['25 prospects per search','100 daily lead generations','Advanced signal intelligence','Full deal tracking + export','Priority support & early features'] }
   ];
-  document.getElementById(id).innerHTML = `<div class="pricing-grid">${plans.map(p=>`
-    <div class="price-card ${p.cardCls}">
-      ${p.badge?`<div class="popular-badge">${p.badge}</div>`:'<div class="badge-spacer"></div>'}
-      <div class="price-tier">${p.name}</div>
-      <div class="price-amount">${p.price}<span>${p.period}</span></div>
-      <div class="price-period">${p.id==='free'?'No credit card needed':'Billed monthly · cancel anytime'}</div>
-      <div class="price-limit">${p.limit}</div>
-      <ul class="price-features">${p.features.map(f=>`<li><span class="${p.checkCls}">✓</span>${f}</li>`).join('')}</ul>
-      <button class="price-btn ${p.btnCls}" onclick="pricingCTA('${p.id}')">${p.btnTxt}</button>
-    </div>`).join('')}</div>`;
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = '<div class="pricing-grid">' + plans.map(function(p) {
+    return '<div class="price-card '+p.cardCls+'">' +
+      '<div class="popular-badge">'+p.badge+'</div>' +
+      '<div class="price-tier">'+p.name+'</div>' +
+      '<div class="price-amount">'+p.price+'<span>'+p.period+'</span></div>' +
+      '<div class="price-period">'+(p.id==='free' ? 'Free while in beta' : 'When available')+'</div>' +
+      '<div class="price-limit">'+p.limit+'</div>' +
+      '<ul class="price-features">'+p.features.map(function(f){ return '<li><span class="'+p.checkCls+'">✓</span>'+f+'</li>'; }).join('')+'</ul>' +
+      '<button class="price-btn '+p.btnCls+'" onclick="pricingCTA(\''+p.id+'\')">'+p.btnTxt+'</button>' +
+    '</div>';
+  }).join('') + '</div>';
 }
 
 function pricingCTA(tierId) {
-  if (tierId==='free') { currentUser ? showPage('dashboard') : openModal('signup'); }
-  else { openModal('signup'); }
+  if (tierId === 'free') {
+    if (currentUser) {
+      showToast('You\'re in — beta access is active', 'success');
+      showPage('dashboard');
+    } else {
+      openModal('signup');
+    }
+  } else {
+    openAccessModal(tierId);
+  }
+}
+
+function openAccessModal(planId) {
+  var modal = document.getElementById('accessModal');
+  var content = document.getElementById('accessModalContent');
+  var success = document.getElementById('accessSuccess');
+  if (!modal) return;
+  content.style.display = '';
+  success.style.display = 'none';
+  var planName = planId === 'pro' ? 'Pro' : 'Plus';
+  document.getElementById('accessPlanTitle').textContent = 'Request ' + planName + ' Access';
+  document.getElementById('accessPlanSub').textContent = 'Join the ' + planName + ' early access list. We\'ll reach out when your spot opens.';
+  // Pre-fill if logged in
+  if (currentUser) {
+    document.getElementById('accessName').value = currentUser.name || '';
+    document.getElementById('accessEmail').value = currentUser.email || '';
+  }
+  modal.classList.add('open');
+}
+
+function closeAccessModal() {
+  var modal = document.getElementById('accessModal');
+  if (modal) modal.classList.remove('open');
+}
+
+function submitAccessRequest() {
+  var name  = document.getElementById('accessName').value.trim();
+  var email = document.getElementById('accessEmail').value.trim();
+  if (!name || !email) {
+    showToast('Please enter your name and email', 'info');
+    return;
+  }
+  // Store the request locally
+  var requests = JSON.parse(localStorage.getItem('ps_access_requests') || '[]');
+  requests.push({ name:name, email:email, offer:document.getElementById('accessOffer').value.trim(), ts:Date.now() });
+  localStorage.setItem('ps_access_requests', JSON.stringify(requests));
+  // Show success
+  document.getElementById('accessModalContent').style.display = 'none';
+  document.getElementById('accessSuccess').style.display = '';
+  // Auto-close after delay
+  setTimeout(function() { closeAccessModal(); }, 4000);
 }
 
 // PIPELINE STATUS CONFIG
@@ -2268,6 +2303,8 @@ function setStatus(id, newStatus) {
   if (newStatus === 'converted') {
     fireConfetti();
     showToast('🎉 Deal closed! Amazing work!', 'success');
+  } else {
+    showMomentumToast(newStatus);
   }
   updateOverdueBadge();
   if (document.getElementById('page-history').classList.contains('active')) {
@@ -2616,11 +2653,16 @@ function renderKanban() {
 
   // Empty state
   if (!history.length) {
-    board.innerHTML = '<div class="kanban-empty"><div class="kanban-empty-icon">📋</div><div class="kanban-empty-text">No prospects in your pipeline yet. Scout some leads and save them to start tracking deals.</div></div>';
+    board.innerHTML = '<div class="kanban-empty"><div class="kanban-empty-icon">🚀</div><div class="kanban-empty-title">Start building momentum</div><div class="kanban-empty-text">Make your first call or save a lead to begin tracking deals. Your pipeline fills itself as you work.</div></div>';
     if (statsEl) statsEl.innerHTML = '';
     if (subEl) subEl.textContent = 'Track every prospect from first call to closed deal.';
+    var momBar = document.getElementById('momentumBar');
+    if (momBar) momBar.style.display = 'none';
     return;
   }
+
+  // Momentum bar
+  renderMomentumBar(history, filtered);
 
   // Stats bar
   var counts = {};
@@ -2654,6 +2696,9 @@ function renderKanban() {
   }).join('') + '</div>';
 }
 
+var PROGRESS_MAP = { 'new':10, 'contacted':30, 'engaged':55, 'qualified':80, 'converted':100 };
+var PROGRESS_COLORS = { 'new':'var(--text4)', 'contacted':'var(--accent)', 'engaged':'var(--teal)', 'qualified':'var(--amber)', 'converted':'var(--purple)' };
+
 function buildKanbanCard(h, col) {
   var id = h.id;
   var phone = h.phone || '';
@@ -2668,6 +2713,15 @@ function buildKanbanCard(h, col) {
     reminderHtml = '<span class="k-card-reminder upcoming">In '+days+'d</span> ';
   }
 
+  // Progress
+  var status = h.status || 'new';
+  var pct = PROGRESS_MAP[status] || 10;
+  var pColor = PROGRESS_COLORS[status] || 'var(--text4)';
+
+  // Hot lead = responded or meeting
+  var isHot = (status === 'engaged' || status === 'qualified');
+  var cardClass = 'k-card' + (isHot ? ' hot' : '');
+
   // Actions
   var callBtn = '';
   if (phone) {
@@ -2679,7 +2733,7 @@ function buildKanbanCard(h, col) {
   }
   var delBtn = '<button class="k-btn del" onclick="event.stopPropagation();if(confirm(\'Remove '+name.replace(/'/g,'\\\'')+'?\'))deleteProspect(\''+id+'\')">✕</button>';
 
-  return '<div class="k-card">' +
+  return '<div class="'+cardClass+'">' +
     '<div class="k-card-name">'+name+'</div>' +
     (type ? '<div class="k-card-type">'+type+'</div>' : '') +
     (phone ? '<div class="k-card-phone">'+phone+'</div>' : '') +
@@ -2687,6 +2741,7 @@ function buildKanbanCard(h, col) {
     '<div class="k-card-actions">' +
       callBtn + advanceBtn + delBtn +
     '</div>' +
+    '<div class="k-progress"><div class="k-progress-fill" style="width:'+pct+'%;background:'+pColor+';"></div></div>' +
   '</div>';
 }
 
@@ -2772,76 +2827,134 @@ function closeReminderPopover() {
 
 
 
-// ── ADMIN PANEL ────────────────────────────────────────────────────────────────
-function openAdminPanel() {
-  if (!currentUser) { openModal('login'); return; }
-  var pwd = prompt('Admin access code:');
-  if (!pwd) return;
-  // Hash the input simply — compare against stored hash
-  var hash = 0;
-  for (var i = 0; i < pwd.length; i++) {
-    hash = ((hash << 5) - hash) + pwd.charCodeAt(i);
-    hash |= 0;
-  }
-  if (hash !== 854114445) {
-    showToast('Incorrect access code', 'info');
-    return;
-  }
-  renderAdminPanel();
-  showPage('admin');
+// ── DEV PANEL — console-only access ──────────────────────────────────────────
+window.openAdminPanel = function() {
+  var panel = document.getElementById('devPanel');
+  if (panel) { panel.classList.add('open'); renderDevPanel(); }
+};
+function closeAdminPanel() {
+  var panel = document.getElementById('devPanel');
+  if (panel) panel.classList.remove('open');
 }
 
-function renderAdminPanel() {
-  if (!currentUser) return;
+function renderDevPanel() {
+  var body = document.getElementById('devPanelBody');
+  if (!body) return;
   var t = TIERS[currentUser.tier] || TIERS.free;
-  var info = document.getElementById('adminAccountInfo');
-  if (info) info.innerHTML =
-    '<b>Name:</b> ' + currentUser.name + '<br>' +
-    '<b>Email:</b> ' + currentUser.email + '<br>' +
-    '<b>Tier:</b> ' + t.name + '<br>' +
-    '<b>Usage today:</b> ' + getUsage(currentUser.email) + ' / ' + t.daily + '<br>' +
-    '<b>Pipeline:</b> ' + getHistory(currentUser.email).length + ' prospects';
-  ['free','plus','pro'].forEach(function(tier) {
-    var btn = document.getElementById('abtn-' + tier);
-    if (btn) btn.className = 'tier-switch-btn' + (currentUser.tier===tier ? ' active-'+tier : '');
-  });
-  var ul = document.getElementById('adminUserList');
-  if (ul) {
-    var users = getUsers();
-    var keys = Object.keys(users);
-    ul.innerHTML = !keys.length ? '<span style="color:var(--text4);">No users yet.</span>' :
-      keys.map(function(e){
-        var u = users[e];
-        return '<div style="padding:4px 0;border-bottom:1px solid var(--border)"><b>'+u.name+'</b> ('+e+') — '+((TIERS[u.tier]||TIERS.free).name)+'</div>';
-      }).join('');
-  }
-  var ps = document.getElementById('adminPipelineStats');
-  if (ps) {
-    var h = getHistory(currentUser.email);
-    var byStatus = {};
-    h.forEach(function(p){ var s=p.status||'new'; byStatus[s]=(byStatus[s]||0)+1; });
-    var totalVal = h.reduce(function(s,p){ return s+(p.dealValue||0); }, 0);
-    ps.innerHTML = Object.entries(byStatus).map(function(e){ return '<b>'+e[0]+':</b> '+e[1]; }).join(' · ') +
-      '<br><b>Deal value:</b> $' + totalVal.toLocaleString();
-  }
+  var h = getHistory(currentUser.email);
+  var byStatus = {};
+  h.forEach(function(p){ var s=p.status||'new'; byStatus[s]=(byStatus[s]||0)+1; });
+  var totalVal = h.reduce(function(s,p){ return s+(p.dealValue||0); }, 0);
+  var statusText = Object.keys(byStatus).map(function(k){ return k+': '+byStatus[k]; }).join(' · ') || 'empty';
+
+  body.innerHTML =
+    '<div class="dev-section">Account</div>'+
+    '<div class="dev-log">'+
+      'Tier: '+t.name+'\n'+
+      'Usage: '+getUsage(currentUser.email)+' / '+t.daily+'\n'+
+      'Pipeline: '+h.length+' prospects\n'+
+      'Deal value: $'+totalVal.toLocaleString()+'\n'+
+      'Statuses: '+statusText+
+    '</div>'+
+
+    '<div class="dev-section">Tier</div>'+
+    '<div class="dev-row">'+
+      '<button class="dev-btn'+(currentUser.tier==='free'?' accent':'')+'" onclick="switchTier(\'free\');renderDevPanel()">Free</button>'+
+      '<button class="dev-btn'+(currentUser.tier==='plus'?' accent':'')+'" onclick="switchTier(\'plus\');renderDevPanel()">Plus</button>'+
+      '<button class="dev-btn'+(currentUser.tier==='pro'?' accent':'')+'" onclick="switchTier(\'pro\');renderDevPanel()">Pro</button>'+
+    '</div>'+
+
+    '<div class="dev-section">Controls</div>'+
+    '<div class="dev-row">'+
+      '<button class="dev-btn" onclick="devResetUsage()">Reset usage</button>'+
+      '<button class="dev-btn" onclick="devResetStreak()">Reset streak</button>'+
+      '<button class="dev-btn" onclick="devToggleDemo()">Toggle demo</button>'+
+    '</div>'+
+
+    '<div class="dev-section">Generate</div>'+
+    '<div class="dev-row">'+
+      '<button class="dev-btn accent" onclick="devGenTestProspects(5)">+5 prospects</button>'+
+      '<button class="dev-btn accent" onclick="devGenTestProspects(20)">+20 prospects</button>'+
+    '</div>'+
+
+    '<div class="dev-section">Danger</div>'+
+    '<div class="dev-row">'+
+      '<button class="dev-btn danger" onclick="devClearPipeline()">Clear pipeline</button>'+
+      '<button class="dev-btn danger" onclick="devNukeAll()">Nuke all data</button>'+
+    '</div>'+
+
+    '<div class="dev-section">LocalStorage keys</div>'+
+    '<div class="dev-log" id="devStorageLog">'+devListStorage()+'</div>';
 }
 
-function adminResetUsage() {
-  if (!currentUser) return;
-  localStorage.removeItem('ps_usage_'+currentUser.email+'_'+new Date().toDateString());
-  updateDashboard(); renderAdminPanel();
+function devListStorage() {
+  var keys = [];
+  for (var i=0; i<localStorage.length; i++) {
+    var k = localStorage.key(i);
+    var v = localStorage.getItem(k);
+    var size = v ? v.length : 0;
+    keys.push(k + ' (' + (size>1000 ? Math.round(size/1024)+'KB' : size+'b') + ')');
+  }
+  return keys.sort().join('\n') || '(empty)';
+}
+
+function devResetUsage() {
+  localStorage.removeItem('ps_usage_'+new Date().toDateString());
+  updateDashboard(); updateSlimBar(); renderDevPanel();
   showToast('Usage reset ✓');
 }
-function adminClearPipeline() {
-  if (!currentUser || !confirm('Delete ALL pipeline prospects?')) return;
+function devResetStreak() {
+  localStorage.removeItem('ps_daily_calls');
+  localStorage.removeItem('ps_call_streak');
+  renderDevPanel();
+  showToast('Streak + calls reset ✓');
+}
+function devToggleDemo() {
+  var key = 'ps_hasGenerated_' + currentUser.email;
+  if (localStorage.getItem(key)) {
+    localStorage.removeItem(key);
+    showToast('Demo mode re-enabled — refresh page');
+  } else {
+    localStorage.setItem(key, '1');
+    showToast('Demo mode disabled');
+  }
+  renderDevPanel();
+}
+function devClearPipeline() {
+  if (!confirm('Clear ALL pipeline data?')) return;
   saveHistory(currentUser.email, []);
-  renderAdminPanel();
+  updateNavPipeline(); renderDevPanel();
   showToast('Pipeline cleared ✓');
 }
-function adminClearAll() {
-  if (!confirm('Delete ALL local data?') || !confirm('Really sure? This cannot be undone.')) return;
+function devNukeAll() {
+  if (!confirm('Delete ALL local data? Cannot be undone.')) return;
   localStorage.clear(); location.reload();
 }
+function devGenTestProspects(count) {
+  var names = ['Sunrise Bakery','Metro Auto','Bay View Dental','Peak Fitness','Urban Salon','Fresh Eats','Prime Plumbing','Atlas Realty','Bloom Florist','Coastal Law','Bright Smiles','Evergreen Landscaping','Swift Courier','Golden Gate Yoga','Pacific Electric','Harbor Insurance','Zenith Marketing','Alpine Roofing','Sapphire Spa','Maple Street Coffee'];
+  var types = ['Restaurant','Auto Repair','Dental','Gym','Salon','Cafe','Plumbing','Real Estate','Florist','Law Firm','Dentist','Landscaping','Courier','Yoga Studio','Electrician','Insurance','Marketing','Roofing','Spa','Coffee Shop'];
+  var signals = ['No online booking system','Outdated website hurting conversions','Low Google reviews — trust gap','Hiring aggressively — scaling fast','No social media presence','Manual scheduling still used','Competitor just opened nearby','Website not mobile-friendly','No email marketing','Expired SSL certificate'];
+  var history = getHistory(currentUser.email);
+  for (var i=0; i<count; i++) {
+    var idx = Math.floor(Math.random()*names.length);
+    var id = 'test_'+Date.now()+'_'+Math.random().toString(36).slice(2,5);
+    history.unshift({
+      id:id, name:names[idx]+' '+(Math.floor(Math.random()*99)+1),
+      type:types[idx], phone:'(555) '+Math.floor(100+Math.random()*900)+'-'+Math.floor(1000+Math.random()*9000),
+      address:'123 Test St', signal:signals[Math.floor(Math.random()*signals.length)],
+      reason:'Test prospect for development', opener:'Hi, I noticed your business could benefit from...',
+      status:'new', savedAt:Date.now(), matchScore:Math.floor(70+Math.random()*30)
+    });
+  }
+  saveHistory(currentUser.email, history);
+  updateNavPipeline(); renderDevPanel();
+  showToast(count+' test prospects added ✓');
+}
+
+function renderAdminPanel() { renderDevPanel(); }
+function adminResetUsage()  { devResetUsage(); }
+function adminClearPipeline(){ devClearPipeline(); }
+function adminClearAll()    { devNukeAll(); }
 
 
 // ── MOBILE MENU ───────────────────────────────────────────────────────────────
@@ -4053,7 +4166,6 @@ async function fetchBatchAI(location, product, target, batchCount, excludeNames)
 
 // ── MAIN ANALYZE — PARALLEL BATCHES ──────────────────────────────────────────
 async function analyze() {
-  if (!currentUser) { openModal('login'); return; }
   var tier = TIERS[currentUser.tier] || TIERS.free;
   var used = getUsage(currentUser.email);
   if (used >= tier.daily) {
@@ -4187,48 +4299,46 @@ async function analyze() {
 function buildBizCardHTML(b, i) {
   var isTop = (i === 0);
   var sig = b.signal || (Array.isArray(b.buying_signals) && b.buying_signals[0]) || b.reason || '';
-  var words = sig.trim().split(/\s+/);
-  var insight = words.slice(0, 8).join(' ') + (words.length > 8 ? '\u2026' : '');
-
-  // Mini-info: phone + one short reason line
   var phone = b.phone || '';
   var reason = b.reason || b.opener || '';
   var reasonWords = reason.trim().split(/\s+/);
-  var shortReason = reasonWords.slice(0, 12).join(' ') + (reasonWords.length > 12 ? '\u2026' : '');
+  var context = reasonWords.slice(0, 20).join(' ') + (reasonWords.length > 20 ? '\u2026' : '');
+  var bizType = b.type || b.types || '';
+  var location = b.address || b.searchLocation || '';
+  var locShort = location ? location.split(',').slice(0,2).join(',').trim() : '';
+
+  var alreadySaved = currentUser && checkDuplicate(b.name);
+  var saveClass = alreadySaved ? 'save-prospect saved' : 'save-prospect';
+  var saveLabel = alreadySaved ? '✓ Saved' : 'Save';
+
+  var phoneIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>';
 
   return (
     '<div class="biz-card'+(isTop?' top':'')+'" id="card-'+i+'">'+
-      '<div class="left">'+
-        '<div class="insight">'+insight+'</div>'+
-        '<div class="biz-name">'+b.name+'</div>'+
+      // TOP — signal headline
+      '<div class="card-top">'+
+        '<div class="insight">'+sig+'</div>'+
       '</div>'+
-      '<div class="right" onclick="event.stopPropagation()">'+
+      // MIDDLE — name, type, context
+      '<div class="card-mid">'+
+        '<span class="biz-name">'+b.name+'</span>'+
+        (bizType ? '<span class="biz-type">'+bizType+'</span>' : '')+
+      '</div>'+
+      (context ? '<div class="biz-context">'+context+'</div>' : '')+
+      // BOTTOM — actions
+      '<div class="card-bottom">'+
         (phone ?
-          '<a href="tel:'+phone.replace(/\D/g,'')+'" class="call-main" onclick="trackCall('+i+')">'+
-            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>'+
-            'Call now'+
-          '</a>'
+          '<a href="tel:'+phone.replace(/\D/g,'')+'" class="call-main" onclick="trackCall('+i+')">'+phoneIcon+' Call</a>'
         :
-          '<button class="call-main" onclick="trackCall('+i+');copyPitch('+i+')">'+
-            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>'+
-            'Use pitch'+
-          '</button>'
+          '<button class="call-main" onclick="trackCall('+i+');copyPitch('+i+')">Use pitch</button>'
         )+
-        '<button class="use-opener" id="copy-'+i+'" onclick="dismissFirstCardFlow();toggleMiniInfo('+i+');copyPitch('+i+')">Copy pitch</button>'+
-        (isTop ? '<div class="call-hint">Highest-match signal — tap to start</div>' : '')+
+        '<button class="use-opener" id="copy-'+i+'" onclick="copyPitch('+i+')">Copy pitch</button>'+
+        '<span class="card-spacer"></span>'+
+        '<button class="'+saveClass+'" id="save-'+i+'" onclick="event.stopPropagation();saveToPipeline('+i+')">'+saveLabel+'</button>'+
       '</div>'+
-      '<div class="mini-info hidden" id="mini-'+i+'">'+
-        (phone ? '<span class="mini-phone">'+phone+'</span>' : '')+
-        (shortReason ? '<span class="mini-reason">'+shortReason+'</span>' : '')+
-      '</div>'+
+      (isTop ? '<div class="call-hint" style="margin-top:8px;">Highest-match signal — start here</div>' : '')+
     '</div>'
   );
-}
-
-function toggleMiniInfo(i) {
-  var el = document.getElementById('mini-'+i);
-  if (!el) return;
-  el.classList.toggle('hidden');
 }
 
 
@@ -4261,40 +4371,12 @@ function renderResults(businesses) {
 
 function addToPipeline(i) {
   if (!currentUser) return;
-  const b = window._currentBusinesses && window._currentBusinesses[i];
-  if (!b) return;
-  const btn = document.getElementById('pipe-btn-'+i);
-  if (btn && btn.dataset.added === '1') { openHistoryPage(); return; }
-
-  // Duplicate detection
-  if (checkDuplicate(b.name)) {
-    if (!confirm(b.name+' looks like it might already be in your pipeline. Add it anyway?')) return;
+  var saved = saveToPipeline(i);
+  if (saved) {
+    showToast('<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:5px;"><polyline points="20 6 9 17 4 12"/></svg> Added to pipeline');
+  } else {
+    showToast('Already in your pipeline', 'info');
   }
-
-  const history = getHistory(currentUser.email);
-  const id = 'pipe_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
-  history.unshift({
-    id: id, name: b.name, type: b.type, address: b.address||'', phone: b.phone||'',
-    website: b.website||'', googlemaps: b.googlemaps||'',
-    opportunity: b.opportunity, score: b.score,
-    reason: b.reason, opener: b.opener,
-    company_size: b.company_size||'', annual_revenue: b.annual_revenue||'',
-    decision_maker: b.decision_maker||'', best_time: b.best_time||'',
-    searchLocation: window._lastSearchLocation||'', savedAt: Date.now(),
-    status: 'new', statusUpdatedAt: null,
-    reachedOut: false, reachedOutAt: null,
-    campaignId:   _activeCampaignId   || null,
-    campaignName: _activeCampaignName || null
-  });
-  saveHistory(currentUser.email, history);
-
-  if (btn) {
-    btn.dataset.added = '1';
-    btn.textContent = '✓ Saved';
-    btn.title = 'Saved to pipeline';
-  }
-  showToast('<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:5px;"><polyline points="20 6 9 17 4 12"/></svg> Added to pipeline');
-  updateNavPipeline();
 }
 
 
@@ -6630,15 +6712,161 @@ function copyPitch(i) {
   });
 }
 
+// ── SAVE TO PIPELINE ─────────────────────────────────────────────────────────
+
+// ── DAILY CALL TRACKER + STREAK ──────────────────────────────────────────────
+function getDailyCallData() {
+  var today = new Date().toDateString();
+  var stored = localStorage.getItem('ps_daily_calls') || '{}';
+  try { var d = JSON.parse(stored); return d; } catch(e) { return {}; }
+}
+
+function getTodayCalls() {
+  var data = getDailyCallData();
+  var today = new Date().toDateString();
+  return data[today] || 0;
+}
+
+function incrementDailyCall() {
+  var data = getDailyCallData();
+  var today = new Date().toDateString();
+  data[today] = (data[today] || 0) + 1;
+  localStorage.setItem('ps_daily_calls', JSON.stringify(data));
+  updateStreak();
+}
+
+function getStreak() {
+  var data = getDailyCallData();
+  var streak = 0;
+  var d = new Date();
+  // Check today first
+  if (data[d.toDateString()]) streak++;
+  else return 0;
+  // Check consecutive past days
+  for (var i = 1; i < 365; i++) {
+    d = new Date();
+    d.setDate(d.getDate() - i);
+    if (data[d.toDateString()]) { streak++; }
+    else break;
+  }
+  return streak;
+}
+
+function updateStreak() {
+  var streak = getStreak();
+  localStorage.setItem('ps_call_streak', streak);
+}
+
+function renderMomentumBar(allHistory, filtered) {
+  var el = document.getElementById('momentumBar');
+  if (!el) return;
+
+  var todayCalls = getTodayCalls();
+  var streak = getStreak();
+  var total = allHistory.length;
+  var contacted = allHistory.filter(function(h){ var s=h.status||'new'; return s!=='new'; }).length;
+  var convRate = total ? Math.round(contacted / total * 100) : 0;
+  var hotLeads = allHistory.filter(function(h){ return h.status==='engaged'||h.status==='qualified'; }).length;
+
+  el.style.display = 'flex';
+  el.innerHTML =
+    '<div class="momentum-stat">' +
+      '<div class="momentum-num" style="color:var(--accent);">'+todayCalls+'</div>' +
+      '<div class="momentum-label">Calls<br>today</div>' +
+    '</div>' +
+    '<div class="momentum-divider"></div>' +
+    (streak > 0 ?
+      '<div class="momentum-stat">' +
+        '<span class="streak-badge">🔥 '+streak+' day'+(streak>1?'s':'')+'</span>' +
+      '</div>' +
+      '<div class="momentum-divider"></div>' : '') +
+    '<div class="momentum-stat">' +
+      '<div class="momentum-rate">'+convRate+'%</div>' +
+      '<div class="momentum-label">Contact<br>rate</div>' +
+    '</div>' +
+    '<div class="momentum-divider"></div>' +
+    '<div class="momentum-stat">' +
+      '<div class="momentum-num" style="color:var(--amber);">'+hotLeads+'</div>' +
+      '<div class="momentum-label">Hot<br>leads</div>' +
+    '</div>';
+}
+
+// ── MOMENTUM TOASTS ──────────────────────────────────────────────────────────
+var MOMENTUM_TOASTS = {
+  'contacted': ['Lead progressing — nice momentum', 'Moved to Contacted'],
+  'engaged':   ['They responded — keep pushing!', 'Hot lead — don\'t let this cool down'],
+  'qualified': ['Meeting set! You\'re closing in', 'Pipeline is heating up 🔥'],
+  'converted': null // handled separately with confetti
+};
+
+function showMomentumToast(newStatus) {
+  var msgs = MOMENTUM_TOASTS[newStatus];
+  if (!msgs) return;
+  var msg = msgs[Math.floor(Math.random() * msgs.length)];
+  showToast(msg, 'success');
+}
+function saveToPipeline(i, status) {
+  if (!currentUser) return false;
+  var b = window._currentBusinesses && window._currentBusinesses[i];
+  if (!b) return false;
+
+  // Silent duplicate check — don't add twice
+  if (checkDuplicate(b.name)) {
+    // If already saved, just update the button silently
+    markSaveButton(i);
+    return false;
+  }
+
+  var id = 'pipe_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+  var history = getHistory(currentUser.email);
+  history.unshift({
+    id: id, name: b.name, type: b.type||b.types||'', address: b.address||'', phone: b.phone||'',
+    website: b.website||'', googlemaps: b.googlemaps||'',
+    opportunity: b.opportunity||'', score: b.score||0,
+    reason: b.reason||'', opener: b.opener||b.messageIdea||'',
+    signal: b.signal||'', matchScore: b.matchScore||0,
+    company_size: b.company_size||'', annual_revenue: b.annual_revenue||'',
+    decision_maker: b.decision_maker||'', best_time: b.best_time||'',
+    searchLocation: window._lastSearchLocation||'', savedAt: Date.now(),
+    status: status || 'new', statusUpdatedAt: status ? Date.now() : null,
+    reachedOut: status ? true : false, reachedOutAt: status ? Date.now() : null,
+    campaignId: _activeCampaignId || null,
+    campaignName: _activeCampaignName || null
+  });
+  saveHistory(currentUser.email, history);
+
+  // Visual feedback on the card
+  markSaveButton(i);
+  updateNavPipeline();
+  return true;
+}
+
+function markSaveButton(i) {
+  var btn = document.getElementById('save-'+i);
+  if (btn && !btn.classList.contains('saved')) {
+    btn.classList.add('saved');
+    btn.innerHTML = '✓ In pipeline';
+  }
+}
+
 function trackCall(i) {
   dismissFirstCardFlow();
   window._sessionCallCount++;
   var count = window._sessionCallCount;
 
+  // Track daily calls + streak
+  incrementDailyCall();
+
+  // Auto-save to pipeline as "contacted" on call
+  var wasNew = saveToPipeline(i, 'contacted');
+
   // Toast feedback
   if (count === 1) {
-    showToast('<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px;"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07"/></svg> Call started — good luck!', 'success');
-    // Auto-expand pipeline after first call
+    if (wasNew) {
+      showToast('<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px;"><polyline points="20 6 9 17 4 12"/></svg> Saved & calling — good luck!', 'success');
+    } else {
+      showToast('<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px;"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07"/></svg> Call started — good luck!', 'success');
+    }
     expandPipelineSection();
   } else if (count === 3) {
     showToast('🔥 3 calls — you\'re building momentum!', 'success');
@@ -6806,24 +7034,20 @@ function generateMyLeads() {
 
 document.addEventListener('DOMContentLoaded', function() {
   restoreSession();
+  // Beta: always go straight to dashboard
+  showPage('dashboard');
   updateNav();
   toggleAnalyzeBtn();
-  if (currentUser) {
-    showPage('dashboard');
-    updateDashboard();
-    renderDashSections();
-    renderGoalTracker();
-    updateOverdueBadge();
-    updateSlimBar();
-    updateNavPipeline();
-    // Demo: delayed auto-run with cancellation
-    if (isDemoEligible()) {
-      scheduleDemoRun();
-    } else {
-      setTimeout(checkOnboarding, 600);
-    }
+  updateDashboard();
+  renderDashSections();
+  renderGoalTracker();
+  updateOverdueBadge();
+  updateSlimBar();
+  updateNavPipeline();
+  if (isDemoEligible()) {
+    scheduleDemoRun();
   } else {
-    showPage('home');
+    setTimeout(checkOnboarding, 600);
   }
 });
 
