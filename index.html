@@ -416,6 +416,8 @@ h1 em { font-style:normal; color:var(--accent); }
 .k-btn.call:hover { box-shadow:0 0 16px rgba(190,255,0,0.3); }
 .k-btn.del { color:var(--text4); }
 .k-btn.del:hover { color:#FF8080; border-color:rgba(255,80,80,0.3); }
+.k-btn.back { background:transparent; color:var(--text4); border-color:var(--border); }
+.k-btn.back:hover { color:var(--text2); border-color:var(--border3); }
 .k-card-phone { font-size:10px; color:var(--teal); font-weight:500; margin-bottom:4px; }
 .k-card-reminder { font-size:9px; padding:2px 6px; border-radius:8px; font-weight:600; }
 .k-card-reminder.overdue { background:rgba(255,80,80,0.08); color:#FF8080; border:1px solid rgba(255,80,80,0.2); }
@@ -2609,11 +2611,11 @@ function renderHistoryList(searches, container) {
 
 // ── KANBAN BOARD RENDERER ────────────────────────────────────────────────────
 var KANBAN_COLS = [
-  { key:'new',       label:'New',        color:'var(--text3)',  next:'contacted' },
-  { key:'contacted', label:'Contacted',  color:'var(--accent)', next:'engaged' },
-  { key:'engaged',   label:'Responded',  color:'var(--teal)',   next:'qualified' },
-  { key:'qualified', label:'Meeting Set', color:'var(--amber)',  next:'converted' },
-  { key:'converted', label:'Closed',     color:'var(--purple)', next:null }
+  { key:'new',       label:'New',        color:'var(--text3)',  next:'contacted', prev:null },
+  { key:'contacted', label:'Contacted',  color:'var(--accent)', next:'engaged',   prev:'new' },
+  { key:'engaged',   label:'Responded',  color:'var(--teal)',   next:'qualified', prev:'contacted' },
+  { key:'qualified', label:'Meeting Set', color:'var(--amber)',  next:'converted', prev:'engaged' },
+  { key:'converted', label:'Closed',     color:'var(--purple)', next:null,        prev:'qualified' }
 ];
 
 function renderKanban() {
@@ -2727,6 +2729,10 @@ function buildKanbanCard(h, col) {
   if (phone) {
     callBtn = '<a href="tel:'+phone.replace(/\D/g,'')+'" class="k-btn call" onclick="event.stopPropagation()">Call</a>';
   }
+  var backBtn = '';
+  if (col.prev) {
+    backBtn = '<button class="k-btn back" onclick="event.stopPropagation();setStatus(\''+id+'\',\''+col.prev+'\')">← Back</button>';
+  }
   var advanceBtn = '';
   if (col.next) {
     advanceBtn = '<button class="k-btn advance" onclick="event.stopPropagation();setStatus(\''+id+'\',\''+col.next+'\')">'+STATUSES[col.next].label+' →</button>';
@@ -2739,7 +2745,7 @@ function buildKanbanCard(h, col) {
     (phone ? '<div class="k-card-phone">'+phone+'</div>' : '') +
     reminderHtml +
     '<div class="k-card-actions">' +
-      callBtn + advanceBtn + delBtn +
+      callBtn + backBtn + advanceBtn + delBtn +
     '</div>' +
     '<div class="k-progress"><div class="k-progress-fill" style="width:'+pct+'%;background:'+pColor+';"></div></div>' +
   '</div>';
