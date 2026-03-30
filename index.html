@@ -66,7 +66,7 @@ body::before { content:''; position:fixed; top:0;right:0;bottom:0;left:0; backgr
 .container { max-width:860px; margin:0 auto; padding:0 28px; position:relative; z-index:1; }
 
 /* HEADER */
-header { padding:14px 0; padding-top:max(14px, env(safe-area-inset-top)); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; background:rgba(6,6,12,0.94); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); }
+header { padding:14px 0; border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; background:rgba(6,6,12,0.94); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); }
 .nav { display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .logo { font-family:Syne,sans-serif; font-size:18px; font-weight:800; letter-spacing:-0.5px; display:flex; align-items:center; gap:10px; cursor:pointer; }
 .logo-icon { width:30px; height:30px; background:var(--accent); border-radius:8px; display:flex; align-items:center; justify-content:center; }
@@ -710,10 +710,6 @@ input, textarea, select { font-size:16px; -webkit-appearance:none; appearance:no
 /* Button press feel */
 button:active:not(:disabled) { transform:scale(0.97) !important; transition:transform 0.08s !important; }
 .cta-btn:active { transform:scale(0.98) !important; }
-
-footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; text-align:center; }
-.footer-text { font-size:12px; color:var(--text4); }
-.footer-text span { color:var(--accent); }
 
 /* ── HAMBURGER MENU ── */
 .hamburger { display:none; flex-direction:column; justify-content:center; gap:4px; width:36px; height:36px; background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r-sm); cursor:pointer; padding:9px; flex-shrink:0; -webkit-tap-highlight-color:transparent; }
@@ -1575,11 +1571,6 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 </div>
 
 
-  <div class="container">
-    <p class="footer-text">Built with <span>ProspectScout</span> — Signal-driven lead intelligence</p>
-  </div>
-
-
 <!-- SEARCH HISTORY PAGE -->
 <div class="page" id="page-searchhistory">
   <div class="container" style="padding-top:48px; padding-bottom:100px;">
@@ -1726,7 +1717,6 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   </div>
   <div class="dev-body" id="devPanelBody"></div>
 </div>
-</footer>
 
 
   <!-- TIMER WIDGET (hidden by default) -->
