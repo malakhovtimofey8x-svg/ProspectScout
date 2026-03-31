@@ -740,6 +740,8 @@ input, textarea, select { font-size:16px; -webkit-appearance:none; appearance:no
 .kb-btn.kb-call:hover { box-shadow: 0 2px 16px rgba(190,255,0,0.38); }
 .kb-btn.kb-advance { background: var(--accent-dim); color: var(--accent); border-color: rgba(190,255,0,0.2); }
 .kb-btn.kb-advance:hover { background: rgba(190,255,0,0.15); }
+.kb-btn.kb-back { color: var(--text3); }
+.kb-btn.kb-back:hover { color: var(--text); border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.07); }
 .kb-btn.kb-del:hover { color: #FF8080; border-color: rgba(255,80,80,0.25); background: rgba(255,80,80,0.06); }
 
 /* ── PROGRESS BAR ─────────────────────────────────────────────────── */
@@ -3108,10 +3110,10 @@ function _kbCard(h, col) {
   var pColor   = PCOL[h.status||'new'] || 'var(--text4)';
 
   var callBtn = phone
-    ? '<a href="tel:'+phone.replace(/\D/g,'')+'" class="kb-btn kb-call" onclick="event.stopPropagation()">Call</a>'
+    ? '<a href="tel:'+phone.replace(/\D/g,'')+'" class="kb-btn kb-call" onclick="event.stopPropagation()">📞 Call</a>'
     : '';
   var backBtn = col.prev
-    ? '<button class="kb-btn kb-back" onclick="event.stopPropagation();_kbMove(\''+h.id+'\',\''+col.prev+'\')">←</button>'
+    ? '<button class="kb-btn kb-back" onclick="event.stopPropagation();_kbMove(\''+h.id+'\',\''+col.prev+'\')">← Back</button>'
     : '';
   var advBtn = col.next
     ? '<button class="kb-btn kb-advance" onclick="event.stopPropagation();_kbMove(\''+h.id+'\',\''+col.next+'\')">'+(
@@ -3274,21 +3276,24 @@ function renderHistoryStats() {
     if (isOverdue(h)) overdue++;
   });
 
-  document.getElementById('cnt-all').textContent = history.length;
+  const cntAll = document.getElementById('cnt-all');
+  if (cntAll) cntAll.textContent = history.length;
   Object.keys(counts).forEach(s => {
     const el = document.getElementById('cnt-'+s);
     if (el) el.textContent = counts[s];
   });
 
-  const convRate = history.length ? Math.round(counts.converted/history.length*100) : 0;
-  document.getElementById('historyStats').innerHTML =
+  const histStats = document.getElementById('historyStats');
+  if (histStats) histStats.innerHTML =
     '<div class="pipeline-stat"><div class="pipeline-stat-num" style="color:var(--text2);">'+history.length+'</div><div class="pipeline-stat-label">Total</div></div>'+
     '<div class="pipeline-stat"><div class="pipeline-stat-num" style="color:var(--accent);">'+counts.contacted+'</div><div class="pipeline-stat-label">Contacted</div></div>'+
     '<div class="pipeline-stat"><div class="pipeline-stat-num" style="color:var(--teal);">'+counts.engaged+'</div><div class="pipeline-stat-label">Responded</div></div>'+
     '<div class="pipeline-stat"><div class="pipeline-stat-num" style="color:var(--amber);">'+counts.qualified+'</div><div class="pipeline-stat-label">Meetings</div></div>'+
     '<div class="pipeline-stat"><div class="pipeline-stat-num" style="color:var(--purple);">'+counts.converted+'</div><div class="pipeline-stat-label">Closed</div></div>';
 
-  document.getElementById('historySub').textContent = history.length+' prospect'+(history.length!==1?'s':'')+' · '+counts.converted+' closed · '+convRate+'% conversion'+(overdue?' · '+overdue+' overdue':'');
+  const convRate = history.length ? Math.round(counts.converted/history.length*100) : 0;
+  const subEl = document.getElementById('historySub');
+  if (subEl) subEl.textContent = history.length+' prospect'+(history.length!==1?'s':'')+' · '+counts.converted+' closed · '+convRate+'% conversion'+(overdue?' · '+overdue+' overdue':'');
 }
 
 // ── REMINDER PILL BUILDER ────────────────────────────────────────────────────
