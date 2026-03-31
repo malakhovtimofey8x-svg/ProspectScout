@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>ProspectScout — Lead Intelligence Engine</title>
 <meta name="description" content="Generate high-intent leads tailored to your exact offer using real-time signals. Stop guessing who to contact." />
 <meta name="keywords" content="lead generation, sales prospecting, AI intelligence insights, lead generation, sales intelligence, prospect finder" />
@@ -61,21 +61,18 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 body::after { content:''; position:fixed; top:0;right:0;bottom:0;left:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:999; opacity:0.4; }
 body::before { content:''; position:fixed; top:0;right:0;bottom:0;left:0; background-image:radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px); background-size:28px 28px; pointer-events:none; z-index:0; }
 .orb { position:fixed; border-radius:50%; filter:blur(100px); pointer-events:none; z-index:0; }
-.orb1 { width:700px; height:700px; top:-250px; right:-200px; background:rgba(190,255,0,0.03); }
-.orb2 { width:600px; height:600px; bottom:-150px; left:-200px; background:rgba(0,229,160,0.025); }
+.orb1 { width:700px; height:700px; top:-250px; right:-200px; background:rgba(190,255,0,0.05); }
+.orb2 { width:600px; height:600px; bottom:-150px; left:-200px; background:rgba(0,229,160,0.04); }
 .container { max-width:860px; margin:0 auto; padding:0 28px; position:relative; z-index:1; }
 
 /* HEADER */
-header { padding:14px 0; border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; background:rgba(6,6,12,0.94); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); }
-.nav { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+header { padding:16px 0; padding-top:max(16px, env(safe-area-inset-top)); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; background:rgba(6,6,12,0.92); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); box-shadow:0 1px 0 rgba(255,255,255,0.04); }
+.nav { display:flex; align-items:center; justify-content:space-between; }
 .logo { font-family:Syne,sans-serif; font-size:18px; font-weight:800; letter-spacing:-0.5px; display:flex; align-items:center; gap:10px; cursor:pointer; }
-.logo-icon { width:30px; height:30px; background:var(--accent); border-radius:8px; display:flex; align-items:center; justify-content:center; }
-@keyframes pulse { 0%,100%{box-shadow:0 0 12px rgba(190,255,0,0.2)} 50%{box-shadow:0 0 20px rgba(190,255,0,0.35)} }
+.logo-icon { width:30px; height:30px; background:var(--accent); border-radius:8px; display:flex; align-items:center; justify-content:center; animation:pulse 3s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{box-shadow:0 0 20px rgba(190,255,0,0.3)} 50%{box-shadow:0 0 32px rgba(190,255,0,0.55)} }
 .nav-right { display:flex; align-items:center; gap:8px; }
-.nav-pipeline-btn { display:none; align-items:center; gap:5px; font-family:'Inter',sans-serif; font-size:12px; font-weight:600; padding:6px 12px; border-radius:var(--r-sm); border:1px solid var(--border2); background:transparent; color:var(--text3); cursor:pointer; transition:all 0.15s; }
-.nav-pipeline-btn:hover { background:var(--bg3); color:var(--text2); border-color:var(--border3); }
-.nav-pipeline-btn .pip-count { font-size:10px; font-weight:700; background:var(--bg4); color:var(--text3); padding:1px 6px; border-radius:10px; margin-left:2px; }
-.nav-btn { font-family:'Inter',sans-serif; font-size:14px; font-weight:500; padding:8px 14px; min-height:36px; border-radius:var(--r-sm); cursor:pointer; transition:all 0.15s; border:1px solid var(--border2); background:transparent; color:var(--text2); -webkit-tap-highlight-color:transparent; }
+.nav-btn { font-family:'Inter',sans-serif; font-size:14px; font-weight:500; padding:7px 14px; min-height:36px; border-radius:var(--r-sm); cursor:pointer; transition:all 0.15s; border:1px solid var(--border2); background:transparent; color:var(--text2); }
 .nav-btn:hover { background:var(--bg3); color:var(--text); }
 .nav-btn.primary { background:var(--accent); color:#08080D; border-color:transparent; font-weight:600; }
 .nav-btn.primary:hover { box-shadow:0 0 20px rgba(190,255,0,0.3); }
@@ -114,8 +111,8 @@ header { padding:14px 0; border-bottom:1px solid var(--border); position:sticky;
 .modal-error { background:rgba(255,80,80,0.08); border:1px solid rgba(255,80,80,0.2); border-radius:var(--r-sm); padding:10px 14px; font-size:13px; color:#FF8080; margin-bottom:14px; display:none; }
 
 /* HERO */
-.hero { padding:48px 0 44px; text-align:center; }
-.hero-eyebrow { display:inline-flex; align-items:center; gap:8px; font-size:11px; color:var(--accent); letter-spacing:2px; text-transform:uppercase; font-weight:600; margin-bottom:20px; padding:6px 14px; border:1px solid rgba(190,255,0,0.2); border-radius:20px; background:rgba(190,255,0,0.05); }
+.hero { padding:72px 0 52px; text-align:center; }
+.hero-eyebrow { display:inline-flex; align-items:center; gap:8px; font-size:11px; color:var(--accent); letter-spacing:2px; text-transform:uppercase; font-weight:600; margin-bottom:28px; padding:6px 14px; border:1px solid rgba(190,255,0,0.2); border-radius:20px; background:rgba(190,255,0,0.05); }
 .hero-eyebrow-dot { width:5px; height:5px; background:var(--accent); border-radius:50%; }
 h1 { font-family:Syne,sans-serif; font-size:clamp(40px,6.5vw,68px); font-weight:800; line-height:1.0; letter-spacing:-2.5px; margin-bottom:18px; }
 h1 em { font-style:normal; color:var(--accent); }
@@ -165,7 +162,7 @@ h1 em { font-style:normal; color:var(--accent); }
 .price-btn-pro:hover { box-shadow:0 4px 28px rgba(167,139,250,0.35); transform:translateY(-1px); }
 
 /* DASHBOARD */
-.dash-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:12px; }
+.dash-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; flex-wrap:wrap; gap:12px; }
 .dash-greeting { font-family:Syne,sans-serif; font-size:24px; font-weight:800; letter-spacing:-0.5px; word-break:break-word; }
 .dash-greeting em { font-style:normal; color:var(--accent); }
 .dash-sub { font-size:14px; color:var(--text3); margin-top:3px; }
@@ -217,70 +214,63 @@ h1 em { font-style:normal; color:var(--accent); }
 
 /* RESULTS */
 #results { display:none; }
-.results-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:10px; }
-.results-title { font-family:Syne,sans-serif; font-size:18px; font-weight:800; letter-spacing:-0.5px; }
+.results-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; flex-wrap:wrap; gap:10px; }
+.results-title { font-family:Syne,sans-serif; font-size:20px; font-weight:800; letter-spacing:-0.5px; }
 .results-count { font-size:11px; font-weight:600; padding:4px 12px; border-radius:20px; border:1px solid rgba(190,255,0,0.25); color:var(--accent); background:var(--accent-dim); }
-.stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
-.stat-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-lg); padding:16px 14px; text-align:center; box-shadow:var(--shadow-sm); }
-.stat-num { font-family:Syne,sans-serif; font-size:26px; font-weight:800; color:var(--accent); line-height:1; margin-bottom:5px; letter-spacing:-1px; }
+.stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:28px; }
+.stat-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-lg); padding:20px 16px; text-align:center; box-shadow:var(--shadow-sm); }
+.stat-num { font-family:Syne,sans-serif; font-size:30px; font-weight:800; color:var(--accent); line-height:1; margin-bottom:5px; letter-spacing:-1px; }
 .stat-label { font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:1px; font-weight:600; }
-.reset-btn { display:inline-flex; align-items:center; gap:6px; font-family:'Inter',sans-serif; font-size:12px; font-weight:500; color:var(--text3); background:none; border:1px solid var(--border2); border-radius:var(--r-sm); padding:8px 13px; cursor:pointer; transition:all 0.15s; margin-bottom:16px; scroll-margin-top:80px; }
+.reset-btn { display:inline-flex; align-items:center; gap:6px; font-family:'Inter',sans-serif; font-size:12px; font-weight:500; color:var(--text3); background:none; border:1px solid var(--border2); border-radius:var(--r-sm); padding:7px 13px; cursor:pointer; transition:all 0.15s; margin-bottom:22px; }
 .reset-btn:hover { color:var(--text); background:var(--bg3); }
-#results { scroll-margin-top:70px; }
 
-/* BIZ CARDS — BETA RELEASE */
-.results-wrap { max-width:640px; margin:0 auto; }
-.biz-card { display:flex; flex-direction:column; gap:0; padding:20px; background:var(--bg2); border:1px solid var(--border); border-radius:14px; margin-bottom:14px; cursor:default; transition:border-color 0.2s,box-shadow 0.2s; }
-.biz-card:hover { border-color:var(--border2); }
-.card-top { margin-bottom:10px; }
-.insight { font-size:14px; font-weight:700; color:var(--accent); line-height:1.45; }
-.card-mid { display:flex; align-items:baseline; gap:8px; margin-bottom:4px; flex-wrap:wrap; }
-.biz-name { font-family:Syne,sans-serif; font-size:15px; font-weight:700; color:var(--text); }
-.biz-type { font-size:11px; color:var(--text4); font-weight:500; }
-.biz-context { font-size:12px; color:var(--text3); line-height:1.5; margin-bottom:12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-.card-bottom { display:flex; align-items:center; gap:8px; }
-.call-main { display:flex; align-items:center; justify-content:center; gap:6px; background:var(--accent); color:#08080D; font-weight:800; padding:12px 20px; border-radius:10px; font-size:13px; text-decoration:none; border:none; cursor:pointer; transition:box-shadow 0.13s,transform 0.1s; box-shadow:0 0 24px rgba(190,255,0,0.3); white-space:nowrap; flex-shrink:0; }
-.call-main:hover { box-shadow:0 0 40px rgba(190,255,0,0.55); transform:translateY(-1px); }
-.call-main:active { transform:scale(0.94)!important; }
-.use-opener { background:var(--bg3); border:1px solid var(--border2); padding:10px 14px; border-radius:8px; font-size:12px; font-weight:600; color:var(--text3); cursor:pointer; transition:color 0.12s,border-color 0.12s; white-space:nowrap; }
-.use-opener:hover { color:var(--text); border-color:var(--border3); }
-.use-opener:active { transform:scale(0.96); }
-.save-prospect { display:flex; align-items:center; justify-content:center; gap:4px; font-family:'Inter',sans-serif; font-size:11px; font-weight:600; color:var(--text4); background:none; border:1px solid var(--border); border-radius:6px; padding:8px 10px; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
-.save-prospect:hover { color:var(--accent); border-color:rgba(190,255,0,0.3); background:var(--accent-dim); }
-.save-prospect.saved { color:var(--accent); border-color:rgba(190,255,0,0.2); background:var(--accent-dim); cursor:default; pointer-events:none; }
-.save-prospect svg { flex-shrink:0; }
-.card-spacer { flex:1; }
-@media(max-width:600px){ .biz-card{padding:16px} .call-main{padding:11px 16px;font-size:12px;min-height:42px} .use-opener{padding:10px 12px;min-height:42px} .save-prospect{padding:10px 12px;min-height:42px} .card-bottom{flex-wrap:wrap;gap:6px} }
+/* BIZ CARDS */
+.biz-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-xl); padding:22px 24px; margin-bottom:8px; position:relative; transition:border-color 0.2s,background 0.2s,transform 0.15s,box-shadow 0.2s; cursor:pointer; box-shadow:var(--shadow-sm); width:100%; box-sizing:border-box; }
+@media(max-width:600px) { .biz-card { padding:16px 16px; } }
+.biz-card:hover { border-color:rgba(190,255,0,0.12); background:var(--bg3); box-shadow:var(--shadow-md); }
+@media(hover:hover) { .biz-card:hover { transform:translateY(-2px); box-shadow:0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(190,255,0,0.08); } }
+.biz-card.active { border-color:rgba(190,255,0,0.22); background:var(--bg3); box-shadow:0 0 0 1px rgba(190,255,0,0.1), 0 12px 40px rgba(0,0,0,0.35); }
+@keyframes slideUp { from{opacity:0;transform:translateY(16px) scale(0.98)} to{opacity:1;transform:translateY(0) scale(1)} }
+/* ── INSIGHT-FIRST CARD HIERARCHY ── */
 
-/* FORCED ACTION — FIRST CARD */
-.biz-card.top { transform:scale(1.02); box-shadow:0 0 50px rgba(190,255,0,0.25); border-color:rgba(190,255,0,0.3); position:relative; z-index:2; }
-.biz-card.top .call-main { animation:pulseCall 1.8s infinite; }
-@keyframes pulseCall { 0%,100%{box-shadow:0 0 30px rgba(190,255,0,0.35)} 50%{box-shadow:0 0 60px rgba(190,255,0,0.7)} }
-.call-guide { font-size:13px; font-weight:600; color:var(--accent); margin-bottom:10px; display:flex; align-items:center; gap:6px; }
-.call-guide .guide-arrow { display:inline-block; animation:bounceDown 1s ease-in-out infinite; }
-@keyframes bounceDown { 0%,100%{transform:translateY(0)} 50%{transform:translateY(3px)} }
-.call-hint { font-size:11px; color:var(--text3); text-align:center; margin-top:4px; line-height:1.3; }
-@media(max-width:600px){ .biz-card.top{transform:scale(1.01)} }
+.score-block {
+  opacity: 0.5;
+}
+@media(max-width:600px) {
+  
+  
+  
+}
 
-/* DEMO MODE */
-.demo-badge { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--accent); background:var(--accent-dim); padding:5px 12px; border-radius:20px; margin-bottom:12px; border:1px solid rgba(190,255,0,0.18); letter-spacing:0.3px; animation:demoPulse 2s ease-in-out infinite; }
-.demo-badge .demo-dot { width:5px; height:5px; background:var(--accent); border-radius:50%; }
-@keyframes demoPulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
-.regen-btn { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:20px; width:100%; padding:16px; background:var(--accent); color:#08080D; font-family:Syne,sans-serif; font-size:15px; font-weight:800; border:none; border-radius:12px; cursor:pointer; transition:all 0.15s; box-shadow:0 4px 28px rgba(190,255,0,0.25); letter-spacing:0.2px; }
-.regen-btn:hover { transform:translateY(-2px); box-shadow:0 6px 36px rgba(190,255,0,0.4); }
-.regen-btn:active { transform:scale(0.97); }
-.demo-hint { font-size:12px; color:var(--text3); text-align:center; margin-top:10px; line-height:1.5; }
-.demo-hint strong { color:var(--text2); font-weight:600; }
+.biz-card-top { display:flex; align-items:flex-start; gap:14px; }
 
-/* PIPELINE COLLAPSE — HIDDEN UNTIL EARNED */
-.pipeline-section { max-height:0; overflow:hidden; opacity:0; pointer-events:none; transition:max-height 0.4s ease, opacity 0.3s ease; }
-.pipeline-section.expanded { max-height:2000px; opacity:1; pointer-events:auto; }
-.pipeline-toggle { display:flex; align-items:center; justify-content:center; gap:6px; width:100%; padding:12px; margin-top:12px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-md); font-family:'Inter',sans-serif; font-size:12px; font-weight:600; color:var(--text3); cursor:pointer; transition:all 0.15s; }
-.pipeline-toggle:hover { color:var(--text2); border-color:var(--border2); }
-.pipeline-toggle svg { transition:transform 0.3s ease; }
-.pipeline-toggle.open svg { transform:rotate(180deg); }
-.pipeline-hint { font-size:11px; color:var(--text4); text-align:center; margin-top:8px; }
-.pipeline-hint em { font-style:normal; color:var(--accent); font-weight:600; }
+.biz-info { flex:1; min-width:0; }
+.biz-name { font-family:Syne,sans-serif; font-size:15px; font-weight:700; letter-spacing:-0.2px; margin-bottom:5px; word-break:break-word; overflow-wrap:break-word; color:var(--text2); }
+.biz-meta { display:flex; align-items:center; gap:7px; flex-wrap:wrap; font-size:13px; }
+.type-tag { font-size:10px; color:var(--text3); font-weight:600; letter-spacing:0.8px; text-transform:uppercase; }
+.sep { color:var(--text4); font-size:10px; }
+.opp-badge { font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px; letter-spacing:0.5px; text-transform:uppercase; }
+.opp-high { background:var(--accent-dim); color:var(--accent); border:1px solid rgba(190,255,0,0.2); }
+.opp-medium { background:var(--amber-dim); color:var(--amber); border:1px solid rgba(255,176,32,0.2); }
+.card-right { display:flex; align-items:center; gap:12px; flex-shrink:0; }
+.score-block { flex-shrink:0; text-align:right; }
+.score-num { font-family:Syne,sans-serif; font-size:24px; font-weight:800; line-height:1; }
+.score-label { font-size:10px; color:var(--text4); margin-top:1px; }
+.expand-icon { color:var(--text4); display:flex; align-items:center; transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),color 0.2s; }
+.expand-icon.rotated { transform:rotate(180deg); color:var(--accent); }
+
+.contact-row { display:flex; align-items:center; gap:7px; flex-wrap:wrap; margin-top:16px; }
+.contact-btn { display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:500; padding:8px 12px; min-height:36px; border-radius:var(--r-sm); text-decoration:none; transition:all 0.15s; white-space:nowrap; font-family:'Inter',sans-serif; -webkit-tap-highlight-color:transparent; }
+.call-btn { background:var(--accent-dim); color:var(--accent); border:1px solid rgba(190,255,0,0.2); }
+.call-btn:hover { background:rgba(190,255,0,0.14); }
+.web-btn { background:rgba(255,255,255,0.04); color:var(--text2); border:1px solid var(--border2); }
+.web-btn:hover { background:rgba(255,255,255,0.07); color:var(--text); }
+.maps-btn { background:var(--teal-dim); color:var(--teal); border:1px solid rgba(0,229,160,0.18); }
+.maps-btn:hover { background:rgba(0,229,160,0.13); }
+.contact-missing { background:transparent; color:var(--text4); border:1px dashed var(--border2); cursor:default; font-style:italic; }
+.biz-address { display:flex; align-items:center; gap:4px; font-size:11px; color:var(--text4); margin-top:7px; }
+
+/* PROFILE DROPDOWN */
 .profile-wrap { position: relative; }
 .profile-dropdown { display:none; position:absolute; top:calc(100% + 8px); right:0; background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r-lg); min-width:180px; padding:6px; z-index:200; box-shadow:0 8px 32px rgba(0,0,0,0.4); animation:dropIn 0.15s ease; }
 @keyframes dropIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
@@ -301,6 +291,12 @@ h1 em { font-style:normal; color:var(--accent); }
 .pipeline-search { background:none; border:none; outline:none; font-family:'Inter',sans-serif; font-size:16px; color:var(--text); width:100%; }
 .pipeline-search::placeholder { color:var(--text4); }
 .pipeline-sort-select { font-family:'Inter',sans-serif; font-size:16px; font-weight:500; padding:10px 14px; border-radius:var(--r-md); border:1px solid var(--border2); background:var(--bg3); color:var(--text2); cursor:pointer; outline:none; -webkit-appearance:none; appearance:none; }
+
+/* PIPELINE CARD ENHANCED */
+.pipeline-card { cursor:default; }
+.pipeline-card-top { display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap; }
+.pipeline-card-bottom { margin-top:12px; padding-top:12px; border-top:1px solid var(--border); display:flex; gap:10px; align-items:flex-start; flex-wrap:wrap; }
+.overdue-card { border-color:rgba(255,107,107,0.25) !important; }
 
 /* NOTES */
 .notes-wrap { flex:1; min-width:180px; }
@@ -347,6 +343,7 @@ h1 em { font-style:normal; color:var(--accent); }
 .call-log-item { font-size:10px; color:var(--text3); background:var(--bg4); border:1px solid var(--border); border-radius:20px; padding:2px 8px; white-space:nowrap; }
 
 /* DEAL VALUE */
+.card-right-tools { display:flex; flex-direction:column; gap:8px; flex-shrink:0; }
 .deal-value-wrap { display:flex; align-items:center; gap:6px; }
 .deal-value-wrap svg { color:var(--text3); flex-shrink:0; }
 .deal-value-input { width:110px; background:var(--bg3); border:1px solid var(--border2); border-radius:var(--r-sm); padding:6px 10px; font-family:'Inter',sans-serif; font-size:12px; color:var(--text2); outline:none; transition:border-color 0.2s; }
@@ -390,79 +387,24 @@ h1 em { font-style:normal; color:var(--accent); }
 .reminder-pop-clear { display:flex; align-items:center; gap:8px; width:100%; padding:8px 10px; border-radius:var(--r-sm); border:none; background:none; color:#FF8080; font-family:'Inter',sans-serif; font-size:12px; cursor:pointer; transition:background 0.1s; }
 .reminder-pop-clear:hover { background:rgba(255,80,80,0.08); }
 
-/* ── KANBAN PIPELINE BOARD ── */
-.kanban-stats { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:20px; }
-.kanban-stat { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:14px 12px; text-align:center; transition:border-color 0.15s; cursor:pointer; }
-.kanban-stat:hover { border-color:var(--border2); }
-.kanban-stat-num { font-family:Syne,sans-serif; font-size:22px; font-weight:800; line-height:1; margin-bottom:3px; }
-.kanban-stat-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.8px; font-weight:600; }
-.kanban-board { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; align-items:start; min-height:300px; }
-.kanban-col { background:var(--bg2); border:1px solid var(--border); border-radius:12px; min-height:200px; display:flex; flex-direction:column; }
-.kanban-col-header { padding:12px 14px 10px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; }
-.kanban-col-title { font-family:Syne,sans-serif; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; }
-.kanban-col-count { font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px; background:var(--bg4); color:var(--text3); }
-.kanban-col-body { padding:8px; flex:1; display:flex; flex-direction:column; gap:6px; overflow-y:auto; max-height:60vh; }
-.kanban-col-body:empty::after { content:'No prospects'; display:block; text-align:center; font-size:11px; color:var(--text4); padding:24px 8px; }
-.k-card { background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:10px 12px; cursor:default; transition:border-color 0.15s,background 0.15s; }
-.k-card:hover { border-color:var(--border2); background:var(--bg4); }
-.k-card-name { font-size:12px; font-weight:700; color:var(--text); margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.k-card-type { font-size:10px; color:var(--text4); margin-bottom:6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.k-card-actions { display:flex; gap:4px; flex-wrap:wrap; }
-.k-btn { font-family:'Inter',sans-serif; font-size:11px; font-weight:600; padding:7px 10px; min-height:32px; border-radius:6px; border:1px solid var(--border2); background:transparent; color:var(--text3); cursor:pointer; transition:all 0.12s; white-space:nowrap; display:inline-flex; align-items:center; }
-.k-btn:hover { color:var(--text2); border-color:var(--border3); }
-.k-btn.advance { background:var(--accent-dim); color:var(--accent); border-color:rgba(190,255,0,0.2); }
-.k-btn.advance:hover { background:rgba(190,255,0,0.15); }
-.k-btn.call { background:var(--accent); color:#08080D; border-color:transparent; font-weight:700; }
-.k-btn.call:hover { box-shadow:0 0 16px rgba(190,255,0,0.3); }
-.k-btn.del { color:var(--text4); }
-.k-btn.del:hover { color:#FF8080; border-color:rgba(255,80,80,0.3); }
-.k-btn.back { background:transparent; color:var(--text4); border-color:var(--border); }
-.k-btn.back:hover { color:var(--text2); border-color:var(--border3); }
-.k-card-phone { font-size:10px; color:var(--teal); font-weight:500; margin-bottom:4px; }
-.k-card-reminder { font-size:9px; padding:2px 6px; border-radius:8px; font-weight:600; }
-.k-card-reminder.overdue { background:rgba(255,80,80,0.08); color:#FF8080; border:1px solid rgba(255,80,80,0.2); }
-.k-card-reminder.upcoming { background:var(--amber-dim); color:var(--amber); border:1px solid rgba(255,176,32,0.2); }
-.kanban-empty { text-align:center; padding:60px 20px; }
-.kanban-empty-icon { font-size:36px; margin-bottom:12px; }
-.kanban-empty-text { font-size:14px; color:var(--text3); max-width:280px; margin:0 auto; line-height:1.6; }
-@media(max-width:900px) { .kanban-board { grid-template-columns:1fr; } .kanban-col { min-height:auto; } .kanban-col-body { max-height:50vh; } .kanban-stats { grid-template-columns:repeat(3,1fr); } }
-@media(max-width:500px) { .kanban-stats { grid-template-columns:repeat(2,1fr); } .k-btn { padding:8px 10px; min-height:36px; font-size:12px; } .k-card { padding:12px; } .k-card-actions { gap:6px; } }
+/* EXPANDABLE PIPELINE CARDS */
+.pipeline-card { cursor:pointer; }
+.pipeline-card-expanded { max-height:0; overflow:hidden; transition:max-height 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease; opacity:0; }
+.pipeline-card-expanded.open { max-height:600px; opacity:1; }
+.pipeline-expand-icon { color:var(--text4); display:flex; align-items:center; transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1); flex-shrink:0; }
+.pipeline-expand-icon.rotated { transform:rotate(180deg); color:var(--accent); }
+.pipeline-card.p-active { border-color:rgba(190,255,0,0.15); background:var(--bg3); }
 
-/* ── DEAL MOMENTUM SYSTEM ── */
-.k-progress { height:3px; background:rgba(255,255,255,0.06); border-radius:2px; margin-top:8px; overflow:hidden; }
-.k-progress-fill { height:100%; border-radius:2px; transition:width 0.4s cubic-bezier(0.16,1,0.3,1); }
-.k-card.hot { border-color:rgba(190,255,0,0.2); background:rgba(190,255,0,0.03); }
-.k-card.hot .k-card-name { color:var(--accent); }
-.momentum-bar { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:16px 20px; margin-bottom:16px; display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
-.momentum-stat { display:flex; align-items:center; gap:8px; }
-.momentum-num { font-family:Syne,sans-serif; font-size:20px; font-weight:800; line-height:1; }
-.momentum-label { font-size:11px; color:var(--text3); line-height:1.3; }
-.momentum-divider { width:1px; height:28px; background:var(--border); flex-shrink:0; }
-.streak-badge { display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:700; color:var(--amber); padding:4px 10px; border-radius:8px; background:var(--amber-dim); border:1px solid rgba(255,176,32,0.15); }
-.momentum-rate { font-family:Syne,sans-serif; font-size:16px; font-weight:800; color:var(--accent); }
-.kanban-empty { text-align:center; padding:80px 20px; }
-.kanban-empty-icon { font-size:40px; margin-bottom:14px; }
-.kanban-empty-title { font-family:Syne,sans-serif; font-size:18px; font-weight:800; margin-bottom:8px; }
-.kanban-empty-text { font-size:13px; color:var(--text3); max-width:300px; margin:0 auto; line-height:1.6; }
-@media(max-width:600px) { .momentum-bar { padding:12px 14px; gap:12px; } .momentum-num { font-size:16px; } .momentum-divider { display:none; } }
-
-/* DEV ADMIN PANEL — floating, console-only */
-.dev-panel { display:none; position:fixed; bottom:16px; right:16px; width:340px; max-height:70vh; background:var(--bg); border:1px solid var(--border2); border-radius:14px; z-index:9999; box-shadow:0 12px 48px rgba(0,0,0,0.6); overflow:hidden; font-family:'Inter',sans-serif; }
-.dev-panel.open { display:flex; flex-direction:column; }
-.dev-header { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid var(--border); background:var(--bg2); }
-.dev-header-title { font-family:Syne,sans-serif; font-size:13px; font-weight:700; color:var(--amber); }
-.dev-close { background:none; border:none; color:var(--text4); cursor:pointer; padding:4px; }
-.dev-body { padding:12px 16px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:12px; }
-.dev-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text4); margin-bottom:2px; }
-.dev-row { display:flex; gap:6px; flex-wrap:wrap; }
-.dev-btn { font-family:'Inter',sans-serif; font-size:11px; font-weight:600; padding:6px 10px; border-radius:6px; border:1px solid var(--border2); background:var(--bg3); color:var(--text2); cursor:pointer; transition:all 0.12s; }
-.dev-btn:hover { background:var(--bg4); color:var(--text); }
-.dev-btn.danger { border-color:rgba(255,80,80,0.25); color:#FF8080; }
-.dev-btn.danger:hover { background:rgba(255,80,80,0.1); }
-.dev-btn.accent { border-color:rgba(190,255,0,0.25); color:var(--accent); }
-.dev-btn.accent:hover { background:var(--accent-dim); }
-.dev-log { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:10px; font-family:monospace; color:var(--text3); max-height:140px; overflow-y:auto; white-space:pre-wrap; word-break:break-all; line-height:1.5; }
-@media(max-width:500px) { .dev-panel { width:calc(100% - 24px); right:12px; bottom:12px; } }
+/* ADMIN PANEL */
+.admin-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+@media(max-width:600px) { .admin-grid { grid-template-columns:1fr 1fr; } }
+@media(max-width:420px) { .admin-grid { grid-template-columns:1fr; } }
+.admin-card { background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r-xl); padding:22px; }
+.admin-card-title { font-family:Syne,sans-serif; font-size:14px; font-weight:700; margin-bottom:10px; color:var(--amber); }
+.admin-btn { font-family:'Inter',sans-serif; font-size:13px; font-weight:600; padding:9px 16px; border-radius:var(--r-sm); border:1px solid var(--border2); background:var(--bg3); color:var(--text2); cursor:pointer; transition:all 0.15s; }
+.admin-btn:hover { background:var(--bg4); color:var(--text); }
+.admin-btn.danger { border-color:rgba(255,80,80,0.25); color:#FF8080; background:rgba(255,80,80,0.06); }
+.admin-btn.danger:hover { background:rgba(255,80,80,0.12); }
 
 /* MOBILE / IPHONE ─────────────────────────────────────────────────────────── */
 /* ── iOS / MOBILE BASE ── */
@@ -470,6 +412,8 @@ html { -webkit-text-size-adjust:100%; text-size-adjust:100%; }
 html, body { -webkit-overflow-scrolling:touch; overflow-x:hidden; }
 button, a { -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
 button:active, a:active { opacity:0.75; }
+.biz-card:active { transform:scale(0.99); }
+.pipeline-card:active { opacity:0.9; }
 /* Prevent iOS zoom — all inputs must be 16px */
 input, textarea, select { font-size:16px; -webkit-appearance:none; appearance:none; }
 
@@ -559,12 +503,26 @@ input, textarea, select { font-size:16px; -webkit-appearance:none; appearance:no
 .goal-pct { font-family:Syne,sans-serif; font-size:13px; font-weight:700; color:var(--accent); flex-shrink:0; }
 
 /* ── SCORE FILTER ── */
-.score-filter-wrap { display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap; scroll-margin-top:70px; }
+.score-filter-wrap { display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
 .score-filter-label { font-size:12px; color:var(--text3); font-weight:600; white-space:nowrap; }
 .score-filter-btns { display:flex; gap:5px; }
 .score-filter-btn { font-size:11px; font-weight:700; padding:7px 12px; min-height:34px; border-radius:20px; border:1px solid var(--border2); background:transparent; color:var(--text3); cursor:pointer; transition:all 0.15s; -webkit-tap-highlight-color:transparent; }
 .score-filter-btn:hover { border-color:var(--border3); color:var(--text2); }
 .score-filter-btn.active { background:var(--accent-dim); color:var(--accent); border-color:rgba(190,255,0,0.3); }
+
+/* ── DARK/LIGHT MODE ── */
+body.light-mode { --bg:#F4F4F8; --bg2:#FFFFFF; --bg3:#F0F0F5; --bg4:#E8E8EF; --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.12); --border3:rgba(0,0,0,0.2); --text:#0A0A14; --text2:rgba(10,10,20,0.72); --text3:rgba(10,10,20,0.46); --text4:rgba(10,10,20,0.28); --accent:#3A8C00; --accent-dim:rgba(58,140,0,0.10); --teal:#007A55; --teal-dim:rgba(0,122,85,0.10); --amber:#B87000; --amber-dim:rgba(184,112,0,0.10); --purple:#6B4FBF; --purple-dim:rgba(107,79,191,0.10); }
+body.light-mode header { background:rgba(244,244,248,0.94); }
+body.light-mode .orb1 { background:rgba(58,140,0,0.08); }
+body.light-mode .orb2 { background:rgba(0,122,85,0.06); }
+body.light-mode .cta-btn { color:#fff; }
+body.light-mode .btn-primary { color:#fff; }
+body.light-mode .modal-btn { color:#fff; }
+body.light-mode .price-btn-plus { color:#fff; }
+body.light-mode .logo-icon { background:var(--accent); }
+body.light-mode .logo-icon svg path, body.light-mode .logo-icon svg circle, body.light-mode .logo-icon svg line { stroke:#fff; }
+.mode-toggle { display:flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:var(--r-sm); border:1px solid var(--border2); background:transparent; color:var(--text3); cursor:pointer; transition:all 0.15s; flex-shrink:0; }
+.mode-toggle:hover { border-color:var(--border3); color:var(--text2); background:var(--bg3); }
 
 /* ── NOTES TEMPLATES ── */
 .notes-template-btn { display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:600; padding:3px 8px; border-radius:var(--r-sm); border:1px solid var(--border2); background:transparent; color:var(--text4); cursor:pointer; transition:all 0.15s; margin-bottom:4px; margin-right:3px; }
@@ -578,8 +536,8 @@ input, textarea, select { font-size:16px; -webkit-appearance:none; appearance:no
 /* ── ONBOARDING ── */
 .onboarding-overlay { position:fixed; top:0;left:0;right:0;bottom:0; background:rgba(0,0,0,0.85); z-index:9000; display:none; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(6px); }
 .onboarding-overlay.open { display:flex; }
-.onboarding-modal, .onboarding-card { background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r-xl); padding:36px; width:100%; max-width:480px; position:relative; box-shadow:var(--shadow-lg); animation:modalIn 0.3s cubic-bezier(0.16,1,0.3,1); }
-.onboarding-modal::before, .onboarding-card::before { content:''; position:absolute; top:-1px; left:15%; right:15%; height:1px; background:linear-gradient(90deg,transparent,var(--accent),transparent); }
+.onboarding-modal { background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r-xl); padding:36px; width:100%; max-width:480px; position:relative; box-shadow:var(--shadow-lg); animation:modalIn 0.3s cubic-bezier(0.16,1,0.3,1); }
+.onboarding-modal::before { content:''; position:absolute; top:-1px; left:15%; right:15%; height:1px; background:linear-gradient(90deg,transparent,var(--accent),transparent); }
 .onboarding-steps { display:flex; gap:6px; margin-bottom:28px; }
 .onboarding-step-dot { flex:1; height:3px; border-radius:2px; background:var(--bg4); transition:background 0.3s; }
 .onboarding-step-dot.done { background:var(--accent); }
@@ -592,7 +550,7 @@ input, textarea, select { font-size:16px; -webkit-appearance:none; appearance:no
 .onboarding-btn-primary:hover { box-shadow:0 4px 20px rgba(190,255,0,0.3); transform:translateY(-1px); }
 .onboarding-btn-skip { padding:13px 18px; background:transparent; color:var(--text3); font-family:'Inter',sans-serif; font-size:13px; border:1px solid var(--border2); border-radius:var(--r-md); cursor:pointer; transition:all 0.15s; }
 .onboarding-btn-skip:hover { color:var(--text2); border-color:var(--border3); }
-@media(max-width:640px) { .onboarding-overlay { align-items:flex-end; padding:0; } .onboarding-modal, .onboarding-card { border-radius:24px 24px 0 0; max-width:100%; padding:28px 20px calc(20px + env(safe-area-inset-bottom)); } }
+@media(max-width:640px) { .onboarding-overlay { align-items:flex-end; padding:0; } .onboarding-modal { border-radius:24px 24px 0 0; max-width:100%; padding:28px 20px 44px; } }
 
 /* ── CALL STREAK CALENDAR ── */
 .streak-calendar { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-xl); padding:26px 24px; box-shadow:var(--shadow-sm); }
@@ -612,6 +570,7 @@ input, textarea, select { font-size:16px; -webkit-appearance:none; appearance:no
 /* ── OVERDUE BADGE ── */
 .nav-badge { display:inline-flex; align-items:center; justify-content:center; min-width:16px; height:16px; border-radius:8px; background:#FF5050; color:#fff; font-size:9px; font-weight:700; padding:0 4px; margin-left:4px; animation:badgePulse 2s ease-in-out infinite; }
 @keyframes badgePulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+.pipeline-tab .nav-badge { margin-left:4px; }
 
 /* ── SEARCH HISTORY PAGE ── */
 .search-history-list { display:flex; flex-direction:column; gap:10px; }
@@ -698,6 +657,8 @@ input, textarea, select { font-size:16px; -webkit-appearance:none; appearance:no
 .tip-card { transition:border-color 0.2s,background 0.2s,transform 0.2s,box-shadow 0.2s; }
 .tip-card:hover { border-color:rgba(190,255,0,0.15); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.2); }
 .recent-item { transition:background 0.15s,border-color 0.15s; }
+.pipeline-card { transition:border-color 0.2s,background 0.2s,box-shadow 0.2s; }
+.pipeline-card:hover { border-color:var(--border2); background:var(--bg3); }
 
 /* Smooth page transitions */
 .page.active { animation:pageFadeIn 0.25s ease both; }
@@ -711,12 +672,20 @@ input, textarea, select { font-size:16px; -webkit-appearance:none; appearance:no
 button:active:not(:disabled) { transform:scale(0.97) !important; transition:transform 0.08s !important; }
 .cta-btn:active { transform:scale(0.98) !important; }
 
+/* Smooth accordion expansion on biz cards */
+.card-detail { animation:expandDown 0.2s ease both; }
+@keyframes expandDown { from{opacity:0;transform:scaleY(0.95);transform-origin:top} to{opacity:1;transform:scaleY(1)} }
+
+footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; text-align:center; }
+.footer-text { font-size:12px; color:var(--text4); }
+.footer-text span { color:var(--accent); }
+
 /* ── HAMBURGER MENU ── */
-.hamburger { display:none; flex-direction:column; justify-content:center; gap:4px; width:36px; height:36px; background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r-sm); cursor:pointer; padding:9px; flex-shrink:0; -webkit-tap-highlight-color:transparent; }
+.hamburger { display:none; flex-direction:column; justify-content:center; gap:5px; width:36px; height:36px; background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r-sm); cursor:pointer; padding:8px; flex-shrink:0; -webkit-tap-highlight-color:transparent; }
 .hamburger span { display:block; height:1.5px; background:var(--text2); border-radius:2px; transition:all 0.25s; }
-.hamburger.open span:nth-child(1) { transform:translateY(5.5px) rotate(45deg); }
+.hamburger.open span:nth-child(1) { transform:translateY(6.5px) rotate(45deg); }
 .hamburger.open span:nth-child(2) { opacity:0; transform:scaleX(0); }
-.hamburger.open span:nth-child(3) { transform:translateY(-5.5px) rotate(-45deg); }
+.hamburger.open span:nth-child(3) { transform:translateY(-6.5px) rotate(-45deg); }
 
 .mobile-menu { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(8,8,13,0.97); z-index:200; flex-direction:column; padding:90px 20px 40px; gap:4px; overflow-y:auto; -webkit-overflow-scrolling:touch; }
 .mobile-menu.open { display:flex; animation:menuSlideDown 0.25s cubic-bezier(0.16,1,0.3,1); }
@@ -770,56 +739,62 @@ button:active:not(:disabled) { transform:scale(0.97) !important; transition:tran
 
   .hamburger { display:flex; }
   .nav-right { display:none !important; }
-  header { padding:6px 0 !important; }
-  .nav { gap:8px; }
-  .logo { font-size:15px; gap:6px; }
-  .logo-icon { width:24px; height:24px; border-radius:6px; }
-  .logo-icon svg { width:13px; height:13px; }
-  .hamburger { width:32px; height:32px; padding:8px; gap:3px; }
-  #matrixCanvas { opacity:0.06 !important; }
-  .orb { display:none; }
-  body::before, body::after { display:none; }
-  .page > .container { padding-top:0 !important; }
-  .container { padding-left:16px; padding-right:20px; }
+  .container { padding-left:16px; padding-right:16px; }
   h1 { font-size:32px; letter-spacing:-1.5px; }
-  .hero { padding:24px 0 20px; }
+  .hero { padding:32px 0 24px; }
   .hero-sub { font-size:14px; margin-bottom:24px; }
   .hero-btns { flex-direction:column; gap:10px; }
-  .hero-btns .btn-primary, .hero-btns .btn-ghost { width:100%; padding:14px; text-align:center; min-height:48px; }
+  .hero-btns .btn-primary, .hero-btns .btn-ghost { width:100%; padding:14px; text-align:center; }
   .features { grid-template-columns:1fr; }
   .pricing-grid { grid-template-columns:1fr; gap:12px; }
-  .dash-header { flex-direction:column; align-items:flex-start; gap:6px; margin-bottom:16px; }
+  .dash-header { flex-direction:column; align-items:flex-start; gap:8px; margin-top:16px; }
   .dash-greeting { font-size:20px; word-break:break-word; max-width:100%; }
   .dash-sub { font-size:12px; max-width:100%; word-break:break-word; }
   .dash-tier-badge { width:100%; justify-content:space-between; }
+  .goal-bar-wrap { padding:14px 16px; }
+  .goal-title { font-size:12px; }
+  .goal-label { font-size:10px; }
   .fields-row { grid-template-columns:1fr; gap:10px; }
   .scout-card { padding:16px 14px; }
   .cta-btn { min-height:52px; font-size:16px; }
+  .contact-btn, .pipeline-add-btn { min-height:40px; padding:9px 12px; }
   .stats-row { gap:6px; }
   .stat-card { padding:14px 10px; }
   .stat-num { font-size:20px; }
   .stat-label { font-size:9px; }
-  .results-title { font-size:16px; }
-  .results-header { gap:6px; margin-bottom:10px; }
   .biz-name { font-size:14px; }
+  .biz-card { padding:14px; }
+  .expanded-grid { grid-template-columns:1fr; gap:8px; }
+  .contact-row { gap:5px; flex-wrap:wrap; }
+  .contact-btn, .pipeline-add-btn { font-size:12px; padding:6px 10px; }
+  
+  .info-chip { font-size:10px; padding:2px 7px; }
+  .pipeline-stats { grid-template-columns:repeat(3,1fr); gap:6px; }
+  .pipeline-stat { padding:10px 8px; }
+  .pipeline-stat-num { font-size:16px; }
+  .pipeline-stat-label { font-size:8px; }
+  .pipeline-tabs { overflow-x:auto; -webkit-overflow-scrolling:touch; flex-wrap:nowrap; scrollbar-width:none; gap:4px; }
+  .pipeline-tabs::-webkit-scrollbar { display:none; }
+  .pipeline-tab { flex-shrink:0; font-size:12px; padding:6px 10px; }
+  .pipeline-card { padding:12px 14px; }
+  .pipeline-card-top { flex-direction:column; gap:10px; }
+  .pipeline-actions { width:100%; flex-wrap:wrap; justify-content:flex-start; gap:6px; }
   .pipeline-controls { flex-direction:column; gap:8px; }
   .pipeline-search-wrap { width:100%; }
-  .pipeline-search { min-height:44px; }
-  .export-btn { width:100%; justify-content:center; min-height:44px; }
+  .pipeline-sort-select, .export-btn { width:100%; }
+  .export-btn { justify-content:center; }
+  .pipeline-card-bottom { flex-direction:column; gap:10px; }
   .call-outcome-row { flex-direction:column; gap:8px; }
+  .card-right-tools { flex-direction:row; flex-wrap:wrap; gap:8px; }
+  .deal-value-input { width:100%; }
+  .status-select { max-width:100%; }
   .reminder-popover { right:auto; left:0; }
   .vb-row { grid-template-columns:repeat(3,1fr); }
   .modal-overlay { align-items:flex-end; padding:0; }
-  .modal { border-radius:24px 24px 0 0; width:100%; max-width:100%; padding:28px 20px calc(20px + env(safe-area-inset-bottom)); max-height:90vh; overflow-y:auto; }
+  .modal { border-radius:24px 24px 0 0; width:100%; max-width:100%; padding:28px 20px 44px; max-height:90vh; overflow-y:auto; }
   .modal-title { font-size:20px; }
-  .modal-btn { min-height:48px; }
-  .modal-input { min-height:44px; }
-  .ps-toast { width:calc(100% - 32px); text-align:center; white-space:normal; bottom:calc(16px + env(safe-area-inset-bottom)); }
-  .nav-btn { min-height:44px; }
-  .dropdown-item { min-height:44px; }
-  .reset-btn { min-height:44px; }
-  .price-btn { min-height:48px; }
-  .resume-btn { min-height:44px; }
+  .admin-grid { grid-template-columns:1fr; }
+  .ps-toast { width:calc(100% - 32px); text-align:center; white-space:normal; bottom:20px; }
 }
 
 /* SCREEN LOCK WARNING */
@@ -884,7 +859,7 @@ button:active:not(:disabled) { transform:scale(0.97) !important; transition:tran
   .sequence-day { font-size:10px; padding:2px 7px; }
   .strategy-block { font-size:12px; padding:10px 12px; }
   .tip-card { padding:14px; }
-  .container { padding-bottom:10px; }
+  .container { padding-bottom:100px; }
   .pipeline-stats { grid-template-columns:repeat(2,1fr) !important; }
 }
 @media(max-width:374px) {
@@ -903,7 +878,59 @@ button:active:not(:disabled) { transform:scale(0.97) !important; transition:tran
 input[type="text"]:not(.goal-input), input[type="email"], input[type="password"],
 input[type="number"]:not(.goal-input), input[type="date"], textarea, select { font-size:16px; }
 
+/* ── BИЗCARD ──────────────────────────────────────────────────── */
+.biz-card {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  gap: 10px;
+  align-items: center;
+  padding: 16px;
+  cursor: default;
+  transition: transform 0.15s cubic-bezier(0.16,1,0.3,1), box-shadow 0.15s ease;
+}
+.biz-card:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+}
+.biz-card:hover .call-main { box-shadow: 0 0 60px rgba(190,255,0,0.75); }
+
+.biz-card.top {
+  transform: scale(1.02);
+  box-shadow: 0 0 50px rgba(190,255,0,0.3);
+  border-color: rgba(190,255,0,0.2);
+}
+.biz-card.top:hover { transform: translateY(-3px) scale(1.025); }
+
+.insight { font-size:14px; font-weight:700; color:var(--accent); line-height:1.4; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.biz-name { font-size:13px; color:var(--text2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+.bc-r { display:flex; flex-direction:column; gap:7px; }
+
+.call-main {
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  background:var(--accent); color:#08080D; font-weight:800;
+  padding:16px; border-radius:12px; font-size:14px;
+  box-shadow:0 0 40px rgba(190,255,0,0.5);
+  transition:box-shadow 0.13s, transform 0.1s, background 0.1s;
+  text-decoration:none; border:none; cursor:pointer; width:100%;
+}
+.call-main:hover  { box-shadow:0 0 60px rgba(190,255,0,0.75); background:#d4ff00; transform:translateY(-1px); }
+.call-main:active { transform:scale(0.94)!important; }
+
+.use-opener {
+  background:var(--bg3); border:1px solid var(--border2);
+  padding:10px; border-radius:10px; font-size:12px; font-weight:600;
+  color:var(--text3); cursor:pointer; width:100%;
+  transition:color 0.12s, border-color 0.12s;
+}
+.use-opener:hover  { color:var(--text); border-color:var(--border3); }
+.use-opener:active { transform:scale(0.96); }
+
+@media(prefers-reduced-motion:reduce){.biz-card,.call-main{transition:none!important}.biz-card:hover,.biz-card.top{transform:none!important}}
+@media(max-width:600px){.biz-card{grid-template-columns:1fr 108px;gap:8px;padding:13px}.call-main{padding:13px;font-size:13px}}
+
 /* ── SCROLL ANIMATIONS ───────────────────────────────────────────── */
+/* Hero — fires immediately on load */
 .hero-animate {
   opacity: 0;
   transform: translateY(20px) scale(0.98);
@@ -914,6 +941,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   transform: translateY(0) scale(1);
 }
 
+/* Global scroll reveal */
 .reveal {
   opacity: 0;
   transform: translateY(24px);
@@ -924,28 +952,30 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   transform: translateY(0);
 }
 
-/* Card stagger reveal */
-.biz-card.reveal-card {
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+/* Staggered biz-cards — index set via JS data-attr */
+.biz-card
+.biz-card
+
+/* Top-ranked card — stronger glow, instant authority */
+.biz-card.top-result {
+  box-shadow: 0 0 30px rgba(190,255,0,0.18), var(--shadow-md);
+  border-color: rgba(190,255,0,0.15);
 }
-.biz-card.reveal-card.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.biz-card.top-result.visible {
-  box-shadow: 0 0 16px rgba(190,255,0,0.1), 0 2px 8px rgba(0,0,0,0.3);
-  border-color: rgba(190,255,0,0.1);
-}
+.biz-card.top-result
+
+/* Hover = about to act */
+.biz-card:hover { transform: translateY(-3px) scale(1.01); }
+/* hover CTA handled in main card CSS */
 
 /* Click micro-feedback */
 .call-main:active       { transform: scale(0.96) !important; transition: transform 0.08s ease !important; }
-.use-opener:active      { transform: scale(0.92); transition: transform 0.08s ease; }
+.bc-copy:active         { transform: scale(0.92); transition: transform 0.08s ease; }
+.v4-copy-btn:active     { transform: scale(0.92); transition: transform 0.08s ease; }
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .hero-animate, .reveal, .biz-card.reveal-card { opacity:1!important; transform:none!important; transition:none!important; }
+  .hero-animate, .reveal, .biz-card
+  .biz-card:hover, .biz-card.top-result
 }
 </style>
 <script src="/api/env"></script>
@@ -956,44 +986,18 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 <div class="orb orb2"></div>
 <div class="screen-lock-banner" id="screenLockBanner">📵 Keep screen on while searching</div>
 
-<!-- AUTH MODAL -->
+<!-- BETA NAME MODAL -->
 <div class="modal-overlay" id="authModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
-
-    <!-- LOGIN -->
-    <div id="loginView">
-      <div class="modal-title">Welcome back</div>
-      <div class="modal-sub">Sign in to your ProspectScout account.</div>
-      <div class="modal-error" id="loginError"></div>
-      <div class="modal-field"><label>Email</label><input class="modal-input" type="email" id="loginEmail" placeholder="you@email.com" /></div>
-      <div class="modal-field"><label>Password</label><input class="modal-input" type="password" id="loginPassword" placeholder="••••••••" /></div>
-      <button class="modal-btn" onclick="doLogin()">Sign in</button>
-      <div class="modal-switch">No account? <a onclick="showSignup()">Create one free →</a></div>
-    </div>
-
-    <!-- SIGNUP -->
-    <div id="signupView" style="display:none;">
-      <div class="modal-title">Create account</div>
-      <div class="modal-sub">Join the beta — free access included.</div>
-      <div class="modal-error" id="signupError"></div>
-      <div class="modal-field"><label>Full name</label><input class="modal-input" type="text" id="signupName" placeholder="Your name" /></div>
-      <div class="modal-field"><label>Email</label><input class="modal-input" type="email" id="signupEmail" placeholder="you@email.com" /></div>
-      <div class="modal-field" style="opacity:0.7;"><label style="font-size:9px;">Phone <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text4);">— optional, for early access updates</span></label><input class="modal-input" type="tel" id="signupPhone" placeholder="+1 (555) 000-0000" /></div>
-      <div class="modal-field">
-        <label>Interested plan</label>
-        <select class="modal-input" id="signupTier">
-          <option value="free">Free — 5 prospects/day</option>
-          <option value="plus">Plus — 25 prospects/day ($19/mo)</option>
-          <option value="pro">Pro — 100 prospects/day ($49/mo)</option>
-        </select>
-      </div>
-      <div class="modal-field"><label>Password</label><input class="modal-input" type="password" id="signupPassword" placeholder="Min 6 characters" /></div>
-      <button class="modal-btn" onclick="doSignup()">Create free account</button>
-      <div class="modal-switch">Already have one? <a onclick="showLogin()">Sign in →</a></div>
-    </div>
+    <div style="font-size:28px;margin-bottom:12px;">🎯</div>
+    <div class="modal-title">Welcome to ProspectScout</div>
+    <div class="modal-sub">Enter your name to get started — free beta access, no account needed.</div>
+    <div class="modal-field"><label>Your name</label><input class="modal-input" type="text" id="betaNameInput" placeholder="e.g. Alex" onkeydown="if(event.key==='Enter')startBeta()" /></div>
+    <button class="modal-btn" onclick="startBeta()">Start finding leads →</button>
+    <div style="text-align:center;margin-top:14px;font-size:11px;color:var(--text4);">Free beta · No credit card · No password</div>
   </div>
 </div>
 
@@ -1027,7 +1031,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 
   <!-- ── HERO ──────────────────────────────────────────────────────────── -->
   <div class="container">
-    <div class="hero" style="padding:48px 0 44px;">
+    <div class="hero" style="padding:80px 0 60px;">
 
       <div class="hero-eyebrow hero-animate" style="transition-delay:0ms;">
         <span class="hero-eyebrow-dot"></span>
@@ -1035,15 +1039,15 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
       </div>
 
       <h1 class="hero-animate" style="font-size:clamp(32px,7vw,58px);line-height:1.1;letter-spacing:-1.5px;margin-bottom:20px;transition-delay:0ms;">
-        Know exactly who to call<br><em>and what to say.</em>
+        Find prospects that already<br><em>need your service.</em>
       </h1>
 
       <p class="hero-sub hero-animate" style="max-width:520px;font-size:clamp(15px,2.5vw,18px);color:var(--text2);line-height:1.7;margin:0 auto 36px;transition-delay:120ms;">
-        Generate high-intent leads tailored to your offer using real-time signals. Stop guessing who to contact.
+        Tell us what you sell. We find prospects showing signals they need it right now — with a reason for every lead.
       </p>
 
       <div class="hero-btns hero-animate" style="flex-wrap:wrap;gap:12px;margin-bottom:48px;transition-delay:240ms;">
-        <button class="btn-primary" style="font-size:15px;padding:15px 32px;" onclick="enterDashboard()">
+        <button class="btn-primary" style="font-size:15px;padding:15px 32px;" onclick="openModal('signup')">
           Generate Leads →
         </button>
         <button class="btn-ghost" style="font-size:15px;padding:15px 28px;" onclick="document.getElementById('example-output').scrollIntoView({behavior:'smooth'})">
@@ -1055,11 +1059,11 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
       <div class="hero-animate" style="display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;transition-delay:360ms;">
         <span style="font-size:12px;color:var(--text4);display:flex;align-items:center;gap:6px;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          Built for real outreach
+          No static database
         </span>
         <span style="font-size:12px;color:var(--text4);display:flex;align-items:center;gap:6px;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          Used by freelance operators
+          Tailored to your offer
         </span>
         <span style="font-size:12px;color:var(--text4);display:flex;align-items:center;gap:6px;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1243,12 +1247,12 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   </div>
 
   <!-- ── FINAL CTA ──────────────────────────────────────────────────────── -->
-  <div style="background:var(--bg2);border-top:1px solid var(--border);padding:60px 0;">
+  <div style="background:var(--bg2);border-top:1px solid var(--border);padding:80px 0;">
     <div class="container" style="text-align:center;">
       <h2 class="reveal" style="font-family:Syne,sans-serif;font-size:clamp(24px,5vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:16px;">Stop guessing.<br>Start targeting the right businesses.</h2>
       <p style="font-size:15px;color:var(--text3);max-width:440px;margin:0 auto 36px;line-height:1.7;">Your next client is already out there showing signals they need you. You just need to find them.</p>
       <button class="btn-primary" onclick="openModal('signup')" style="font-size:16px;padding:17px 40px;border-radius:var(--r-xl);">Generate Leads →</button>
-      <p style="font-size:12px;color:var(--text4);margin-top:16px;">Free beta access — start finding leads in seconds.</p>
+      <p style="font-size:12px;color:var(--text4);margin-top:16px;">Free plan available. No credit card required.</p>
     </div>
   </div>
 
@@ -1256,48 +1260,18 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 
 <div class="page" id="page-pricing">
   <div class="container">
-    <div style="padding:44px 0 20px; text-align:center;">
-      <div class="hero-eyebrow" style="margin-bottom:20px;"><span class="hero-eyebrow-dot"></span>Early Access</div>
-      <div class="section-heading">Choose your plan</div>
-      <div class="section-sub">Start free today. Upgrade when you're ready.</div>
+    <div style="padding:60px 0 20px; text-align:center;">
+      <div class="hero-eyebrow" style="margin-bottom:20px;"><span class="hero-eyebrow-dot"></span>Pricing</div>
+      <div class="section-heading">Pick your plan</div>
+      <div class="section-sub">No credit card required to start. Switch plans anytime.</div>
     </div>
-    <div id="pricingGrid" style="margin-bottom:24px;"></div>
-    <p style="text-align:center;font-size:12px;color:var(--text4);margin-bottom:60px;line-height:1.6;">Early access — pricing and features may evolve as we build.<br>You'll always be grandfathered into your plan.</p>
-  </div>
-</div>
-
-<!-- ACCESS REQUEST MODAL -->
-<div class="modal-overlay" id="accessModal">
-  <div class="modal" style="max-width:400px;">
-    <button class="modal-close" onclick="closeAccessModal()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    <div id="accessModalContent">
-      <div class="modal-title" id="accessPlanTitle">Request Access</div>
-      <div class="modal-sub" id="accessPlanSub">Join the early access list. We'll reach out when your spot opens.</div>
-      <div class="modal-field">
-        <label>Name</label>
-        <input class="modal-input" type="text" id="accessName" placeholder="Your name" />
-      </div>
-      <div class="modal-field">
-        <label>Email</label>
-        <input class="modal-input" type="email" id="accessEmail" placeholder="you@example.com" />
-      </div>
-      <div class="modal-field">
-        <label>What do you sell? <span style="font-size:10px;color:var(--text4);font-weight:400;">(optional)</span></label>
-        <input class="modal-input" type="text" id="accessOffer" placeholder="e.g. web design, marketing..." />
-      </div>
-      <button class="modal-btn" onclick="submitAccessRequest()">Request Early Access</button>
-    </div>
-    <div id="accessSuccess" style="display:none;text-align:center;padding:20px 0;">
-      <div style="font-size:36px;margin-bottom:14px;">🎉</div>
-      <div class="modal-title" style="margin-bottom:8px;">Request received!</div>
-      <div class="modal-sub" style="margin-bottom:0;">We'll reach out shortly with your access details. In the meantime, keep using the free plan.</div>
-    </div>
+    <div id="pricingGrid" style="margin-bottom:60px;"></div>
   </div>
 </div>
 
 <!-- DASHBOARD -->
 <div class="page" id="page-dashboard">
-  <div class="container" style="padding-top:0; padding-bottom:100px;">
+  <div class="container" style="padding-top:48px; padding-bottom:100px;">
 
     <div class="dash-header">
       <div>
@@ -1321,12 +1295,12 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
     </div>
 
     <!-- SLIM STATUS BAR (collapsed goal + usage) -->
-    <div id="slimStatusBar" onclick="toggleStatusExpand()" style="display:none;cursor:pointer;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:10px 14px;margin-bottom:12px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(190,255,0,0.15)'" onmouseout="this.style.borderColor='var(--border)'">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <span id="slimGoalText" style="font-size:12px;font-weight:600;color:var(--text2);">🎯 0 / 0 calls today</span>
+    <div id="slimStatusBar" onclick="toggleStatusExpand()" style="display:none;cursor:pointer;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-xl);padding:12px 18px;margin-bottom:16px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(190,255,0,0.15)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+          <span id="slimGoalText" style="font-size:13px;font-weight:600;color:var(--text2);">🎯 0 / 0 calls today</span>
           <span style="color:var(--border2);">·</span>
-          <span id="slimUsageText" style="font-size:12px;color:var(--text3);">0 / 5 prospects used</span>
+          <span id="slimUsageText" style="font-size:13px;color:var(--text3);">0 / 5 prospects used</span>
           <span id="slimUpgradeLink" style="display:none;font-size:12px;color:var(--accent);font-weight:600;">Upgrade →</span>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
@@ -1366,9 +1340,9 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
     <!-- SCOUT FORM -->
     <div class="scout-card reveal" id="inputSection">
       <!-- Empty state hero -->
-      <div style="text-align:center;padding:0 0 14px;">
-        <div style="font-family:Syne,sans-serif;font-size:clamp(18px,4.5vw,22px);font-weight:800;letter-spacing:-0.5px;color:var(--text);margin-bottom:8px;line-height:1.2;">Find exactly who needs<br>what you sell.</div>
-        <div style="font-size:12px;color:var(--text3);line-height:1.6;max-width:320px;margin:0 auto;">Describe your offer. We find businesses showing signals they need it.</div>
+      <div style="text-align:center;padding:4px 0 20px;">
+        <div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.5px;color:var(--text);margin-bottom:8px;line-height:1.2;">Find exactly who needs<br>what you sell.</div>
+        <div style="font-size:13px;color:var(--text3);line-height:1.6;max-width:320px;margin:0 auto;">Describe your offer. We identify businesses already showing signals they need it — with reasoning for every result.</div>
       </div>
 
       <!-- PRIMARY: What you sell (required) -->
@@ -1388,8 +1362,10 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
       </div>
 
       <div style="font-size:12px;color:var(--text4);margin-top:10px;margin-bottom:4px;">Based on real-world business signals — not a database.</div>
+
+      <p style="font-size:12px;color:var(--text4);margin:8px 0 4px;line-height:1.5;">Based on real-world business signals — not a database.</p>
       <button class="cta-btn" id="analyzeBtn" onclick="analyze()" style="margin-top:12px;opacity:0.5;cursor:not-allowed;" disabled>
-        Find leads <span class="arrow">→</span>
+        Analyze my offer <span class="arrow">→</span>
       </button>
       <div id="errorMsg"></div>
     </div>
@@ -1424,10 +1400,6 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
     </div>
 
     <div id="results">
-      <div id="demoBadge" style="display:none;">
-        <span class="demo-badge"><span class="demo-dot"></span> DEMO MODE</span>
-        <div style="font-size:11px;color:var(--text4);margin-top:4px;margin-bottom:4px;">Example results to show how it works</div>
-      </div>
       <div id="resultsLoadingBar" style="display:none;"><div id="resultsLoadingProg"></div></div>
       <div id="resultsLoadingText" style="display:none;"></div>
       <button class="reset-btn" onclick="resetSearch()">← New search</button>
@@ -1452,35 +1424,8 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
         </div>
       </div>
       <div id="patternInsightBar" style="display:none;margin-bottom:16px;"></div>
-      <div class="results-wrap">
-      <div id="callGuide" class="call-guide" style="display:none;">
-        <span class="guide-arrow">↓</span> Your #1 match — start here
-      </div>
+      <div id="patternInsightBar" style="display:none;margin-bottom:16px;"></div>
       <div id="bizList"></div>
-      </div>
-      <div id="regenWrap" style="display:none;">
-        <button class="regen-btn" onclick="generateMyLeads()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          Find My Leads
-        </button>
-        <div class="demo-hint">Edit the offer above, then hit generate — <strong>these are your real leads</strong></div>
-      </div>
-
-      <!-- PIPELINE — collapsed by default, expands after first call -->
-      <button class="pipeline-toggle" id="pipelineToggleBtn" onclick="togglePipelineSection()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-        View pipeline
-      </button>
-      <div id="pipelineHint" class="pipeline-hint">Make your first call to unlock tracking</div>
-      <div class="pipeline-section" id="pipelineSectionWrap">
-        <div style="padding-top:14px;">
-          <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Track and manage your leads here</div>
-          <div class="snap-grid" id="resultsSnapGrid"></div>
-          <button class="pipeline-toggle" onclick="openHistoryPage()" style="margin-top:10px;color:var(--accent);border-color:rgba(190,255,0,0.2);">
-            Open full pipeline →
-          </button>
-        </div>
-      </div>
     </div>
 
     <!-- DASHBOARD SECTIONS (shown when no search active) -->
@@ -1533,42 +1478,68 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 
 <!-- PIPELINE PAGE -->
 <div class="page" id="page-history">
-  <div class="container" style="padding-top:48px; padding-bottom:100px; max-width:1100px;">
-    <div class="dash-header" style="margin-bottom:20px;">
+  <div class="container" style="padding-top:48px; padding-bottom:100px;">
+    <div class="dash-header">
       <div>
         <div class="dash-greeting">My <em>Pipeline</em></div>
         <div class="dash-sub" id="historySub">Track every prospect from first call to closed deal.</div>
       </div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <button class="export-btn" onclick="exportCSV()">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Export
-        </button>
-        <button class="nav-btn" onclick="showPage('dashboard')" style="font-size:13px;">← Scout more</button>
-      </div>
+      <button class="nav-btn" onclick="showPage('dashboard')" style="font-size:13px;">← Scout more</button>
     </div>
 
-    <!-- MOMENTUM BAR -->
-    <div id="momentumBar" class="momentum-bar" style="display:none;"></div>
+    <div class="pipeline-stats" id="historyStats"></div>
 
-    <!-- STATS BAR -->
-    <div class="kanban-stats" id="kanbanStats"></div>
+    <!-- WIN RATE BY LOCATION -->
+    <div id="locationWins" style="margin-bottom:20px;"></div>
+
+    <!-- OVERDUE BADGE -->
+    <div id="overdueAlert" style="display:none; margin-bottom:16px;"></div>
 
     <!-- PIPELINE VALUE BAR -->
-    <div id="pipelineValueBar" style="display:none; margin-bottom:16px;"></div>
+    <div id="pipelineValueBar" style="display:none; margin-bottom:20px;"></div>
 
-    <!-- SEARCH -->
-    <div class="pipeline-controls" style="margin-bottom:16px;">
+    <!-- SEARCH + SORT ROW -->
+    <!-- CAMPAIGN PIPELINE STATS -->
+    <div id="campaignPipelineStats"></div>
+
+    <!-- CAMPAIGN FILTER BAR -->
+    <div id="campaignFilterBar"></div>
+
+    <div class="pipeline-controls">
       <div class="pipeline-search-wrap">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input class="pipeline-search" id="pipelineSearch" type="text" placeholder="Search prospects..." oninput="renderKanban()" />
+        <input class="pipeline-search" id="pipelineSearch" type="text" placeholder="Search prospects..." oninput="renderHistoryList(currentHistoryFilter)" />
       </div>
+      <select class="pipeline-sort-select" id="pipelineSort" onchange="renderHistoryList(currentHistoryFilter)">
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="score">Highest score</option>
+        <option value="status">By status</option>
+        <option value="followup">Follow-up due</option>
+      </select>
+      <button class="export-btn" onclick="exportCSV()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export CSV
+      </button>
     </div>
 
-    <!-- KANBAN BOARD -->
-    <div id="kanbanBoard"></div>
+    <div class="pipeline-tabs" id="pipelineTabs">
+      <button class="pipeline-tab active" id="tab-all"       onclick="filterHistory('all')">All <span class="pipeline-tab-count" id="cnt-all">0</span></button>
+      <button class="pipeline-tab"        id="tab-new"       onclick="filterHistory('new')"><span class="status-dot dot-new"></span>New <span class="pipeline-tab-count" id="cnt-new">0</span></button>
+      <button class="pipeline-tab"        id="tab-contacted" onclick="filterHistory('contacted')"><span class="status-dot dot-contacted"></span>Contacted <span class="pipeline-tab-count" id="cnt-contacted">0</span></button>
+      <button class="pipeline-tab"        id="tab-engaged"   onclick="filterHistory('engaged')"><span class="status-dot dot-engaged"></span>Responded <span class="pipeline-tab-count" id="cnt-engaged">0</span></button>
+      <button class="pipeline-tab"        id="tab-qualified" onclick="filterHistory('qualified')"><span class="status-dot dot-qualified"></span>Meeting Set <span class="pipeline-tab-count" id="cnt-qualified">0</span></button>
+      <button class="pipeline-tab"        id="tab-converted" onclick="filterHistory('converted')"><span class="status-dot dot-converted"></span>Closed <span class="pipeline-tab-count" id="cnt-converted">0</span></button>
+    </div>
+
+    <div id="historyList"></div>
   </div>
 </div>
+
+
+  <div class="container">
+    <p class="footer-text">Built with <span>ProspectScout</span> — Signal-driven lead intelligence</p>
+  </div>
 
 
 <!-- SEARCH HISTORY PAGE -->
@@ -1709,14 +1680,53 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   </div>
 </div>
 
-<!-- DEV PANEL — access via console: openAdminPanel() -->
-<div class="dev-panel" id="devPanel">
-  <div class="dev-header">
-    <span class="dev-header-title">⚡ Dev Panel</span>
-    <button class="dev-close" onclick="closeAdminPanel()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+<!-- ADMIN PANEL — secret, access by tapping logo 5x -->
+<div class="page" id="page-admin">
+  <div class="container" style="padding-top:48px; padding-bottom:100px;">
+    <div class="dash-header">
+      <div>
+        <div class="dash-greeting" style="color:var(--amber);">⚡ Admin Panel</div>
+        <div class="dash-sub">Internal tools — keep this URL private.</div>
+      </div>
+      <button class="nav-btn" onclick="showPage('dashboard')">← Back</button>
+    </div>
+    <div class="admin-grid">
+      <div class="admin-card">
+        <div class="admin-card-title">Current account</div>
+        <div id="adminAccountInfo" style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:4px;"></div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-title">Switch tier (test)</div>
+        <div class="tier-switcher" style="margin-top:10px;">
+          <button class="tier-switch-btn" id="abtn-free" onclick="switchTier('free');if(typeof renderAdminPanel==='function')renderAdminPanel()">Free</button>
+          <button class="tier-switch-btn" id="abtn-plus" onclick="switchTier('plus');if(typeof renderAdminPanel==='function')renderAdminPanel()">Plus</button>
+          <button class="tier-switch-btn" id="abtn-pro"  onclick="switchTier('pro');if(typeof renderAdminPanel==='function')renderAdminPanel()">Pro</button>
+        </div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-title">Usage controls</div>
+        <div style="font-size:13px;color:var(--text3);margin-bottom:12px;">Reset today's usage count for current account.</div>
+        <button class="admin-btn" onclick="adminResetUsage()">Reset daily usage</button>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-title">Registered users</div>
+        <div id="adminUserList" style="font-size:12px;color:var(--text2);line-height:2;max-height:200px;overflow-y:auto;margin-top:8px;"></div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-title">Pipeline stats</div>
+        <div id="adminPipelineStats" style="font-size:13px;color:var(--text2);line-height:1.9;margin-top:4px;"></div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-title" style="color:#FF8080;">Danger zone</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;">
+          <button class="admin-btn danger" onclick="adminClearPipeline()">Clear my pipeline</button>
+          <button class="admin-btn danger" onclick="adminClearAll()">Nuke all local data</button>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="dev-body" id="devPanelBody"></div>
 </div>
+</footer>
 
 
   <!-- TIMER WIDGET (hidden by default) -->
@@ -1786,22 +1796,48 @@ const TIERS = {
   pro:  { name:'Pro',   daily:100, perSearch:25, chipClass:'tier-pro',  btnClass:'active-pro'  }
 };
 
-let currentUser = { email:'beta@user.local', name:'User', phone:'', tier:'free' };
+let currentUser = null;
 
-function getUsers()    { return {}; }
-function saveUsers(u)  { }
-function getUsage(email) { return parseInt(localStorage.getItem('ps_usage_'+new Date().toDateString())||'0'); }
-function addUsage(email,n) { var k='ps_usage_'+new Date().toDateString(); localStorage.setItem(k,(getUsage(email)+n).toString()); }
+function getUsers()    { try { return JSON.parse(localStorage.getItem('ps_users')||'{}'); } catch{ return {}; } }
+function saveUsers(u)  { localStorage.setItem('ps_users', JSON.stringify(u)); }
+function getUsage(email) { return parseInt(localStorage.getItem(`ps_usage_${email}_${new Date().toDateString()}`)||'0'); }
+function addUsage(email,n) { const k=`ps_usage_${email}_${new Date().toDateString()}`; localStorage.setItem(k,(getUsage(email)+n).toString()); }
 
-// AUTH — disabled for beta (no login required)
-function openModal(view) { /* beta: skip auth */ enterDashboard(); }
-function closeModal()    { var m=document.getElementById('authModal'); if(m) m.classList.remove('open'); }
-function showLogin()     { }
-function showSignup()    { }
-function doLogin()       { enterDashboard(); }
-function doSignup()      { enterDashboard(); }
-function doLogout()      { showToast('Beta mode — no login required', 'info'); }
-function restoreSession(){ /* beta: currentUser is always set */ }
+// AUTH
+function openModal(view) {
+  if (currentUser) { enterDashboard(); return; }
+  document.getElementById('authModal').classList.add('open');
+  setTimeout(function(){ var inp = document.getElementById('betaNameInput'); if(inp) inp.focus(); }, 200);
+}
+function closeModal()    { document.getElementById('authModal').classList.remove('open'); }
+function showLogin()     { openModal(); }
+function showSignup()    { openModal(); }
+
+function startBeta() {
+  var name = (document.getElementById('betaNameInput').value || '').trim();
+  if (!name) { document.getElementById('betaNameInput').focus(); return; }
+  currentUser = { email:'beta@user.local', name:name, tier:'free' };
+  localStorage.setItem('ps_beta_user', JSON.stringify(currentUser));
+  closeModal();
+  enterDashboard();
+  if (isDemoEligible()) { scheduleDemoRun(); }
+}
+
+function doLogin()  { startBeta(); }
+function doSignup() { startBeta(); }
+function doLogout() {
+  currentUser = null;
+  localStorage.removeItem('ps_beta_user');
+  updateNav();
+  showPage('home');
+}
+
+function restoreSession() {
+  try {
+    var saved = localStorage.getItem('ps_beta_user');
+    if (saved) { currentUser = JSON.parse(saved); }
+  } catch(e) {}
+}
 
 // NAV
 function updateNav() {
@@ -1809,10 +1845,6 @@ function updateNav() {
   if (currentUser) {
     const t = TIERS[currentUser.tier]||TIERS.free;
     nr.innerHTML =
-      '<button class="nav-pipeline-btn" id="navPipelineBtn" onclick="openHistoryPage()">'+
-        '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>'+
-        'Pipeline <span class="pip-count" id="navPipCount">0</span>'+
-      '</button>'+
       '<div class="profile-wrap" id="profileWrap">'+
         '<div class="user-pill" onclick="toggleProfileMenu(event)">'+
           '<div class="user-avatar">'+currentUser.name.charAt(0).toUpperCase()+'</div>'+
@@ -1827,10 +1859,7 @@ function updateNav() {
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>'+
             'Dashboard'+
           '</button>'+
-          '<button class="dropdown-item" onclick="closeProfileMenu();openHistoryPage()">'+
-            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>'+
-            'Pipeline'+
-          '</button>'+
+          /* Pipeline hidden - CRM features temporarily disabled */
           '<button class="dropdown-item" onclick="closeProfileMenu();openSearchHistory()">'+
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'+
             'Search History'+
@@ -1852,6 +1881,11 @@ function updateNav() {
             'Pricing'+
           '</button>'+
           '<div class="dropdown-divider"></div>'+
+          '<button class="dropdown-item" onclick="closeProfileMenu();toggleLightMode()" id="modeToggleBtn">'+
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'+
+            'Toggle light mode'+
+          '</button>'+
+          '<div class="dropdown-divider"></div>'+
           '<button class="dropdown-item danger" onclick="closeProfileMenu();doLogout()">'+
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>'+
             'Sign out'+
@@ -1861,20 +1895,8 @@ function updateNav() {
   } else {
     nr.innerHTML =
       '<button class="nav-btn" onclick="showPage(&quot;pricing&quot;)">Pricing</button>'+
-      '<button class="nav-btn" onclick="openModal(&quot;login&quot;)">Sign in</button>'+
       '<button class="nav-btn primary" onclick="openModal(&quot;signup&quot;)">Get started</button>';
   }
-}
-
-function updateNavPipeline() {
-  var btn = document.getElementById('navPipelineBtn');
-  var countEl = document.getElementById('navPipCount');
-  if (!btn || !currentUser) return;
-  var history = getHistory(currentUser.email);
-  var count = history.length;
-  if (countEl) countEl.textContent = count;
-  // Show button when user is on dashboard or has pipeline items
-  btn.style.display = count > 0 ? 'inline-flex' : 'none';
 }
 
 function toggleProfileMenu(e) {
@@ -1892,8 +1914,19 @@ document.addEventListener('click', function() { closeProfileMenu(); });
 // PAGES
 function showPage(name) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); var pg=document.getElementById('page-'+name); if(pg) pg.classList.add('active'); window.scrollTo(0,0); if(name==='pricing') renderPricingGrid('pricingGrid'); }
 function goHome()        { currentUser ? showPage('dashboard') : showPage('home'); }
-function handleLogoClick() { showPage('dashboard'); }
-function enterDashboard(){ updateNav(); updateNavPipeline(); updateDashboard(); showPage('dashboard'); checkForResume(); renderDashSections(); renderGoalTracker(); updateOverdueBadge(); if(isDemoEligible()){scheduleDemoRun();}else{setTimeout(checkOnboarding, 400);} }
+let _logoTaps = 0, _logoTimer = null;
+function handleLogoClick() {
+  _logoTaps++;
+  clearTimeout(_logoTimer);
+  if (_logoTaps >= 5) {
+    _logoTaps = 0;
+    if (currentUser) { openAdminPanel(); }
+    else { showToast('Sign in to access admin panel', 'info'); }
+    return;
+  }
+  _logoTimer = setTimeout(function(){ _logoTaps=0; goHome(); }, 400);
+}
+function enterDashboard(){ updateNav(); updateDashboard(); showPage('dashboard'); checkForResume(); renderDashSections(); renderGoalTracker(); updateOverdueBadge(); setTimeout(checkOnboarding, 400); }
 
 // DASHBOARD STATE
 function updateEmptyHint() { /* disabled — search form is always visible */ }
@@ -2130,84 +2163,26 @@ function switchTier(newTier) {
 
 // PRICING GRID
 function renderPricingGrid(id) {
-  var plans = [
-    { id:'free', name:'Free',  price:'$0',  period:'forever',  badge:'Beta Access',    cardCls:'',          btnCls:'price-btn-free', btnTxt:'Join Beta', checkCls:'check',
-      limit:'3 prospects / search · 5/day',
-      features:['3 prospects per search','5 daily lead generations','Signal-based insights','Core pipeline access','AI-written pitch scripts'] },
-    { id:'plus', name:'Plus',  price:'$19', period:'/month',   badge:'Early Access',   cardCls:'featured',  btnCls:'price-btn-plus', btnTxt:'Request Access', checkCls:'check',
-      limit:'5 prospects / search · 25/day',
-      features:['5 prospects per search','25 daily lead generations','Stronger signal filtering','Full pipeline + deal tracking','Priority results & support'] },
-    { id:'pro',  name:'Pro',   price:'$49', period:'/month',   badge:'Early Access',   cardCls:'pro-card',  btnCls:'price-btn-pro',  btnTxt:'Request Access', checkCls:'check check-purple',
-      limit:'25 prospects / search · 100/day',
-      features:['25 prospects per search','100 daily lead generations','Advanced signal intelligence','Full deal tracking + export','Priority support & early features'] }
+  const plans = [
+    { id:'free', name:'Free',  price:'$0',  period:'forever',  limit:'3 prospects / search · 5/day',   badge:null,          cardCls:'',          btnCls:'price-btn-free', btnTxt:'Get started free',  checkCls:'check', features:['3 prospects per search','5 searches/day total','Contact info & maps','AI-written talk tracks','Objection handling scripts'] },
+    { id:'plus', name:'Plus',  price:'$19', period:'/month',   limit:'5 prospects / search · 25/day',  badge:'Most Popular', cardCls:'featured',  btnCls:'price-btn-plus', btnTxt:'Get early access', checkCls:'check', features:['5 prospects per search','25 searches/day total','Everything in Free','Priority business data','Search history & tracking'] },
+    { id:'pro',  name:'Pro',   price:'$49', period:'/month',   limit:'25 prospects / search · 100/day', badge:null,           cardCls:'pro-card',  btnCls:'price-btn-pro',  btnTxt:'Get early access',  checkCls:'check check-purple', features:['25 prospects per search','100 searches/day total','Everything in Plus','Export to CSV','Team sharing (soon)'] }
   ];
-  var el = document.getElementById(id);
-  if (!el) return;
-  el.innerHTML = '<div class="pricing-grid">' + plans.map(function(p) {
-    return '<div class="price-card '+p.cardCls+'">' +
-      '<div class="popular-badge">'+p.badge+'</div>' +
-      '<div class="price-tier">'+p.name+'</div>' +
-      '<div class="price-amount">'+p.price+'<span>'+p.period+'</span></div>' +
-      '<div class="price-period">'+(p.id==='free' ? 'Free while in beta' : 'When available')+'</div>' +
-      '<div class="price-limit">'+p.limit+'</div>' +
-      '<ul class="price-features">'+p.features.map(function(f){ return '<li><span class="'+p.checkCls+'">✓</span>'+f+'</li>'; }).join('')+'</ul>' +
-      '<button class="price-btn '+p.btnCls+'" onclick="pricingCTA(\''+p.id+'\')">'+p.btnTxt+'</button>' +
-    '</div>';
-  }).join('') + '</div>';
+  document.getElementById(id).innerHTML = `<div class="pricing-grid">${plans.map(p=>`
+    <div class="price-card ${p.cardCls}">
+      ${p.badge?`<div class="popular-badge">${p.badge}</div>`:'<div class="badge-spacer"></div>'}
+      <div class="price-tier">${p.name}</div>
+      <div class="price-amount">${p.price}<span>${p.period}</span></div>
+      <div class="price-period">${p.id==='free'?'No credit card needed':'Billed monthly · cancel anytime'}</div>
+      <div class="price-limit">${p.limit}</div>
+      <ul class="price-features">${p.features.map(f=>`<li><span class="${p.checkCls}">✓</span>${f}</li>`).join('')}</ul>
+      <button class="price-btn ${p.btnCls}" onclick="pricingCTA('${p.id}')">${p.btnTxt}</button>
+    </div>`).join('')}</div>`;
 }
 
 function pricingCTA(tierId) {
-  if (tierId === 'free') {
-    if (currentUser) {
-      showToast('You\'re in — beta access is active', 'success');
-      showPage('dashboard');
-    } else {
-      openModal('signup');
-    }
-  } else {
-    openAccessModal(tierId);
-  }
-}
-
-function openAccessModal(planId) {
-  var modal = document.getElementById('accessModal');
-  var content = document.getElementById('accessModalContent');
-  var success = document.getElementById('accessSuccess');
-  if (!modal) return;
-  content.style.display = '';
-  success.style.display = 'none';
-  var planName = planId === 'pro' ? 'Pro' : 'Plus';
-  document.getElementById('accessPlanTitle').textContent = 'Request ' + planName + ' Access';
-  document.getElementById('accessPlanSub').textContent = 'Join the ' + planName + ' early access list. We\'ll reach out when your spot opens.';
-  // Pre-fill if logged in
-  if (currentUser) {
-    document.getElementById('accessName').value = currentUser.name || '';
-    document.getElementById('accessEmail').value = currentUser.email || '';
-  }
-  modal.classList.add('open');
-}
-
-function closeAccessModal() {
-  var modal = document.getElementById('accessModal');
-  if (modal) modal.classList.remove('open');
-}
-
-function submitAccessRequest() {
-  var name  = document.getElementById('accessName').value.trim();
-  var email = document.getElementById('accessEmail').value.trim();
-  if (!name || !email) {
-    showToast('Please enter your name and email', 'info');
-    return;
-  }
-  // Store the request locally
-  var requests = JSON.parse(localStorage.getItem('ps_access_requests') || '[]');
-  requests.push({ name:name, email:email, offer:document.getElementById('accessOffer').value.trim(), ts:Date.now() });
-  localStorage.setItem('ps_access_requests', JSON.stringify(requests));
-  // Show success
-  document.getElementById('accessModalContent').style.display = 'none';
-  document.getElementById('accessSuccess').style.display = '';
-  // Auto-close after delay
-  setTimeout(function() { closeAccessModal(); }, 4000);
+  if (tierId==='free') { currentUser ? showPage('dashboard') : openModal('signup'); }
+  else { openModal('signup'); }
 }
 
 // PIPELINE STATUS CONFIG
@@ -2271,12 +2246,10 @@ function setStatus(id, newStatus) {
   if (newStatus === 'converted') {
     fireConfetti();
     showToast('🎉 Deal closed! Amazing work!', 'success');
-  } else {
-    showMomentumToast(newStatus);
   }
   updateOverdueBadge();
   if (document.getElementById('page-history').classList.contains('active')) {
-    renderKanban();
+    renderHistoryStats(); renderHistoryList(currentHistoryFilter);
   }
 }
 
@@ -2284,8 +2257,7 @@ function deleteProspect(id) {
   if (!currentUser) return;
   const history = getHistory(currentUser.email).filter(h=>h.id!==id);
   saveHistory(currentUser.email, history);
-  renderKanban();
-  updateNavPipeline();
+  renderHistoryStats(); renderHistoryList(currentHistoryFilter);
 }
 
 function togglePipelineCard(id) {
@@ -2354,7 +2326,7 @@ function logCallOutcome(id, outcome) {
   const autoNote = dateStr + ' — ' + label;
   item.notes = item.notes ? autoNote + '\n' + item.notes : autoNote;
   saveHistory(currentUser.email, history);
-  renderKanban();
+  renderHistoryList(currentHistoryFilter);
 }
 
 // ── DEAL VALUE ───────────────────────────────────────────────────────────────
@@ -2445,14 +2417,24 @@ let currentHistoryFilter = 'all';
 let currentSearchQuery = '';
 
 function openHistoryPage() {
-  renderKanban();
+  currentHistoryFilter = 'all';
+  renderHistoryStats();
+  renderLocationWins();
+  renderOverdueAlert();
   renderPipelineValueBar();
+  _pipelineCampaignFilter = 'all';
+  renderCampaignFilterBar();
+  renderHistoryList('all');
   showPage('history');
 }
 
 function filterHistory(filter) {
   currentHistoryFilter = filter;
-  renderKanban();
+  var allKeys = ['all'].concat(Object.keys(STATUSES)); allKeys.forEach(function(f) {
+    const el = document.getElementById('tab-'+f);
+    if (el) el.classList.toggle('active', f===filter);
+  });
+  renderHistoryList(filter);
 }
 
 // ── NOTES ────────────────────────────────────────────────────────────────────
@@ -2475,8 +2457,9 @@ function setReminder(id, val) {
   if (!val || val === 'clear') { item.reminderAt = null; }
   else { item.reminderAt = Date.now() + parseInt(val) * 86400000; }
   saveHistory(currentUser.email, history);
-  renderKanban();
-  updateOverdueBadge();
+  renderHistoryStats();
+  renderOverdueAlert();
+  renderHistoryList(currentHistoryFilter);
 }
 
 function isOverdue(item) {
@@ -2571,150 +2554,17 @@ function buildReminderBtn(h) {
 
 // ── MAIN LIST RENDER ─────────────────────────────────────────────────────────
 function renderHistoryList(searches, container) {
-  // Legacy — kept for compat, Kanban is primary now
   if (!container) return;
-}
-
-// ── KANBAN BOARD RENDERER ────────────────────────────────────────────────────
-var KANBAN_COLS = [
-  { key:'new',       label:'New',        color:'var(--text3)',  next:'contacted', prev:null },
-  { key:'contacted', label:'Contacted',  color:'var(--accent)', next:'engaged',   prev:'new' },
-  { key:'engaged',   label:'Responded',  color:'var(--teal)',   next:'qualified', prev:'contacted' },
-  { key:'qualified', label:'Meeting Set', color:'var(--amber)',  next:'converted', prev:'engaged' },
-  { key:'converted', label:'Closed',     color:'var(--purple)', next:null,        prev:'qualified' }
-];
-
-function renderKanban() {
-  if (!currentUser) return;
-  var history = getHistory(currentUser.email);
-  var board = document.getElementById('kanbanBoard');
-  var statsEl = document.getElementById('kanbanStats');
-  var subEl = document.getElementById('historySub');
-  if (!board) return;
-
-  // Search filter
-  var q = (document.getElementById('pipelineSearch') || {}).value || '';
-  q = q.toLowerCase().trim();
-  var filtered = history;
-  if (q) {
-    filtered = history.filter(function(h) {
-      return (h.name||'').toLowerCase().indexOf(q) > -1 ||
-             (h.type||'').toLowerCase().indexOf(q) > -1 ||
-             (h.phone||'').toLowerCase().indexOf(q) > -1 ||
-             (h.searchLocation||'').toLowerCase().indexOf(q) > -1;
-    });
-  }
-
-  // Group by status
-  var groups = {};
-  KANBAN_COLS.forEach(function(c) { groups[c.key] = []; });
-  filtered.forEach(function(h) {
-    var s = h.status || 'new';
-    if (!groups[s]) s = 'new';
-    groups[s].push(h);
-  });
-
-  // Sort each group by newest first
-  Object.keys(groups).forEach(function(k) {
-    groups[k].sort(function(a,b) { return (b.savedAt||0) - (a.savedAt||0); });
-  });
-
-  // Empty state
-  if (!history.length) {
-    board.innerHTML = '<div class="kanban-empty"><div class="kanban-empty-icon">🚀</div><div class="kanban-empty-title">Start building momentum</div><div class="kanban-empty-text">Make your first call or save a lead to begin tracking deals. Your pipeline fills itself as you work.</div></div>';
-    if (statsEl) statsEl.innerHTML = '';
-    if (subEl) subEl.textContent = 'Track every prospect from first call to closed deal.';
-    var momBar = document.getElementById('momentumBar');
-    if (momBar) momBar.style.display = 'none';
+  if (!searches || !searches.length) {
+    container.innerHTML = '<div class="pipeline-empty"><div class="pipeline-empty-text">No history yet.</div></div>';
     return;
   }
-
-  // Momentum bar
-  renderMomentumBar(history, filtered);
-
-  // Stats bar
-  var counts = {};
-  KANBAN_COLS.forEach(function(c) { counts[c.key] = groups[c.key].length; });
-  var total = filtered.length;
-  var convRate = total ? Math.round(counts.converted / history.length * 100) : 0;
-  if (statsEl) {
-    statsEl.innerHTML = KANBAN_COLS.map(function(c) {
-      return '<div class="kanban-stat">' +
-        '<div class="kanban-stat-num" style="color:'+c.color+';">'+counts[c.key]+'</div>' +
-        '<div class="kanban-stat-label">'+c.label+'</div>' +
-      '</div>';
-    }).join('');
-  }
-  if (subEl) {
-    subEl.textContent = total+' prospect'+(total!==1?'s':'')+' · '+counts.converted+' closed · '+convRate+'% conversion';
-  }
-
-  // Build columns
-  board.innerHTML = '<div class="kanban-board">' + KANBAN_COLS.map(function(col) {
-    var items = groups[col.key];
-    return '<div class="kanban-col">' +
-      '<div class="kanban-col-header">' +
-        '<div class="kanban-col-title"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+col.color+';"></span> '+col.label+'</div>' +
-        '<span class="kanban-col-count">'+items.length+'</span>' +
-      '</div>' +
-      '<div class="kanban-col-body">' +
-        items.map(function(h) { return buildKanbanCard(h, col); }).join('') +
-      '</div>' +
+  container.innerHTML = searches.slice(0, 10).map(function(s, idx) {
+    return '<div class="pipeline-card" style="margin-bottom:6px;cursor:default;padding:12px 14px;">' +
+      '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (s.product || s.offer || 'Search') + '</div>' +
+      '<div style="font-size:11px;color:var(--text4);">' + (s.location || '') + (s.ts ? ' &middot; ' + new Date(s.ts).toLocaleDateString() : '') + '</div>' +
     '</div>';
-  }).join('') + '</div>';
-}
-
-var PROGRESS_MAP = { 'new':10, 'contacted':30, 'engaged':55, 'qualified':80, 'converted':100 };
-var PROGRESS_COLORS = { 'new':'var(--text4)', 'contacted':'var(--accent)', 'engaged':'var(--teal)', 'qualified':'var(--amber)', 'converted':'var(--purple)' };
-
-function buildKanbanCard(h, col) {
-  var id = h.id;
-  var phone = h.phone || '';
-  var name = (h.name||'Unknown').replace(/</g,'&lt;');
-  var type = (h.type||'').replace(/</g,'&lt;');
-  var now = Date.now();
-  var reminderHtml = '';
-  if (isOverdue(h)) {
-    reminderHtml = '<span class="k-card-reminder overdue">Overdue</span> ';
-  } else if (h.reminderAt && h.reminderAt > now) {
-    var days = Math.ceil((h.reminderAt - now) / 86400000);
-    reminderHtml = '<span class="k-card-reminder upcoming">In '+days+'d</span> ';
-  }
-
-  // Progress
-  var status = h.status || 'new';
-  var pct = PROGRESS_MAP[status] || 10;
-  var pColor = PROGRESS_COLORS[status] || 'var(--text4)';
-
-  // Hot lead = responded or meeting
-  var isHot = (status === 'engaged' || status === 'qualified');
-  var cardClass = 'k-card' + (isHot ? ' hot' : '');
-
-  // Actions
-  var callBtn = '';
-  if (phone) {
-    callBtn = '<a href="tel:'+phone.replace(/\D/g,'')+'" class="k-btn call" onclick="event.stopPropagation()">Call</a>';
-  }
-  var backBtn = '';
-  if (col.prev) {
-    backBtn = '<button class="k-btn back" onclick="event.stopPropagation();setStatus(\''+id+'\',\''+col.prev+'\')">← Back</button>';
-  }
-  var advanceBtn = '';
-  if (col.next) {
-    advanceBtn = '<button class="k-btn advance" onclick="event.stopPropagation();setStatus(\''+id+'\',\''+col.next+'\')">'+STATUSES[col.next].label+' →</button>';
-  }
-  var delBtn = '<button class="k-btn del" onclick="event.stopPropagation();if(confirm(\'Remove '+name.replace(/'/g,'\\\'')+'?\'))deleteProspect(\''+id+'\')">✕</button>';
-
-  return '<div class="'+cardClass+'">' +
-    '<div class="k-card-name">'+name+'</div>' +
-    (type ? '<div class="k-card-type">'+type+'</div>' : '') +
-    (phone ? '<div class="k-card-phone">'+phone+'</div>' : '') +
-    reminderHtml +
-    '<div class="k-card-actions">' +
-      callBtn + backBtn + advanceBtn + delBtn +
-    '</div>' +
-    '<div class="k-progress"><div class="k-progress-fill" style="width:'+pct+'%;background:'+pColor+';"></div></div>' +
-  '</div>';
+  }).join('');
 }
 
 
@@ -2799,139 +2649,76 @@ function closeReminderPopover() {
 
 
 
-// ── DEV PANEL — console-only access ──────────────────────────────────────────
-window.openAdminPanel = function() {
-  var panel = document.getElementById('devPanel');
-  if (!panel) { console.warn('Admin panel not found'); return; }
-  var pwd = prompt('Enter admin password');
-  if (pwd !== 'ps-admin-7391') { alert('Access denied'); return; }
-  panel.classList.add('open');
-  renderDevPanel();
-  console.log('Admin panel opened');
-};
-function closeAdminPanel() {
-  var panel = document.getElementById('devPanel');
-  if (panel) panel.classList.remove('open');
-}
-
-function renderDevPanel() {
-  var body = document.getElementById('devPanelBody');
-  if (!body) return;
-  var t = TIERS[currentUser.tier] || TIERS.free;
-  var h = getHistory(currentUser.email);
-  var byStatus = {};
-  h.forEach(function(p){ var s=p.status||'new'; byStatus[s]=(byStatus[s]||0)+1; });
-  var totalVal = h.reduce(function(s,p){ return s+(p.dealValue||0); }, 0);
-  var statusText = Object.keys(byStatus).map(function(k){ return k+': '+byStatus[k]; }).join(' · ') || 'empty';
-
-  body.innerHTML =
-    '<div class="dev-section">Account</div>'+
-    '<div class="dev-log">'+
-      'Tier: '+t.name+'\n'+
-      'Usage: '+getUsage(currentUser.email)+' / '+t.daily+'\n'+
-      'Pipeline: '+h.length+' prospects\n'+
-      'Deal value: $'+totalVal.toLocaleString()+'\n'+
-      'Statuses: '+statusText+
-    '</div>'+
-
-    '<div class="dev-section">Tier</div>'+
-    '<div class="dev-row">'+
-      '<button class="dev-btn'+(currentUser.tier==='free'?' accent':'')+'" onclick="switchTier(\'free\');renderDevPanel()">Free</button>'+
-      '<button class="dev-btn'+(currentUser.tier==='plus'?' accent':'')+'" onclick="switchTier(\'plus\');renderDevPanel()">Plus</button>'+
-      '<button class="dev-btn'+(currentUser.tier==='pro'?' accent':'')+'" onclick="switchTier(\'pro\');renderDevPanel()">Pro</button>'+
-    '</div>'+
-
-    '<div class="dev-section">Controls</div>'+
-    '<div class="dev-row">'+
-      '<button class="dev-btn" onclick="devResetUsage()">Reset usage</button>'+
-      '<button class="dev-btn" onclick="devResetStreak()">Reset streak</button>'+
-      '<button class="dev-btn" onclick="devToggleDemo()">Toggle demo</button>'+
-    '</div>'+
-
-    '<div class="dev-section">Generate</div>'+
-    '<div class="dev-row">'+
-      '<button class="dev-btn accent" onclick="devGenTestProspects(5)">+5 prospects</button>'+
-      '<button class="dev-btn accent" onclick="devGenTestProspects(20)">+20 prospects</button>'+
-    '</div>'+
-
-    '<div class="dev-section">Danger</div>'+
-    '<div class="dev-row">'+
-      '<button class="dev-btn danger" onclick="devClearPipeline()">Clear pipeline</button>'+
-      '<button class="dev-btn danger" onclick="devNukeAll()">Nuke all data</button>'+
-    '</div>'+
-
-    '<div class="dev-section">LocalStorage keys</div>'+
-    '<div class="dev-log" id="devStorageLog">'+devListStorage()+'</div>';
-}
-
-function devListStorage() {
-  var keys = [];
-  for (var i=0; i<localStorage.length; i++) {
-    var k = localStorage.key(i);
-    var v = localStorage.getItem(k);
-    var size = v ? v.length : 0;
-    keys.push(k + ' (' + (size>1000 ? Math.round(size/1024)+'KB' : size+'b') + ')');
+// ── ADMIN PANEL ────────────────────────────────────────────────────────────────
+function openAdminPanel() {
+  if (!currentUser) { openModal('login'); return; }
+  var pwd = prompt('Admin access code:');
+  if (!pwd) return;
+  // Hash the input simply — compare against stored hash
+  var hash = 0;
+  for (var i = 0; i < pwd.length; i++) {
+    hash = ((hash << 5) - hash) + pwd.charCodeAt(i);
+    hash |= 0;
   }
-  return keys.sort().join('\n') || '(empty)';
+  if (hash !== 854114445) {
+    showToast('Incorrect access code', 'info');
+    return;
+  }
+  renderAdminPanel();
+  showPage('admin');
 }
 
-function devResetUsage() {
-  localStorage.removeItem('ps_usage_'+new Date().toDateString());
-  updateDashboard(); updateSlimBar(); renderDevPanel();
+function renderAdminPanel() {
+  if (!currentUser) return;
+  var t = TIERS[currentUser.tier] || TIERS.free;
+  var info = document.getElementById('adminAccountInfo');
+  if (info) info.innerHTML =
+    '<b>Name:</b> ' + currentUser.name + '<br>' +
+    '<b>Email:</b> ' + currentUser.email + '<br>' +
+    '<b>Tier:</b> ' + t.name + '<br>' +
+    '<b>Usage today:</b> ' + getUsage(currentUser.email) + ' / ' + t.daily + '<br>' +
+    '<b>Pipeline:</b> ' + getHistory(currentUser.email).length + ' prospects';
+  ['free','plus','pro'].forEach(function(tier) {
+    var btn = document.getElementById('abtn-' + tier);
+    if (btn) btn.className = 'tier-switch-btn' + (currentUser.tier===tier ? ' active-'+tier : '');
+  });
+  var ul = document.getElementById('adminUserList');
+  if (ul) {
+    var users = getUsers();
+    var keys = Object.keys(users);
+    ul.innerHTML = !keys.length ? '<span style="color:var(--text4);">No users yet.</span>' :
+      keys.map(function(e){
+        var u = users[e];
+        return '<div style="padding:4px 0;border-bottom:1px solid var(--border)"><b>'+u.name+'</b> ('+e+') — '+((TIERS[u.tier]||TIERS.free).name)+'</div>';
+      }).join('');
+  }
+  var ps = document.getElementById('adminPipelineStats');
+  if (ps) {
+    var h = getHistory(currentUser.email);
+    var byStatus = {};
+    h.forEach(function(p){ var s=p.status||'new'; byStatus[s]=(byStatus[s]||0)+1; });
+    var totalVal = h.reduce(function(s,p){ return s+(p.dealValue||0); }, 0);
+    ps.innerHTML = Object.entries(byStatus).map(function(e){ return '<b>'+e[0]+':</b> '+e[1]; }).join(' · ') +
+      '<br><b>Deal value:</b> $' + totalVal.toLocaleString();
+  }
+}
+
+function adminResetUsage() {
+  if (!currentUser) return;
+  localStorage.removeItem('ps_usage_'+currentUser.email+'_'+new Date().toDateString());
+  updateDashboard(); renderAdminPanel();
   showToast('Usage reset ✓');
 }
-function devResetStreak() {
-  localStorage.removeItem('ps_daily_calls');
-  localStorage.removeItem('ps_call_streak');
-  renderDevPanel();
-  showToast('Streak + calls reset ✓');
-}
-function devToggleDemo() {
-  var key = 'ps_hasGenerated_' + currentUser.email;
-  if (localStorage.getItem(key)) {
-    localStorage.removeItem(key);
-    showToast('Demo mode re-enabled — refresh page');
-  } else {
-    localStorage.setItem(key, '1');
-    showToast('Demo mode disabled');
-  }
-  renderDevPanel();
-}
-function devClearPipeline() {
-  if (!confirm('Clear ALL pipeline data?')) return;
+function adminClearPipeline() {
+  if (!currentUser || !confirm('Delete ALL pipeline prospects?')) return;
   saveHistory(currentUser.email, []);
-  updateNavPipeline(); renderDevPanel();
+  renderAdminPanel();
   showToast('Pipeline cleared ✓');
 }
-function devNukeAll() {
-  if (!confirm('Delete ALL local data? Cannot be undone.')) return;
+function adminClearAll() {
+  if (!confirm('Delete ALL local data?') || !confirm('Really sure? This cannot be undone.')) return;
   localStorage.clear(); location.reload();
 }
-function devGenTestProspects(count) {
-  var names = ['Sunrise Bakery','Metro Auto','Bay View Dental','Peak Fitness','Urban Salon','Fresh Eats','Prime Plumbing','Atlas Realty','Bloom Florist','Coastal Law','Bright Smiles','Evergreen Landscaping','Swift Courier','Golden Gate Yoga','Pacific Electric','Harbor Insurance','Zenith Marketing','Alpine Roofing','Sapphire Spa','Maple Street Coffee'];
-  var types = ['Restaurant','Auto Repair','Dental','Gym','Salon','Cafe','Plumbing','Real Estate','Florist','Law Firm','Dentist','Landscaping','Courier','Yoga Studio','Electrician','Insurance','Marketing','Roofing','Spa','Coffee Shop'];
-  var signals = ['No online booking system','Outdated website hurting conversions','Low Google reviews — trust gap','Hiring aggressively — scaling fast','No social media presence','Manual scheduling still used','Competitor just opened nearby','Website not mobile-friendly','No email marketing','Expired SSL certificate'];
-  var history = getHistory(currentUser.email);
-  for (var i=0; i<count; i++) {
-    var idx = Math.floor(Math.random()*names.length);
-    var id = 'test_'+Date.now()+'_'+Math.random().toString(36).slice(2,5);
-    history.unshift({
-      id:id, name:names[idx]+' '+(Math.floor(Math.random()*99)+1),
-      type:types[idx], phone:'(555) '+Math.floor(100+Math.random()*900)+'-'+Math.floor(1000+Math.random()*9000),
-      address:'123 Test St', signal:signals[Math.floor(Math.random()*signals.length)],
-      reason:'Test prospect for development', opener:'Hi, I noticed your business could benefit from...',
-      status:'new', savedAt:Date.now(), matchScore:Math.floor(70+Math.random()*30)
-    });
-  }
-  saveHistory(currentUser.email, history);
-  updateNavPipeline(); renderDevPanel();
-  showToast(count+' test prospects added ✓');
-}
-
-function renderAdminPanel() { renderDevPanel(); }
-function adminResetUsage()  { devResetUsage(); }
-function adminClearPipeline(){ devClearPipeline(); }
-function adminClearAll()    { devNukeAll(); }
 
 
 // ── MOBILE MENU ───────────────────────────────────────────────────────────────
@@ -2979,11 +2766,7 @@ function renderMobileMenu() {
         'Dashboard' +
       '</button>' +
 
-      '<button class="mobile-menu-item" onclick="closeMobileMenu();openHistoryPage()">' +
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>' +
-        'Pipeline' +
-      '</button>' +
-
+/* Pipeline hidden from mobile menu */
       '<button class="mobile-menu-item" onclick="closeMobileMenu();openSearchHistory()">' +
         '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
         'Search History' +
@@ -3000,6 +2783,10 @@ function renderMobileMenu() {
 
       '<div class="mobile-menu-divider"></div>' +
 
+      '<button class="mobile-menu-item" onclick="closeMobileMenu();toggleLightMode()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/></svg> Toggle light mode</button>' +
+
+      '<div class="mobile-menu-divider"></div>' +
+
       '<button class="mobile-menu-item danger" onclick="closeMobileMenu();doLogout()">' +
         '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>' +
         'Sign out' +
@@ -3009,11 +2796,6 @@ function renderMobileMenu() {
       '<button class="mobile-menu-item" onclick="closeMobileMenu();showPage(\'pricing\')">' +
         '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>' +
         'Pricing' +
-      '</button>' +
-
-      '<button class="mobile-menu-item" onclick="closeMobileMenu();openModal(\'login\')">' +
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>' +
-        'Sign in' +
       '</button>' +
 
       '<button class="mobile-menu-item" style="color:var(--accent);border-color:rgba(190,255,0,0.2);background:var(--accent-dim);" onclick="closeMobileMenu();openModal(\'signup\')">' +
@@ -3118,16 +2900,12 @@ function hideScreenLockWarning() {
   if (b) b.classList.remove('visible');
 }
 
-const loadingMsgs = ['Scanning businesses near you...','Analyzing buying signals...','Finding best opportunities...','Matching to your offer...','Building your call list...'];
+const loadingMsgs = ['Analyzing your offer...','Detecting high-intent signals...','Identifying best-fit prospects...','Scoring signal strength...','Building your intelligence report...'];
 let loadingInterval;
 function startLoading() { let i=0; document.getElementById('loadingText').textContent=loadingMsgs[0]; loadingInterval=setInterval(()=>{i=(i+1)%loadingMsgs.length;document.getElementById('loadingText').textContent=loadingMsgs[i];},1800); }
 function stopLoading()  { clearInterval(loadingInterval); }
 
 function resetSearch() {
-  hideDemoUI();
-  dismissFirstCardFlow();
-  collapsePipelineSection();
-  window._sessionCallCount = 0;
   document.getElementById('results').style.display='none';
   var sfWrap = document.getElementById('scoreFilterWrap'); if(sfWrap) sfWrap.style.display='none';
   document.getElementById('inputSection').style.display='block';
@@ -3217,16 +2995,6 @@ function finalizeStreamedResults(businesses) {
   if (activeFilter > 0 && typeof setScoreFilter === 'function') setScoreFilter(activeFilter, null);
   // Stagger-animate newly rendered cards
   setTimeout(function() { if (typeof window.applyCardReveal === 'function') window.applyCardReveal(); }, 20);
-
-  // Demo mode: show badge + regen CTA + smooth scroll
-  if (window._isDemoRun) {
-    showDemoUI();
-  } else {
-    hideDemoUI();
-    markHasGenerated();
-  }
-  // Forced action: highlight first card and scroll to it
-  activateFirstCardFlow();
 }
 
 // ── ANALYTICS PAGE ──────────────────────────────────────────────────────────
@@ -4044,17 +3812,17 @@ function renderSkeletonCards(count) {
   var skeletons = '';
   for (var i = 0; i < count; i++) {
     skeletons += '<div id="skel-'+i+'" class="biz-card" style="pointer-events:none;">' +
-      '<div class="card-top">' +
-        '<div class="skeleton-line" style="width:80%;height:14px;margin-bottom:4px;"></div>' +
+      '<div class="biz-card-top">' +
+        '<div style="width:32px;height:32px;border-radius:var(--r-sm);background:var(--bg4);flex-shrink:0;"></div>' +
+        '<div style="flex:1;margin-left:12px;">' +
+          '<div class="skeleton-line" style="width:60%;height:16px;margin-bottom:8px;"></div>' +
+          '<div class="skeleton-line" style="width:40%;height:12px;"></div>' +
+        '</div>' +
+        '<div style="width:40px;height:40px;border-radius:50%;background:var(--bg4);"></div>' +
       '</div>' +
-      '<div class="card-mid">' +
-        '<div class="skeleton-line" style="width:50%;height:15px;margin-bottom:4px;"></div>' +
-      '</div>' +
-      '<div class="skeleton-line" style="width:90%;height:11px;margin-bottom:4px;"></div>' +
-      '<div class="skeleton-line" style="width:65%;height:11px;margin-bottom:12px;"></div>' +
-      '<div class="card-bottom">' +
-        '<div class="skeleton-line" style="width:80px;height:38px;border-radius:10px;"></div>' +
-        '<div class="skeleton-line" style="width:80px;height:34px;border-radius:8px;"></div>' +
+      '<div style="margin-top:14px;">' +
+        '<div class="skeleton-line" style="width:90%;height:12px;margin-bottom:6px;"></div>' +
+        '<div class="skeleton-line" style="width:70%;height:12px;"></div>' +
       '</div>' +
     '</div>';
   }
@@ -4143,6 +3911,7 @@ async function fetchBatchAI(location, product, target, batchCount, excludeNames)
 
 // ── MAIN ANALYZE — PARALLEL BATCHES ──────────────────────────────────────────
 async function analyze() {
+  if (!currentUser) { openModal('login'); return; }
   var tier = TIERS[currentUser.tier] || TIERS.free;
   var used = getUsage(currentUser.email);
   if (used >= tier.daily) {
@@ -4226,7 +3995,7 @@ async function analyze() {
     }
 
     if (_searchWasInterrupted) { throw new Error('INTERRUPTED'); }
-    if (!allBusinesses.length) throw new Error('No leads found — try adjusting your offer or location.');
+    if (!allBusinesses.length) throw new Error('No results found. Try a different location or business type.');
 
     // Deduplicate
     var seen = {};
@@ -4276,44 +4045,29 @@ async function analyze() {
 function buildBizCardHTML(b, i) {
   var isTop = (i === 0);
   var sig = b.signal || (Array.isArray(b.buying_signals) && b.buying_signals[0]) || b.reason || '';
-  var phone = b.phone || '';
-  var reason = b.reason || b.opener || '';
-  var reasonWords = reason.trim().split(/\s+/);
-  var context = reasonWords.slice(0, 20).join(' ') + (reasonWords.length > 20 ? '\u2026' : '');
-  var bizType = b.type || b.types || '';
-  var location = b.address || b.searchLocation || '';
-  var locShort = location ? location.split(',').slice(0,2).join(',').trim() : '';
-
-  var alreadySaved = currentUser && checkDuplicate(b.name);
-  var saveClass = alreadySaved ? 'save-prospect saved' : 'save-prospect';
-  var saveLabel = alreadySaved ? '✓ Saved' : 'Save';
-
-  var phoneIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>';
+  var words = sig.trim().split(/\s+/);
+  var insight = words.slice(0, 8).join(' ') + (words.length > 8 ? '\u2026' : '');
 
   return (
     '<div class="biz-card'+(isTop?' top':'')+'" id="card-'+i+'">'+
-      // TOP — signal headline
-      '<div class="card-top">'+
-        '<div class="insight">'+sig+'</div>'+
+      '<div>'+
+        '<div class="insight">'+insight+'</div>'+
+        '<div class="biz-name">'+b.name+'</div>'+
       '</div>'+
-      // MIDDLE — name, type, context
-      '<div class="card-mid">'+
-        '<span class="biz-name">'+b.name+'</span>'+
-        (bizType ? '<span class="biz-type">'+bizType+'</span>' : '')+
-      '</div>'+
-      (context ? '<div class="biz-context">'+context+'</div>' : '')+
-      // BOTTOM — actions
-      '<div class="card-bottom">'+
-        (phone ?
-          '<a href="tel:'+phone.replace(/\D/g,'')+'" class="call-main" onclick="trackCall('+i+')">'+phoneIcon+' Call</a>'
+      '<div class="bc-r" onclick="event.stopPropagation()">'+
+        (b.phone ?
+          '<a href="tel:'+b.phone.replace(/\D/g,'')+'" class="call-main">'+
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>'+
+            'Call now'+
+          '</a>'
         :
-          '<button class="call-main" onclick="trackCall('+i+');copyPitch('+i+')">Use pitch</button>'
+          '<button class="call-main" onclick="copyOpener('+i+')">'+
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>'+
+            'Use opener'+
+          '</button>'
         )+
-        '<button class="use-opener" id="copy-'+i+'" onclick="copyPitch('+i+')">Copy pitch</button>'+
-        '<span class="card-spacer"></span>'+
-        '<button class="'+saveClass+'" id="save-'+i+'" onclick="event.stopPropagation();saveToPipeline('+i+')">'+saveLabel+'</button>'+
+        '<button class="use-opener" id="copy-'+i+'" onclick="copyOpener('+i+')">Copy opener</button>'+
       '</div>'+
-      (isTop ? '<div class="call-hint" style="margin-top:8px;">Highest-match signal — start here</div>' : '')+
     '</div>'
   );
 }
@@ -4334,32 +4088,63 @@ function renderResults(businesses) {
   if (inp) inp.style.display = 'none';
   updateStatsRow();
   if (typeof window.applyCardReveal === 'function') window.applyCardReveal();
-  // Demo mode handling
-  if (window._isDemoRun) {
-    showDemoUI();
-  } else {
-    hideDemoUI();
-    markHasGenerated();
-  }
-  // Forced action: highlight first card and scroll to it
-  activateFirstCardFlow();
 }
 
 
 function addToPipeline(i) {
   if (!currentUser) return;
-  var saved = saveToPipeline(i);
-  if (saved) {
-    showToast('<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:5px;"><polyline points="20 6 9 17 4 12"/></svg> Added to pipeline');
-  } else {
-    showToast('Already in your pipeline', 'info');
+  const b = window._currentBusinesses && window._currentBusinesses[i];
+  if (!b) return;
+  const btn = document.getElementById('pipe-btn-'+i);
+  if (btn && btn.dataset.added === '1') { openHistoryPage(); return; }
+
+  // Duplicate detection
+  if (checkDuplicate(b.name)) {
+    if (!confirm(b.name+' looks like it might already be in your pipeline. Add it anyway?')) return;
   }
+
+  const history = getHistory(currentUser.email);
+  const id = 'pipe_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+  history.unshift({
+    id: id, name: b.name, type: b.type, address: b.address||'', phone: b.phone||'',
+    website: b.website||'', googlemaps: b.googlemaps||'',
+    opportunity: b.opportunity, score: b.score,
+    reason: b.reason, opener: b.opener,
+    company_size: b.company_size||'', annual_revenue: b.annual_revenue||'',
+    decision_maker: b.decision_maker||'', best_time: b.best_time||'',
+    searchLocation: window._lastSearchLocation||'', savedAt: Date.now(),
+    status: 'new', statusUpdatedAt: null,
+    reachedOut: false, reachedOutAt: null,
+    campaignId:   _activeCampaignId   || null,
+    campaignName: _activeCampaignName || null
+  });
+  saveHistory(currentUser.email, history);
+
+  if (btn) {
+    btn.dataset.added = '1';
+    btn.textContent = '✓ Saved';
+    btn.title = 'Saved to pipeline';
+  }
+  showToast('<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:5px;"><polyline points="20 6 9 17 4 12"/></svg> Added to pipeline');
 }
 
 
-// ── THEME — dark mode only (light mode disabled for beta) ────────────────────
-function toggleLightMode() { /* disabled */ }
-function initLightMode() { document.body.classList.remove('light-mode'); localStorage.removeItem('ps_light_mode'); }
+function toggleCard(i){}
+
+// ── LIGHT/DARK MODE ──────────────────────────────────────────────────────────
+function toggleLightMode() {
+  var isLight = document.body.classList.toggle('light-mode');
+  localStorage.setItem('ps_light_mode', isLight ? '1' : '0');
+  var btn = document.getElementById('modeToggleBtn');
+  if (btn) btn.innerHTML = isLight
+    ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>'
+    : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+}
+function initLightMode() {
+  if (localStorage.getItem('ps_light_mode') === '1') {
+    document.body.classList.add('light-mode');
+  }
+}
 
 // ── CALL TIMER ────────────────────────────────────────────────────────────────
 var _timerInterval = null;
@@ -6324,7 +6109,7 @@ function setPipelineCampaignFilter(val) {
     btn.style.color         = active ? 'var(--accent)'     : 'var(--text3)';
     btn.style.borderColor   = active ? 'rgba(190,255,0,0.25)' : 'var(--border2)';
   });
-  renderKanban();
+  renderHistoryList(window._currentHistoryFilter || 'all');
 }
 
 function renderCampaignFilterBar() {
@@ -6664,9 +6449,7 @@ function renderPatternInsight(pattern) {
 }
 
 // ── COPY OPENER ───────────────────────────────────────────────────────────────
-window._sessionCallCount = 0;
-
-function copyPitch(i) {
+function copyOpener(i) {
   var b = window._currentBusinesses && window._currentBusinesses[i];
   if (!b) return;
   var text = b.messageIdea || b.opener || '';
@@ -6674,216 +6457,8 @@ function copyPitch(i) {
   if (!navigator.clipboard || !text) return;
   navigator.clipboard.writeText(text).then(function() {
     if (btn) { btn.textContent = 'Copied!'; btn.style.color = 'var(--accent)'; }
-    setTimeout(function() { if (btn) { btn.textContent = 'Copy pitch'; btn.style.color = ''; } }, 1400);
+    setTimeout(function() { if (btn) { btn.textContent = 'Copy opener'; btn.style.color = ''; } }, 1400);
   });
-}
-
-// ── SAVE TO PIPELINE ─────────────────────────────────────────────────────────
-
-// ── DAILY CALL TRACKER + STREAK ──────────────────────────────────────────────
-function getDailyCallData() {
-  var today = new Date().toDateString();
-  var stored = localStorage.getItem('ps_daily_calls') || '{}';
-  try { var d = JSON.parse(stored); return d; } catch(e) { return {}; }
-}
-
-function getTodayCalls() {
-  var data = getDailyCallData();
-  var today = new Date().toDateString();
-  return data[today] || 0;
-}
-
-function incrementDailyCall() {
-  var data = getDailyCallData();
-  var today = new Date().toDateString();
-  data[today] = (data[today] || 0) + 1;
-  localStorage.setItem('ps_daily_calls', JSON.stringify(data));
-  updateStreak();
-}
-
-function getStreak() {
-  var data = getDailyCallData();
-  var streak = 0;
-  var d = new Date();
-  // Check today first
-  if (data[d.toDateString()]) streak++;
-  else return 0;
-  // Check consecutive past days
-  for (var i = 1; i < 365; i++) {
-    d = new Date();
-    d.setDate(d.getDate() - i);
-    if (data[d.toDateString()]) { streak++; }
-    else break;
-  }
-  return streak;
-}
-
-function updateStreak() {
-  var streak = getStreak();
-  localStorage.setItem('ps_call_streak', streak);
-}
-
-function renderMomentumBar(allHistory, filtered) {
-  var el = document.getElementById('momentumBar');
-  if (!el) return;
-
-  var todayCalls = getTodayCalls();
-  var streak = getStreak();
-  var total = allHistory.length;
-  var contacted = allHistory.filter(function(h){ var s=h.status||'new'; return s!=='new'; }).length;
-  var convRate = total ? Math.round(contacted / total * 100) : 0;
-  var hotLeads = allHistory.filter(function(h){ return h.status==='engaged'||h.status==='qualified'; }).length;
-
-  el.style.display = 'flex';
-  el.innerHTML =
-    '<div class="momentum-stat">' +
-      '<div class="momentum-num" style="color:var(--accent);">'+todayCalls+'</div>' +
-      '<div class="momentum-label">Calls<br>today</div>' +
-    '</div>' +
-    '<div class="momentum-divider"></div>' +
-    (streak > 0 ?
-      '<div class="momentum-stat">' +
-        '<span class="streak-badge">🔥 '+streak+' day'+(streak>1?'s':'')+'</span>' +
-      '</div>' +
-      '<div class="momentum-divider"></div>' : '') +
-    '<div class="momentum-stat">' +
-      '<div class="momentum-rate">'+convRate+'%</div>' +
-      '<div class="momentum-label">Contact<br>rate</div>' +
-    '</div>' +
-    '<div class="momentum-divider"></div>' +
-    '<div class="momentum-stat">' +
-      '<div class="momentum-num" style="color:var(--amber);">'+hotLeads+'</div>' +
-      '<div class="momentum-label">Hot<br>leads</div>' +
-    '</div>';
-}
-
-// ── MOMENTUM TOASTS ──────────────────────────────────────────────────────────
-var MOMENTUM_TOASTS = {
-  'contacted': ['Lead progressing — nice momentum', 'Moved to Contacted'],
-  'engaged':   ['They responded — keep pushing!', 'Hot lead — don\'t let this cool down'],
-  'qualified': ['Meeting set! You\'re closing in', 'Pipeline is heating up 🔥'],
-  'converted': null // handled separately with confetti
-};
-
-function showMomentumToast(newStatus) {
-  var msgs = MOMENTUM_TOASTS[newStatus];
-  if (!msgs) return;
-  var msg = msgs[Math.floor(Math.random() * msgs.length)];
-  showToast(msg, 'success');
-}
-function saveToPipeline(i, status) {
-  if (!currentUser) return false;
-  var b = window._currentBusinesses && window._currentBusinesses[i];
-  if (!b) return false;
-
-  // Silent duplicate check — don't add twice
-  if (checkDuplicate(b.name)) {
-    // If already saved, just update the button silently
-    markSaveButton(i);
-    return false;
-  }
-
-  var id = 'pipe_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
-  var history = getHistory(currentUser.email);
-  history.unshift({
-    id: id, name: b.name, type: b.type||b.types||'', address: b.address||'', phone: b.phone||'',
-    website: b.website||'', googlemaps: b.googlemaps||'',
-    opportunity: b.opportunity||'', score: b.score||0,
-    reason: b.reason||'', opener: b.opener||b.messageIdea||'',
-    signal: b.signal||'', matchScore: b.matchScore||0,
-    company_size: b.company_size||'', annual_revenue: b.annual_revenue||'',
-    decision_maker: b.decision_maker||'', best_time: b.best_time||'',
-    searchLocation: window._lastSearchLocation||'', savedAt: Date.now(),
-    status: status || 'new', statusUpdatedAt: status ? Date.now() : null,
-    reachedOut: status ? true : false, reachedOutAt: status ? Date.now() : null,
-    campaignId: _activeCampaignId || null,
-    campaignName: _activeCampaignName || null
-  });
-  saveHistory(currentUser.email, history);
-
-  // Visual feedback on the card
-  markSaveButton(i);
-  updateNavPipeline();
-  return true;
-}
-
-function markSaveButton(i) {
-  var btn = document.getElementById('save-'+i);
-  if (btn && !btn.classList.contains('saved')) {
-    btn.classList.add('saved');
-    btn.innerHTML = '✓ In pipeline';
-  }
-}
-
-function trackCall(i) {
-  dismissFirstCardFlow();
-  window._sessionCallCount++;
-  var count = window._sessionCallCount;
-
-  // Track daily calls + streak
-  incrementDailyCall();
-
-  // Auto-save to pipeline as "contacted" on call
-  var wasNew = saveToPipeline(i, 'contacted');
-
-  // Toast feedback
-  if (count === 1) {
-    if (wasNew) {
-      showToast('<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px;"><polyline points="20 6 9 17 4 12"/></svg> Saved & calling — good luck!', 'success');
-    } else {
-      showToast('<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px;"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07"/></svg> Call started — good luck!', 'success');
-    }
-    expandPipelineSection();
-  } else if (count === 3) {
-    showToast('🔥 3 calls — you\'re building momentum!', 'success');
-  } else if (count === 5) {
-    showToast('⚡ 5 calls in a session — unstoppable', 'success');
-  }
-}
-
-function expandPipelineSection() {
-  var section = document.getElementById('pipelineSectionWrap');
-  var toggle = document.getElementById('pipelineToggleBtn');
-  if (section) section.classList.add('expanded');
-  if (toggle) { toggle.classList.add('open'); }
-  // Update hint
-  var hint = document.getElementById('pipelineHint');
-  if (hint) hint.innerHTML = 'Track and manage your leads here';
-  // Populate mini snap grid
-  var grid = document.getElementById('resultsSnapGrid');
-  if (grid && currentUser) {
-    var history = getHistory(currentUser.email);
-    var counts = { contacted:0, qualified:0, converted:0 };
-    history.forEach(function(h) {
-      if (h.status === 'contacted' || h.status === 'meeting' || h.status === 'converted') counts.contacted++;
-      if (h.status === 'meeting' || h.status === 'converted') counts.qualified++;
-      if (h.status === 'converted') counts.converted++;
-    });
-    grid.innerHTML =
-      '<div class="snap-card" onclick="openHistoryPage()"><div class="snap-num" style="color:var(--text2);">'+history.length+'</div><div class="snap-label">Saved</div></div>'+
-      '<div class="snap-card" onclick="openHistoryPage()"><div class="snap-num" style="color:var(--accent);">'+counts.contacted+'</div><div class="snap-label">Contacted</div></div>'+
-      '<div class="snap-card" onclick="openHistoryPage()"><div class="snap-num" style="color:var(--amber);">'+counts.qualified+'</div><div class="snap-label">Meetings</div></div>'+
-      '<div class="snap-card" onclick="openHistoryPage()"><div class="snap-num" style="color:var(--purple);">'+counts.converted+'</div><div class="snap-label">Closed</div></div>';
-  }
-}
-
-function collapsePipelineSection() {
-  var section = document.getElementById('pipelineSectionWrap');
-  if (section) section.classList.remove('expanded');
-  var toggle = document.getElementById('pipelineToggleBtn');
-  if (toggle) toggle.classList.remove('open');
-}
-
-function togglePipelineSection() {
-  var section = document.getElementById('pipelineSectionWrap');
-  var toggle = document.getElementById('pipelineToggleBtn');
-  if (!section) return;
-  var isOpen = section.classList.contains('expanded');
-  if (isOpen) {
-    collapsePipelineSection();
-  } else {
-    expandPipelineSection();
-  }
 }
 
 
@@ -6893,127 +6468,22 @@ document.addEventListener('visibilitychange', function() {
   if (!document.hidden && currentUser) checkForResume();
 });
 
-// ── FORCED ACTION FLOW — FIRST CARD GUIDANCE ─────────────────────────────────
-function activateFirstCardFlow() {
-  var guide = document.getElementById('callGuide');
-  if (guide) guide.style.display = 'flex';
-  // Scroll to first card after a beat so animation lands
-  setTimeout(function() {
-    var first = document.querySelector('.biz-card.top');
-    if (first) {
-      first.scrollIntoView({ behavior:'smooth', block:'center' });
-    }
-  }, 500);
-}
-
-function dismissFirstCardFlow() {
-  // Remove .top class from first card
-  var topCard = document.querySelector('.biz-card.top');
-  if (topCard) {
-    topCard.classList.remove('top');
-    // Kill pulse by removing animation
-    var btn = topCard.querySelector('.call-main');
-    if (btn) btn.style.animation = 'none';
-    // Remove hint
-    var hint = topCard.querySelector('.call-hint');
-    if (hint) hint.remove();
-  }
-  // Hide guide text
-  var guide = document.getElementById('callGuide');
-  if (guide) guide.style.display = 'none';
-}
-
-// ── DEMO MODE — DELAYED CONTROLLABLE AUTO-RUN ───────────────────────────────
-window._isDemoRun = false;
-window._userInteracted = false;
-window._demoTimer = null;
-
-// Track user interaction — any click/key/scroll cancels auto-run
-['click','keydown','scroll','touchstart'].forEach(function(evt) {
-  window.addEventListener(evt, function() {
-    window._userInteracted = true;
-    if (window._demoTimer) { clearTimeout(window._demoTimer); window._demoTimer = null; }
-  }, { once: true, passive: true });
-});
-
-function isDemoEligible() {
-  if (!currentUser) return false;
-  var key = 'ps_hasGenerated_' + currentUser.email;
-  return !localStorage.getItem(key);
-}
-
-function markHasGenerated() {
-  if (!currentUser) return;
-  localStorage.setItem('ps_hasGenerated_' + currentUser.email, '1');
-}
-
-function showDemoUI() {
-  var badge = document.getElementById('demoBadge');
-  var regen = document.getElementById('regenWrap');
-  if (badge) badge.style.display = 'block';
-  if (regen) regen.style.display = 'block';
-}
-
-function hideDemoUI() {
-  var badge = document.getElementById('demoBadge');
-  var regen = document.getElementById('regenWrap');
-  if (badge) badge.style.display = 'none';
-  if (regen) regen.style.display = 'none';
-  window._isDemoRun = false;
-}
-
-function prefillDemoInputs() {
-  var prod = document.getElementById('productInput');
-  var loc  = document.getElementById('locationInput');
-  if (prod && !prod.value.trim()) prod.value = 'Website redesign for local businesses';
-  if (loc  && !loc.value.trim())  loc.value  = 'Miami, Florida';
-  toggleAnalyzeBtn();
-}
-
-function scheduleDemoRun() {
-  if (!isDemoEligible()) return;
-  // Pre-fill immediately so user sees the form is ready
-  prefillDemoInputs();
-  // Delayed auto-run — only fires if user hasn't touched anything
-  window._demoTimer = setTimeout(function() {
-    if (window._userInteracted) return;
-    if (!isDemoEligible()) return;
-    // Verify we're still on dashboard
-    var dashPage = document.getElementById('page-dashboard');
-    if (!dashPage || !dashPage.classList.contains('active')) return;
-    window._isDemoRun = true;
-    analyze();
-  }, 2500);
-}
-
-function generateMyLeads() {
-  hideDemoUI();
-  markHasGenerated();
-  resetSearch();
-  var prod = document.getElementById('productInput');
-  if (prod) {
-    prod.focus();
-    prod.setSelectionRange(0, prod.value.length);
-  }
-  toggleAnalyzeBtn();
-}
-
 document.addEventListener('DOMContentLoaded', function() {
   restoreSession();
-  // Beta: always go straight to dashboard
-  showPage('dashboard');
   updateNav();
   toggleAnalyzeBtn();
-  updateDashboard();
-  renderDashSections();
-  renderGoalTracker();
-  updateOverdueBadge();
-  updateSlimBar();
-  updateNavPipeline();
-  if (isDemoEligible()) {
-    scheduleDemoRun();
+  if (currentUser) {
+    showPage('dashboard');
+    updateDashboard();
+    updateNavPipeline();
+    renderDashSections();
+    renderGoalTracker();
+    updateOverdueBadge();
+    updateSlimBar();
+    if (isDemoEligible()) { scheduleDemoRun(); }
+    else { setTimeout(checkOnboarding, 600); }
   } else {
-    setTimeout(checkOnboarding, 600);
+    showPage('home');
   }
 });
 
