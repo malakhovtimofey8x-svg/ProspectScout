@@ -136,7 +136,7 @@ h1 em { font-style:normal; color:var(--accent); }
 .section-sub { font-size:14px; color:var(--text3); text-align:center; margin-bottom:40px; }
 .pricing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
 @media(max-width:680px) { .pricing-grid,.features { grid-template-columns:1fr; } }
-.price-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-xl); padding:30px 26px; position:relative; transition:border-color 0.2s,transform 0.2s,box-shadow 0.2s; box-shadow:var(--shadow-sm); }
+.price-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-xl); padding:30px 26px; position:relative; transition:border-color 0.2s,transform 0.2s,box-shadow 0.2s; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; }
 .price-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-md); }
 .price-card.featured { border-color:rgba(190,255,0,0.3); }
 .price-card.featured::before { content:''; position:absolute; top:-1px; left:15%; right:15%; height:1px; background:linear-gradient(90deg,transparent,var(--accent),transparent); opacity:0.7; }
@@ -148,7 +148,7 @@ h1 em { font-style:normal; color:var(--accent); }
 .price-amount span { font-size:16px; font-weight:400; color:var(--text3); letter-spacing:0; }
 .price-period { font-size:13px; color:var(--text3); margin-bottom:20px; }
 .price-limit { font-size:13px; font-weight:600; color:var(--text2); margin-bottom:20px; padding:10px 14px; background:var(--bg3); border-radius:var(--r-sm); border:1px solid var(--border); }
-.price-features { list-style:none; margin-bottom:24px; }
+.price-features { list-style:none; margin-bottom:24px; flex:1; }
 .price-features li { font-size:14px; color:var(--text2); padding:6px 0; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--border); }
 .price-features li:last-child { border:none; }
 .check { color:var(--accent); font-size:12px; flex-shrink:0; }
@@ -429,6 +429,336 @@ input, textarea, select { font-size:16px; -webkit-appearance:none; appearance:no
 .snap-num { font-family:Syne,sans-serif; font-size:26px; font-weight:800; line-height:1; margin-bottom:4px; }
 .snap-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:1px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
+/* Pipeline view toggle */
+.pipeline-view-toggle { display:flex; border:1px solid var(--border2); border-radius:var(--r-sm); overflow:hidden; }
+.pvt-btn { background:transparent; border:none; padding:7px 10px; cursor:pointer; color:var(--text3); display:flex; align-items:center; transition:all 0.15s; }
+.pvt-btn:hover { background:var(--bg3); color:var(--text2); }
+.pvt-btn.active { background:var(--accent); color:#08080D; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   PIPELINE — CLEAN PREMIUM (Linear-style)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* PIPELINE PAGE HEADER */
+.pipe-header-wrap {
+  padding: 32px 32px 0;
+  position: relative;
+  z-index: 1;
+}
+.pipe-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.pipe-title-block { display: flex; flex-direction: column; gap: 3px; }
+.pipe-title {
+  font-family: Syne, sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--text);
+  margin: 0;
+  line-height: 1;
+}
+.pipe-title em { font-style: normal; color: var(--accent); }
+.pipe-sub {
+  font-size: 12px;
+  color: var(--text4);
+  font-weight: 400;
+}
+.pipe-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.pipe-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-md);
+  padding: 8px 13px;
+  transition: border-color 0.2s;
+  min-width: 200px;
+}
+.pipe-search-wrap:focus-within { border-color: rgba(190,255,0,0.3); }
+.pipe-search-input {
+  background: none;
+  border: none;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  width: 100%;
+}
+.pipe-search-input::placeholder { color: var(--text4); }
+.pipe-sort-select {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 13px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border2);
+  background: var(--bg2);
+  color: var(--text2);
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.pipe-export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border2);
+  background: var(--bg2);
+  color: var(--text3);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.pipe-export-btn:hover { background: var(--bg3); color: var(--text2); }
+
+/* ── SCROLL CONTAINER ─────────────────────────────────────────────── */
+.kanban-wrap {
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 32px 40px;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+.kanban-wrap::-webkit-scrollbar { height: 4px; }
+.kanban-wrap::-webkit-scrollbar-track { background: transparent; }
+.kanban-wrap::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+/* ── BOARD ROW ────────────────────────────────────────────────────── */
+.kanban-board {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  width: max-content;
+  padding: 4px 0 16px;
+  align-items: flex-start;
+}
+
+/* ── COLUMN ───────────────────────────────────────────────────────── */
+.kanban-col {
+  flex: 0 0 315px;
+  width: 315px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 220px);
+  min-height: 200px;
+  box-sizing: border-box;
+  transition: border-color 0.2s, background 0.2s;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.03) inset, 0 8px 32px rgba(0,0,0,0.2);
+}
+.kanban-col.kb-drag-over {
+  border-color: rgba(190,255,0,0.4);
+  background: rgba(190,255,0,0.04);
+  box-shadow: 0 0 0 3px rgba(190,255,0,0.07), 0 8px 32px rgba(0,0,0,0.2);
+}
+
+/* ── COLUMN HEADER ────────────────────────────────────────────────── */
+.kanban-col-head {
+  padding: 16px 16px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.kanban-col-label {
+  font-family: Syne, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: rgba(240,240,250,0.65);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.kb-col-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.kanban-col-count {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.07);
+  color: var(--text3);
+  border: 1px solid rgba(255,255,255,0.07);
+  min-width: 26px;
+  text-align: center;
+}
+
+/* ── COLUMN BODY ──────────────────────────────────────────────────── */
+.kanban-col-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.07) transparent;
+}
+.kanban-col-body::-webkit-scrollbar { width: 3px; }
+.kanban-col-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+/* ── CARD ─────────────────────────────────────────────────────────── */
+.kb-card {
+  background: var(--bg3);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 12px;
+  padding: 15px 15px 13px;
+  cursor: grab;
+  transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s, background 0.18s;
+  user-select: none;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+}
+.kb-card:active { cursor: grabbing; }
+.kb-card:hover {
+  border-color: rgba(255,255,255,0.18);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.38);
+  background: #1a1a28;
+}
+.kb-card.kb-dragging {
+  opacity: 0.28;
+  transform: scale(0.97) rotate(1deg);
+  box-shadow: none;
+}
+.kb-card.kb-hot {
+  border-color: rgba(190,255,0,0.22);
+  background: rgba(190,255,0,0.035);
+}
+
+/* Card text */
+.kb-card-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: -0.1px;
+}
+.kb-card-type {
+  font-size: 11px;
+  color: var(--text4);
+  margin-bottom: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.kb-card-phone {
+  font-size: 11px;
+  color: var(--teal);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.kb-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  min-width: 0;
+  margin-bottom: 10px;
+}
+.kb-score {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+.kb-score-high { background: rgba(190,255,0,0.14); color: var(--accent); }
+.kb-score-mid  { background: rgba(255,176,32,0.14); color: var(--amber); }
+.kb-score-low  { background: rgba(255,255,255,0.06); color: var(--text4); }
+.kb-addr {
+  font-size: 10px;
+  color: var(--text4);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1;
+  text-align: right;
+}
+
+/* ── ACTION BUTTONS ───────────────────────────────────────────────── */
+.kb-actions { display: flex; gap: 5px; flex-wrap: wrap; }
+.kb-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 10px;
+  min-height: 28px;
+  border-radius: 7px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: var(--text3);
+  cursor: pointer;
+  transition: all 0.13s;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.kb-btn:hover { color: var(--text2); border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.08); }
+.kb-btn.kb-call {
+  background: var(--accent);
+  color: #08080D;
+  border-color: transparent;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(190,255,0,0.2);
+}
+.kb-btn.kb-call:hover { box-shadow: 0 2px 16px rgba(190,255,0,0.38); }
+.kb-btn.kb-advance { background: var(--accent-dim); color: var(--accent); border-color: rgba(190,255,0,0.2); }
+.kb-btn.kb-advance:hover { background: rgba(190,255,0,0.15); }
+.kb-btn.kb-del:hover { color: #FF8080; border-color: rgba(255,80,80,0.25); background: rgba(255,80,80,0.06); }
+
+/* ── PROGRESS BAR ─────────────────────────────────────────────────── */
+.kb-progress { height: 2px; background: rgba(255,255,255,0.06); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+.kb-progress-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+
+/* ── EMPTY STATE ──────────────────────────────────────────────────── */
+.kb-empty {
+  text-align: center;
+  padding: 40px 16px;
+  color: var(--text4);
+  font-size: 12px;
+  line-height: 1.8;
+}
+.kb-empty-icon { display: block; font-size: 22px; margin-bottom: 10px; opacity: 0.25; }
+
+/* Hide stats bar — removed from UI */
+.kb-stats-bar { display: none !important; }
+
 /* Recent searches */
 .recent-list { display:flex; flex-direction:column; gap:8px; }
 .recent-item { display:flex; align-items:center; justify-content:space-between; gap:14px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-lg); padding:12px 16px; box-shadow:var(--shadow-sm); transition:border-color 0.2s,background 0.2s; }
@@ -511,16 +841,7 @@ input, textarea, select { font-size:16px; -webkit-appearance:none; appearance:no
 .score-filter-btn.active { background:var(--accent-dim); color:var(--accent); border-color:rgba(190,255,0,0.3); }
 
 /* ── DARK/LIGHT MODE ── */
-body.light-mode { --bg:#F4F4F8; --bg2:#FFFFFF; --bg3:#F0F0F5; --bg4:#E8E8EF; --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.12); --border3:rgba(0,0,0,0.2); --text:#0A0A14; --text2:rgba(10,10,20,0.72); --text3:rgba(10,10,20,0.46); --text4:rgba(10,10,20,0.28); --accent:#3A8C00; --accent-dim:rgba(58,140,0,0.10); --teal:#007A55; --teal-dim:rgba(0,122,85,0.10); --amber:#B87000; --amber-dim:rgba(184,112,0,0.10); --purple:#6B4FBF; --purple-dim:rgba(107,79,191,0.10); }
-body.light-mode header { background:rgba(244,244,248,0.94); }
-body.light-mode .orb1 { background:rgba(58,140,0,0.08); }
-body.light-mode .orb2 { background:rgba(0,122,85,0.06); }
-body.light-mode .cta-btn { color:#fff; }
-body.light-mode .btn-primary { color:#fff; }
-body.light-mode .modal-btn { color:#fff; }
-body.light-mode .price-btn-plus { color:#fff; }
-body.light-mode .logo-icon { background:var(--accent); }
-body.light-mode .logo-icon svg path, body.light-mode .logo-icon svg circle, body.light-mode .logo-icon svg line { stroke:#fff; }
+
 .mode-toggle { display:flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:var(--r-sm); border:1px solid var(--border2); background:transparent; color:var(--text3); cursor:pointer; transition:all 0.15s; flex-shrink:0; }
 .mode-toggle:hover { border-color:var(--border3); color:var(--text2); background:var(--bg3); }
 
@@ -977,14 +1298,209 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   .hero-animate, .reveal, .biz-card
   .biz-card:hover, .biz-card.top-result
 }
+
+/* ── APP SHELL (logged-in layout) ─────────────────────────────────── */
+.app-shell { display:none; }
+.app-shell.visible { display:flex; min-height:100vh; }
+
+/* ── LEFT SIDEBAR ─────────────────────────────────────────────────── */
+.sidebar {
+  width:220px; flex-shrink:0;
+  background:rgba(8,8,13,0.97);
+  border-right:1px solid var(--border);
+  display:flex; flex-direction:column;
+  position:fixed; top:0; left:0; bottom:0;
+  z-index:50; padding:0;
+  backdrop-filter:blur(20px);
+}
+.sidebar-logo {
+  display:flex; align-items:center; gap:10px;
+  padding:20px 18px 16px;
+  font-family:Syne,sans-serif; font-size:16px; font-weight:800;
+  letter-spacing:-0.5px; color:var(--text);
+  cursor:pointer; border-bottom:1px solid var(--border);
+}
+.sidebar-logo .logo-icon { width:28px; height:28px; border-radius:7px; flex-shrink:0; }
+.sidebar-nav { flex:1; padding:10px 10px; display:flex; flex-direction:column; gap:2px; overflow-y:auto; }
+.sidebar-item {
+  display:flex; align-items:center; gap:10px;
+  padding:9px 12px; border-radius:var(--r-md);
+  font-size:14px; font-weight:500; color:var(--text3);
+  cursor:pointer; transition:all 0.15s; border:none; background:none;
+  text-align:left; width:100%;
+}
+.sidebar-item:hover { background:var(--bg3); color:var(--text2); }
+.sidebar-item.active { background:var(--accent-dim); color:var(--accent); }
+.sidebar-item.pipeline-item { font-weight:700; }
+.sidebar-item.pipeline-item.active { background:var(--accent); color:#08080D; }
+.sidebar-item svg { flex-shrink:0; }
+.sidebar-divider { height:1px; background:var(--border); margin:8px 10px; }
+.sidebar-bottom { padding:12px 10px; border-top:1px solid var(--border); }
+.sidebar-user { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:var(--r-md); cursor:pointer; transition:background 0.15s; }
+.sidebar-user:hover { background:var(--bg3); }
+.sidebar-avatar { width:28px; height:28px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#08080D; flex-shrink:0; }
+.sidebar-user-info { flex:1; min-width:0; }
+.sidebar-user-name { font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sidebar-user-tier { font-size:10px; color:var(--text4); }
+
+/* ── MAIN CONTENT AREA (with sidebar) ────────────────────────────── */
+.app-content {
+  margin-left:220px;
+  flex:1; min-width:0;
+  display:flex; flex-direction:column;
+}
+/* hide top header when app shell visible */
+.app-shell.visible ~ header { display:none !important; }
+
+/* ── BOTTOM NAV (mobile) ──────────────────────────────────────────── */
+.bottom-nav {
+  display:none; position:fixed; bottom:0; left:0; right:0;
+  background:rgba(8,8,13,0.97);
+  border-top:1px solid var(--border);
+  z-index:150; padding:0 0 env(safe-area-inset-bottom);
+  backdrop-filter:blur(20px);
+}
+.bottom-nav-inner { display:flex; align-items:stretch; height:56px; }
+.bn-tab {
+  flex:1; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:3px; border:none; background:none;
+  color:var(--text4); font-size:10px; font-weight:500; cursor:pointer;
+  transition:color 0.15s; padding:6px 4px;
+}
+.bn-tab:hover { color:var(--text2); }
+.bn-tab.active { color:var(--accent); }
+.bn-tab-pipeline {
+  flex:1.4; position:relative;
+}
+.bn-tab-pipeline .bn-pip-icon {
+  width:44px; height:44px; border-radius:50%;
+  background:var(--accent); display:flex; align-items:center;
+  justify-content:center; margin-bottom:2px;
+  box-shadow:0 0 20px rgba(190,255,0,0.35);
+  transition:transform 0.15s, box-shadow 0.15s;
+}
+.bn-tab-pipeline.active .bn-pip-icon,
+.bn-tab-pipeline:hover .bn-pip-icon { transform:scale(1.08); box-shadow:0 0 28px rgba(190,255,0,0.5); }
+.bn-tab-pipeline span { font-size:10px; font-weight:700; color:var(--accent); }
+
+/* ── FAB (mobile add lead) ────────────────────────────────────────── */
+.pipeline-fab {
+  display:none; position:fixed; right:18px; bottom:76px;
+  width:52px; height:52px; border-radius:50%;
+  background:var(--accent); color:#08080D;
+  border:none; cursor:pointer; z-index:140;
+  align-items:center; justify-content:center;
+  box-shadow:0 4px 20px rgba(190,255,0,0.4);
+  font-size:26px; font-weight:400; line-height:1;
+  transition:transform 0.15s, box-shadow 0.15s;
+}
+.pipeline-fab:hover { transform:scale(1.1); box-shadow:0 6px 28px rgba(190,255,0,0.55); }
+
+/* ── RESPONSIVE BREAKPOINTS ───────────────────────────────────────── */
+@media (max-width:768px) {
+  .sidebar { display:none !important; }
+  .app-content { margin-left:0 !important; padding-bottom:72px; }
+  .bottom-nav { display:block; }
+  .pipeline-fab { display:flex; }
+  /* hide the in-page "Add lead" btn on mobile — FAB handles it */
+  .pipeline-page-add-btn { display:none !important; }
+  /* Mobile pipeline */
+  .pipe-header-wrap { padding: 24px 16px 0; }
+  .pipe-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .pipe-controls { width: 100%; }
+  .pipe-search-wrap { min-width: 0; flex: 1; }
+  .kanban-wrap { padding: 0 16px 40px; }
+  .kanban-col { flex: 0 0 280px; width: 280px; max-height: calc(100vh - 200px); }
+  .kanban-board { gap: 14px; }
+  .kb-btn { padding: 6px 9px; min-height: 32px; }
+}
+@media (min-width:769px) {
+  .bottom-nav { display:none !important; }
+  .pipeline-fab { display:none !important; }
+}
 </style>
-<script src="/api/env"></script>
 </head>
 <body style="background:#08080D;">
 <canvas id="matrixCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.18;pointer-events:none;"></canvas>
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
 <div class="screen-lock-banner" id="screenLockBanner">📵 Keep screen on while searching</div>
+
+<!-- APP SHELL (visible when logged in) -->
+<div class="app-shell" id="appShell">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo" onclick="handleLogoClick()">
+      <div class="logo-icon" style="background:var(--accent);display:flex;align-items:center;justify-content:center;">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" fill="#08080D"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.22 3.22l1.41 1.41M11.37 11.37l1.41 1.41M11.37 4.63l1.41-1.41M3.22 12.78l1.41-1.41" stroke="#08080D" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      ProspectScout
+    </div>
+    <nav class="sidebar-nav">
+      <button class="sidebar-item pipeline-item active" id="sb-pipeline" onclick="sidebarNav('history')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg>
+        Pipeline
+      </button>
+      <button class="sidebar-item" id="sb-dashboard" onclick="sidebarNav('dashboard')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </button>
+      <div class="sidebar-divider"></div>
+      <button class="sidebar-item" id="sb-campaigns" onclick="sidebarNav('campaigns')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Campaigns
+      </button>
+      <button class="sidebar-item" id="sb-searchhistory" onclick="sidebarNav('searchhistory')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Search History
+      </button>
+      <button class="sidebar-item" id="sb-pricing" onclick="sidebarNav('pricing')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        Pricing
+      </button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user" onclick="sidebarNav('dashboard')" id="sidebarUser">
+        <div class="sidebar-avatar" id="sidebarAvatar">?</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="sidebarName">—</div>
+          <div class="sidebar-user-tier" id="sidebarTier">Free</div>
+        </div>
+        <button onclick="event.stopPropagation();doLogout();" style="background:none;border:none;color:var(--text4);cursor:pointer;padding:4px;" title="Sign out">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="app-content" id="appContent"></div>
+
+</div>
+
+<!-- BOTTOM NAV (mobile only) -->
+<nav class="bottom-nav" id="bottomNav">
+  <div class="bottom-nav-inner">
+    <button class="bn-tab" id="bn-dashboard" onclick="sidebarNav('dashboard')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </button>
+    <button class="bn-tab bn-tab-pipeline active" id="bn-pipeline" onclick="sidebarNav('history')">
+      <div class="bn-pip-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#08080D" stroke-width="2.5"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg>
+      </div>
+      <span>Pipeline</span>
+    </button>
+    <button class="bn-tab" id="bn-pricing" onclick="sidebarNav('pricing')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      Pricing
+    </button>
+  </div>
+</nav>
+
+<!-- FAB: mobile add lead -->
+<button class="pipeline-fab" id="pipelineFab" onclick="openKanbanAddLead()" title="Add lead">+</button>
 
 <!-- BETA NAME MODAL -->
 <div class="modal-overlay" id="authModal">
@@ -1278,9 +1794,15 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
         <div class="dash-greeting">Hey, <em id="dashName">there</em> 👋</div>
         <div class="dash-sub" id="dashSub">Your intelligence layer for finding the right prospects.</div>
       </div>
-      <div class="dash-tier-badge">
-        <span class="tier-chip" id="dashTierChip">Free</span>
-        <button class="upgrade-nudge" onclick="showPage('pricing')" id="dashUpgradeBtn">Upgrade plan →</button>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <button onclick="sidebarNav('history')" style="display:flex;align-items:center;gap:7px;padding:9px 16px;background:var(--accent);color:#08080D;border:none;border-radius:var(--r-md);font-family:Syne,sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:box-shadow 0.15s;" onmouseover="this.style.boxShadow='0 0 20px rgba(190,255,0,0.35)'" onmouseout="this.style.boxShadow=''">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg>
+          Go to Pipeline
+        </button>
+        <div class="dash-tier-badge">
+          <span class="tier-chip" id="dashTierChip">Free</span>
+          <button class="upgrade-nudge" onclick="showPage('pricing')" id="dashUpgradeBtn">Upgrade plan →</button>
+        </div>
       </div>
     </div>
 
@@ -1478,62 +2000,53 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 
 <!-- PIPELINE PAGE -->
 <div class="page" id="page-history">
-  <div class="container" style="padding-top:48px; padding-bottom:100px;">
-    <div class="dash-header">
-      <div>
-        <div class="dash-greeting">My <em>Pipeline</em></div>
-        <div class="dash-sub" id="historySub">Track every prospect from first call to closed deal.</div>
+
+  <!-- CLEAN PIPELINE HEADER -->
+  <div class="pipe-header-wrap">
+    <div class="pipe-header">
+      <div class="pipe-title-block">
+        <h2 class="pipe-title">Pipeline</h2>
+        <span class="pipe-sub">Drag cards to move leads through stages</span>
       </div>
-      <button class="nav-btn" onclick="showPage('dashboard')" style="font-size:13px;">← Scout more</button>
-    </div>
-
-    <div class="pipeline-stats" id="historyStats"></div>
-
-    <!-- WIN RATE BY LOCATION -->
-    <div id="locationWins" style="margin-bottom:20px;"></div>
-
-    <!-- OVERDUE BADGE -->
-    <div id="overdueAlert" style="display:none; margin-bottom:16px;"></div>
-
-    <!-- PIPELINE VALUE BAR -->
-    <div id="pipelineValueBar" style="display:none; margin-bottom:20px;"></div>
-
-    <!-- SEARCH + SORT ROW -->
-    <!-- CAMPAIGN PIPELINE STATS -->
-    <div id="campaignPipelineStats"></div>
-
-    <!-- CAMPAIGN FILTER BAR -->
-    <div id="campaignFilterBar"></div>
-
-    <div class="pipeline-controls">
-      <div class="pipeline-search-wrap">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input class="pipeline-search" id="pipelineSearch" type="text" placeholder="Search prospects..." oninput="renderHistoryList(currentHistoryFilter)" />
+      <div class="pipe-controls">
+        <div class="pipe-search-wrap">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--text4);flex-shrink:0;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input class="pipe-search-input" id="pipelineSearch" type="text" placeholder="Search leads…" oninput="renderKanbanBoard()" />
+        </div>
+        <select class="pipe-sort-select" id="pipelineSort" onchange="renderKanbanBoard()">
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+          <option value="score">Highest score</option>
+          <option value="name">Name A–Z</option>
+        </select>
+        <button class="pipe-export-btn" onclick="exportCSV()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export
+        </button>
       </div>
-      <select class="pipeline-sort-select" id="pipelineSort" onchange="renderHistoryList(currentHistoryFilter)">
-        <option value="newest">Newest first</option>
-        <option value="oldest">Oldest first</option>
-        <option value="score">Highest score</option>
-        <option value="status">By status</option>
-        <option value="followup">Follow-up due</option>
-      </select>
-      <button class="export-btn" onclick="exportCSV()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Export CSV
-      </button>
     </div>
+  </div>
 
-    <div class="pipeline-tabs" id="pipelineTabs">
-      <button class="pipeline-tab active" id="tab-all"       onclick="filterHistory('all')">All <span class="pipeline-tab-count" id="cnt-all">0</span></button>
-      <button class="pipeline-tab"        id="tab-new"       onclick="filterHistory('new')"><span class="status-dot dot-new"></span>New <span class="pipeline-tab-count" id="cnt-new">0</span></button>
-      <button class="pipeline-tab"        id="tab-contacted" onclick="filterHistory('contacted')"><span class="status-dot dot-contacted"></span>Contacted <span class="pipeline-tab-count" id="cnt-contacted">0</span></button>
-      <button class="pipeline-tab"        id="tab-engaged"   onclick="filterHistory('engaged')"><span class="status-dot dot-engaged"></span>Responded <span class="pipeline-tab-count" id="cnt-engaged">0</span></button>
-      <button class="pipeline-tab"        id="tab-qualified" onclick="filterHistory('qualified')"><span class="status-dot dot-qualified"></span>Meeting Set <span class="pipeline-tab-count" id="cnt-qualified">0</span></button>
-      <button class="pipeline-tab"        id="tab-converted" onclick="filterHistory('converted')"><span class="status-dot dot-converted"></span>Closed <span class="pipeline-tab-count" id="cnt-converted">0</span></button>
+  <!-- KANBAN BOARD — full-width, horizontal scroll -->
+  <div id="kanbanBoard" style="padding-bottom:100px;">
+    <div class="kanban-wrap">
+      <div class="kanban-board" id="kbInner"></div>
     </div>
+  </div>
 
+  <!-- Keep these hidden — still needed by other JS functions -->
+  <div id="pipelineListView"    style="display:none;">
+    <div class="pipeline-controls"><input class="pipeline-search" id="pipelineSearch2" /><select id="pipelineSort2"></select></div>
+    <div id="pipelineTabs"></div>
     <div id="historyList"></div>
   </div>
+  <div id="historyStats"         style="display:none;"></div>
+  <div id="locationWins"         style="display:none;"></div>
+  <div id="overdueAlert"         style="display:none;"></div>
+  <div id="pipelineValueBar"     style="display:none;"></div>
+  <div id="campaignPipelineStats" style="display:none;"></div>
+  <div id="campaignFilterBar"    style="display:none;"></div>
+  <div id="kbStats"              style="display:none;"></div>
 </div>
 
 
@@ -1813,6 +2326,17 @@ function closeModal()    { document.getElementById('authModal').classList.remove
 function showLogin()     { openModal(); }
 function showSignup()    { openModal(); }
 
+function isDemoEligible() { return false; }
+function scheduleDemoRun() {}
+function updateNavPipeline() {
+  if (!currentUser) return;
+  var count = getHistory(currentUser.email).length;
+  var badge = document.getElementById('nav-pipeline-badge');
+  if (!badge) return;
+  if (count > 0) { badge.textContent = count; badge.style.display = ''; }
+  else { badge.style.display = 'none'; }
+}
+
 function startBeta() {
   var name = (document.getElementById('betaNameInput').value || '').trim();
   if (!name) { document.getElementById('betaNameInput').focus(); return; }
@@ -1828,6 +2352,7 @@ function doSignup() { startBeta(); }
 function doLogout() {
   currentUser = null;
   localStorage.removeItem('ps_beta_user');
+  hideAppShell();
   updateNav();
   showPage('home');
 }
@@ -1881,11 +2406,6 @@ function updateNav() {
             'Pricing'+
           '</button>'+
           '<div class="dropdown-divider"></div>'+
-          '<button class="dropdown-item" onclick="closeProfileMenu();toggleLightMode()" id="modeToggleBtn">'+
-            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'+
-            'Toggle light mode'+
-          '</button>'+
-          '<div class="dropdown-divider"></div>'+
           '<button class="dropdown-item danger" onclick="closeProfileMenu();doLogout()">'+
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>'+
             'Sign out'+
@@ -1912,7 +2432,17 @@ function closeProfileMenu() {
 document.addEventListener('click', function() { closeProfileMenu(); });
 
 // PAGES
-function showPage(name) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); var pg=document.getElementById('page-'+name); if(pg) pg.classList.add('active'); window.scrollTo(0,0); if(name==='pricing') renderPricingGrid('pricingGrid'); }
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  var pg=document.getElementById('page-'+name);
+  if(pg) pg.classList.add('active');
+  window.scrollTo(0,0);
+  if(name==='pricing') renderPricingGrid('pricingGrid');
+  if(name!=='history' && typeof _pipelineView!=='undefined' && _pipelineView==='kanban') setPipelineView('list');
+  // Sync nav
+  var pageToNav = {history:'history',dashboard:'dashboard',pricing:'pricing',campaigns:'campaigns',searchhistory:'searchhistory',calendar:'calendar',analytics:'analytics'};
+  if (pageToNav[name]) { updateSidebarActive(name); updateBottomNavActive(name); }
+}
 function goHome()        { currentUser ? showPage('dashboard') : showPage('home'); }
 let _logoTaps = 0, _logoTimer = null;
 function handleLogoClick() {
@@ -1926,7 +2456,72 @@ function handleLogoClick() {
   }
   _logoTimer = setTimeout(function(){ _logoTaps=0; goHome(); }, 400);
 }
-function enterDashboard(){ updateNav(); updateDashboard(); showPage('dashboard'); checkForResume(); renderDashSections(); renderGoalTracker(); updateOverdueBadge(); setTimeout(checkOnboarding, 400); }
+function enterDashboard(){ updateNav(); showAppShell(); openHistoryPage(); updateDashboard(); checkForResume(); renderDashSections(); renderGoalTracker(); updateOverdueBadge(); setTimeout(checkOnboarding, 400); }
+
+function showAppShell() {
+  var shell = document.getElementById('appShell');
+  var bottomNav = document.getElementById('bottomNav');
+  var fab = document.getElementById('pipelineFab');
+  if (shell) shell.classList.add('visible');
+  if (bottomNav) bottomNav.style.display = 'block';
+  if (fab) fab.style.display = '';
+  updateSidebarUser();
+}
+
+function hideAppShell() {
+  var shell = document.getElementById('appShell');
+  var bottomNav = document.getElementById('bottomNav');
+  var fab = document.getElementById('pipelineFab');
+  if (shell) shell.classList.remove('visible');
+  if (bottomNav) bottomNav.style.display = 'none';
+  if (fab) fab.style.display = 'none';
+}
+
+function updateSidebarUser() {
+  if (!currentUser) return;
+  var av = document.getElementById('sidebarAvatar');
+  var nm = document.getElementById('sidebarName');
+  var tr = document.getElementById('sidebarTier');
+  var t = TIERS[currentUser.tier] || TIERS.free;
+  if (av) av.textContent = currentUser.name.charAt(0).toUpperCase();
+  if (nm) nm.textContent = currentUser.name;
+  if (tr) tr.textContent = t.name + ' plan';
+}
+
+function sidebarNav(page) {
+  // Map page names to openers
+  if (page === 'history') { openHistoryPage(); }
+  else if (page === 'campaigns') { openCampaignsPage(); }
+  else if (page === 'searchhistory') { openSearchHistory(); }
+  else if (page === 'pricing') { showPage('pricing'); }
+  else { showPage(page); }
+  updateSidebarActive(page);
+  updateBottomNavActive(page);
+}
+
+function updateSidebarActive(page) {
+  var map = { history:'sb-pipeline', dashboard:'sb-dashboard', campaigns:'sb-campaigns', searchhistory:'sb-searchhistory', pricing:'sb-pricing' };
+  document.querySelectorAll('.sidebar-item').forEach(function(el) { el.classList.remove('active'); });
+  var activeId = map[page];
+  if (activeId) { var el = document.getElementById(activeId); if (el) el.classList.add('active'); }
+  // Show FAB only on pipeline
+  var fab = document.getElementById('pipelineFab');
+  if (fab) fab.style.display = (page === 'history') ? '' : 'none';
+}
+
+function updateBottomNavActive(page) {
+  document.querySelectorAll('.bn-tab').forEach(function(el) { el.classList.remove('active'); });
+  var map = { history:'bn-pipeline', dashboard:'bn-dashboard', pricing:'bn-pricing' };
+  var id = map[page];
+  if (id) { var el = document.getElementById(id); if (el) el.classList.add('active'); }
+}
+
+function openKanbanAddLead() {
+  openHistoryPage();
+  setPipelineView('kanban');
+}
+
+
 
 // DASHBOARD STATE
 function updateEmptyHint() { /* disabled — search form is always visible */ }
@@ -2418,14 +3013,179 @@ let currentSearchQuery = '';
 
 function openHistoryPage() {
   currentHistoryFilter = 'all';
-  renderHistoryStats();
-  renderLocationWins();
-  renderOverdueAlert();
-  renderPipelineValueBar();
-  _pipelineCampaignFilter = 'all';
-  renderCampaignFilterBar();
-  renderHistoryList('all');
   showPage('history');
+  renderKanbanBoard();
+  // Silently refresh hidden elements so other parts of app stay consistent
+  try { renderHistoryStats(); } catch(e) {}
+  try { renderHistoryList('all'); } catch(e) {}
+}
+
+// ── PIPELINE VIEW TOGGLE (kept for compat, kanban is now default/only view) ──
+var _pipelineView = 'kanban';
+
+function setPipelineView(view) {
+  _pipelineView = 'kanban'; // always kanban
+  renderKanbanBoard();
+}
+
+var _kbDragId = null;
+var _KB_COLS = [
+  { id:'new',       label:'New',         color:'var(--text3)',  next:'contacted', prev:null },
+  { id:'contacted', label:'Contacted',   color:'var(--accent)', next:'engaged',   prev:'new' },
+  { id:'engaged',   label:'Responded',   color:'var(--teal)',   next:'qualified', prev:'contacted' },
+  { id:'qualified', label:'Meeting Set',  color:'var(--amber)',  next:'converted', prev:'engaged' },
+  { id:'converted', label:'Closed',      color:'var(--purple)', next:null,        prev:'qualified' }
+];
+
+function renderKanbanBoard() {
+  if (!currentUser) return;
+  var history = getHistory(currentUser.email);
+  var inner   = document.getElementById('kbInner');
+  var statsEl = document.getElementById('kbStats');
+  if (!inner) return;
+
+  // Search + sort from new pipe controls
+  var searchQ = (document.getElementById('pipelineSearch') || {}).value || '';
+  searchQ = searchQ.trim().toLowerCase();
+  var sortBy  = (document.getElementById('pipelineSort') || {}).value || 'newest';
+
+  // Filter
+  if (searchQ) {
+    history = history.filter(function(h) {
+      return (h.name||'').toLowerCase().includes(searchQ) ||
+             (h.type||'').toLowerCase().includes(searchQ) ||
+             (h.address||'').toLowerCase().includes(searchQ);
+    });
+  }
+
+  // Sort
+  history = history.slice().sort(function(a,b) {
+    if (sortBy === 'oldest') return (a.savedAt||0) - (b.savedAt||0);
+    if (sortBy === 'score')  return (b.score||0) - (a.score||0);
+    if (sortBy === 'name')   return (a.name||'').localeCompare(b.name||'');
+    return (b.savedAt||0) - (a.savedAt||0); // newest
+  });
+
+  // Group by status
+  var groups = {};
+  _KB_COLS.forEach(function(c) { groups[c.id] = []; });
+  history.forEach(function(h) {
+    var s = h.status || 'new';
+    if (!groups[s]) s = 'new';
+    groups[s].push(h);
+  });
+
+  // Columns
+  inner.innerHTML = _KB_COLS.map(function(col) {
+    var cards = groups[col.id];
+    return '<div class="kanban-col" data-col="'+col.id+'">' +
+      '<div class="kanban-col-head">' +
+        '<span class="kanban-col-label"><span class="kb-col-dot" style="background:'+col.color+';"></span>'+col.label+'</span>' +
+        '<span class="kanban-col-count">'+cards.length+'</span>' +
+      '</div>' +
+      '<div class="kanban-col-body">' +
+        (cards.length === 0
+          ? '<div class="kb-empty"><span class="kb-empty-icon">◻</span>No leads yet</div>'
+          : cards.map(function(h) { return _kbCard(h, col); }).join('')) +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  // Wire drag events
+  _kbWireDrag(inner);
+}
+
+function _kbCard(h, col) {
+  var score    = h.score || 0;
+  var scoreCls = score >= 8 ? 'kb-score-high' : score >= 6 ? 'kb-score-mid' : 'kb-score-low';
+  var addr     = (h.address || h.type || '').split(',')[0];
+  var phone    = h.phone || '';
+  var name     = (h.name || 'Unknown').replace(/</g,'&lt;').replace(/'/g,'&#39;');
+  var isHot    = (h.status === 'engaged' || h.status === 'qualified');
+  var PCT      = { new:10, contacted:30, engaged:55, qualified:80, converted:100 };
+  var PCOL     = { new:'var(--text4)', contacted:'var(--accent)', engaged:'var(--teal)', qualified:'var(--amber)', converted:'var(--purple)' };
+  var pct      = PCT[h.status||'new'] || 10;
+  var pColor   = PCOL[h.status||'new'] || 'var(--text4)';
+
+  var callBtn = phone
+    ? '<a href="tel:'+phone.replace(/\D/g,'')+'" class="kb-btn kb-call" onclick="event.stopPropagation()">Call</a>'
+    : '';
+  var backBtn = col.prev
+    ? '<button class="kb-btn kb-back" onclick="event.stopPropagation();_kbMove(\''+h.id+'\',\''+col.prev+'\')">←</button>'
+    : '';
+  var advBtn = col.next
+    ? '<button class="kb-btn kb-advance" onclick="event.stopPropagation();_kbMove(\''+h.id+'\',\''+col.next+'\')">'+(
+        {contacted:'Contacted',engaged:'Responded',qualified:'Meeting',converted:'Closed'}[col.next]||col.next
+      )+' →</button>'
+    : '';
+  var delBtn = '<button class="kb-btn kb-del" onclick="event.stopPropagation();_kbDel(\''+h.id+'\',\''+name+'\')">✕</button>';
+
+  return '<div class="kb-card'+(isHot?' kb-hot':'')+'" draggable="true" data-id="'+h.id+'">' +
+    '<div class="kb-card-name">'+name+'</div>' +
+    '<div class="kb-card-type">'+(h.type||'')+'</div>' +
+    (phone ? '<div class="kb-card-phone">'+phone+'</div>' : '') +
+    '<div class="kb-card-foot">' +
+      '<span class="kb-score '+scoreCls+'">'+score+'</span>' +
+      '<span class="kb-addr">'+addr+'</span>' +
+    '</div>' +
+    '<div class="kb-actions">'+callBtn+backBtn+advBtn+delBtn+'</div>' +
+    '<div class="kb-progress"><div class="kb-progress-fill" style="width:'+pct+'%;background:'+pColor+';"></div></div>' +
+  '</div>';
+}
+
+function _kbMove(id, newStatus) {
+  if (!currentUser) return;
+  var hist = getHistory(currentUser.email);
+  var item = hist.find(function(h) { return h.id === id; });
+  if (!item) return;
+  item.status = newStatus;
+  item.statusUpdatedAt = Date.now();
+  saveHistory(currentUser.email, hist);
+  renderKanbanBoard();
+  if (typeof renderHistoryStats === 'function') renderHistoryStats();
+  if (newStatus === 'converted' && typeof fireConfetti === 'function') { fireConfetti(); showToast('🎉 Deal closed!', 'success'); }
+}
+
+function _kbDel(id, name) {
+  if (!confirm('Remove ' + name + '?')) return;
+  if (!currentUser) return;
+  var hist = getHistory(currentUser.email).filter(function(h) { return h.id !== id; });
+  saveHistory(currentUser.email, hist);
+  renderKanbanBoard();
+  if (typeof renderHistoryStats === 'function') renderHistoryStats();
+}
+
+function _kbWireDrag(inner) {
+  inner.querySelectorAll('.kb-card').forEach(function(card) {
+    card.addEventListener('dragstart', function(e) {
+      _kbDragId = card.dataset.id;
+      card.classList.add('kb-dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', function() {
+      card.classList.remove('kb-dragging');
+      _kbDragId = null;
+      inner.querySelectorAll('.kanban-col').forEach(function(c) { c.classList.remove('kb-drag-over'); });
+    });
+  });
+  inner.querySelectorAll('.kanban-col').forEach(function(col) {
+    col.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      inner.querySelectorAll('.kanban-col').forEach(function(c) { c.classList.remove('kb-drag-over'); });
+      col.classList.add('kb-drag-over');
+    });
+    col.addEventListener('dragleave', function(e) {
+      if (!col.contains(e.relatedTarget)) col.classList.remove('kb-drag-over');
+    });
+    col.addEventListener('drop', function(e) {
+      e.preventDefault();
+      col.classList.remove('kb-drag-over');
+      if (!_kbDragId) return;
+      _kbMove(_kbDragId, col.dataset.col);
+      _kbDragId = null;
+    });
+  });
 }
 
 function filterHistory(filter) {
@@ -2780,10 +3540,6 @@ function renderMobileMenu() {
         '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>' +
         'Pricing' +
       '</button>' +
-
-      '<div class="mobile-menu-divider"></div>' +
-
-      '<button class="mobile-menu-item" onclick="closeMobileMenu();toggleLightMode()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/></svg> Toggle light mode</button>' +
 
       '<div class="mobile-menu-divider"></div>' +
 
@@ -4130,21 +4886,6 @@ function addToPipeline(i) {
 
 
 function toggleCard(i){}
-
-// ── LIGHT/DARK MODE ──────────────────────────────────────────────────────────
-function toggleLightMode() {
-  var isLight = document.body.classList.toggle('light-mode');
-  localStorage.setItem('ps_light_mode', isLight ? '1' : '0');
-  var btn = document.getElementById('modeToggleBtn');
-  if (btn) btn.innerHTML = isLight
-    ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>'
-    : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
-}
-function initLightMode() {
-  if (localStorage.getItem('ps_light_mode') === '1') {
-    document.body.classList.add('light-mode');
-  }
-}
 
 // ── CALL TIMER ────────────────────────────────────────────────────────────────
 var _timerInterval = null;
