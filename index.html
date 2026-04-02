@@ -2486,7 +2486,7 @@ function openAccessModal(tier) {
       ? '<div class="modal-sub">All '+_LA[tier].max+' spots are taken. Join the waitlist and we\'ll reach out when space opens up.</div>'
         +'<div id="accessErr" class="modal-error"></div>'
         +'<div class="modal-field"><label>Your email</label><input class="modal-input" id="accessWaitlistEmail" type="email" placeholder="you@example.com" /></div>'
-        +'<button class="modal-btn" style="background:'+btnBg+';color:'+btnClr+';" 'onclick="submitWaitlist(' + "'" + tier + "'" + ')"' →</button>'
+        +'<button class="modal-btn" style="background:'+btnBg+';color:'+btnClr+';" onclick="submitWaitlist(\''+tier+'\')"></button>'
       : '<div class="modal-sub">'+spots+' spot'+(spots===1?'':'s')+' remaining. Enter your access code to unlock '+label+'.</div>'
         +'<div id="accessErr" class="modal-error"></div>'
         +'<div class="modal-field"><label>Access code</label><input class="modal-input" id="accessCodeInput" type="text" placeholder="e.g. PLUS-EARLY1" style="letter-spacing:1px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key===\'Enter\')submitAccessCode(\''+tier+'\')" /></div>'
