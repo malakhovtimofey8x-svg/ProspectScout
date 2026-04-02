@@ -4867,14 +4867,7 @@ function exportPDF() {
     '<h1>🎯 ProspectScout — Prospect Sheet</h1>' +
     '<div class="meta">Generated ' + new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) + ' · ' + businesses.length + ' prospects</div>' +
     '<table><thead><tr><th>#</th><th>Business</th><th>Score</th><th>Priority</th></tr></thead><tbody>' +
-    /*
-    rows + '</tbody></table><form name="waitlist" netlify netlify-honeypot="bot-field" hidden>
-    */
-  <input name="bot-field" />
-  <input name="tier" />
-  <input name="email" type="email" />
-</form>
-</body></html>';
+   rows + '</tbody></table></body></html>';
 
   var blob = new Blob([html], {type:'text/html'});
   var url  = URL.createObjectURL(blob);
