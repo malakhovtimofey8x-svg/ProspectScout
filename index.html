@@ -68,8 +68,8 @@ body::before { content:''; position:fixed; top:0;right:0;bottom:0;left:0; backgr
 
 /* HEADER */
 header { padding:16px 0; padding-top:max(16px, env(safe-area-inset-top)); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; background:rgba(6,6,12,0.92); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); }
-.nav { display:flex; align-items:center; justify-content:space-between; }
-.logo { font-family:Syne,sans-serif; font-size:18px; font-weight:800; letter-spacing:-0.5px; display:flex; align-items:center; gap:8px; cursor:pointer; }
+.nav { display:flex; align-items:center; gap:8px; }
+.logo { font-family:Syne,sans-serif; font-size:18px; font-weight:800; letter-spacing:-0.5px; display:flex; align-items:center; gap:8px; cursor:pointer; margin-right:auto; flex-shrink:0; }
 .logo-icon { width:32px; height:32px; background:var(--accent); border-radius:8px; display:flex; align-items:center; justify-content:center; animation:pulse 3s ease-in-out infinite; }
 @keyframes pulse { 0%,100%{box-shadow:0 0 16px rgba(190,255,0,0.25)} 50%{box-shadow:0 0 24px rgba(190,255,0,0.4)} }
 .nav-right { display:flex; align-items:center; gap:8px; }
@@ -1122,14 +1122,72 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   .pipe-search-wrap { width:100%; min-width:0; }
   .pipe-sort-select, .pipe-export-btn { width:100%; min-height:44px; }
 
-  /* Kanban board */
-  .kanban-wrap { padding:0 16px 40px; }
-  .kanban-col { flex:0 0 280px; width:280px; max-height:calc(100vh - 200px); }
-  .kanban-board { gap:14px; }
-  .kb-card { padding:14px; }
+  /* Kanban mobile */
+  .kb-wrap { padding:0 16px 24px; }
+  .kb-col { width:260px; flex:0 0 260px; max-height:calc(100vh - 180px); }
   .kb-btn { min-height:36px; padding:7px 10px; }
-  .kanban-col-head { padding:14px 14px 12px; }
+  .kb-stats { margin:0 16px 12px; }
+  .kb-hot-alert, .kb-streak { margin-left:16px; margin-right:16px; }
 }
+
+/* ── KANBAN ────────────────────────────────────────────────────────── */
+.kb-streak { display:none; margin:0 28px 12px; padding:10px 16px; background:rgba(255,176,32,0.06); border:1px solid rgba(255,176,32,0.12); border-radius:var(--r-md); font-size:13px; font-weight:600; color:var(--amber); }
+.kb-streak.visible { display:block; }
+.kb-hot-alert { display:none; margin:0 28px 12px; padding:10px 16px; background:rgba(255,120,50,0.06); border:1px solid rgba(255,120,50,0.12); border-radius:var(--r-md); cursor:pointer; transition:background 0.15s; }
+.kb-hot-alert:hover { background:rgba(255,120,50,0.1); }
+.kb-hot-alert.visible { display:flex; align-items:center; gap:8px; }
+.kb-hot-alert-text { font-size:13px; font-weight:600; color:#FF8844; }
+.kb-hot-alert-arrow { font-size:11px; color:rgba(255,120,50,0.4); margin-left:auto; }
+.kb-stats { display:flex; gap:8px; flex-wrap:wrap; margin:0 28px 16px; }
+.kb-stat { flex:1; min-width:70px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-md); padding:12px 8px; text-align:center; }
+.kb-stat-num { font-family:Syne,sans-serif; font-size:20px; font-weight:800; line-height:1; margin-bottom:2px; }
+.kb-stat-label { font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.8px; font-weight:600; }
+.kb-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; padding:0 28px 32px; scrollbar-width:thin; scrollbar-color:var(--border2) transparent; }
+.kb-wrap::-webkit-scrollbar { height:6px; }
+.kb-wrap::-webkit-scrollbar-thumb { background:var(--border2); border-radius:4px; }
+.kb-board { display:flex; gap:12px; width:max-content; padding:4px 0; }
+.kb-col { width:280px; flex:0 0 280px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-lg); display:flex; flex-direction:column; max-height:calc(100vh - 220px); min-height:200px; }
+.kb-col-head { padding:12px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); flex-shrink:0; }
+.kb-col-label { font-family:Syne,sans-serif; font-size:11px; font-weight:700; letter-spacing:0.8px; color:var(--text3); text-transform:uppercase; display:flex; align-items:center; gap:8px; }
+.kb-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.kb-col-count { font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; background:var(--bg4); color:var(--text4); }
+.kb-col-body { flex:1; overflow-y:auto; padding:8px; display:flex; flex-direction:column; gap:8px; scrollbar-width:thin; scrollbar-color:var(--border2) transparent; }
+.kb-col-body::-webkit-scrollbar { width:3px; }
+.kb-col-body::-webkit-scrollbar-thumb { background:var(--border2); border-radius:3px; }
+.kb-card { background:var(--bg3); border:1px solid var(--border); border-radius:var(--r-md); padding:12px; transition:border-color 0.15s; }
+.kb-card:hover { border-color:var(--border2); }
+.kb-card.hot { border-color:rgba(255,120,50,0.2); background:rgba(255,120,50,0.03); }
+.kb-card-top { display:flex; align-items:center; justify-content:space-between; gap:6px; margin-bottom:2px; }
+.kb-card-name { font-size:13px; font-weight:600; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; min-width:0; }
+.kb-hot-badge { font-size:9px; font-weight:700; padding:2px 6px; border-radius:8px; background:rgba(255,120,50,0.12); color:#FF8844; border:1px solid rgba(255,120,50,0.15); flex-shrink:0; }
+.kb-card-type { font-size:11px; color:var(--text4); margin-bottom:6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.kb-card-score { font-family:Syne,sans-serif; font-size:11px; font-weight:700; padding:2px 8px; border-radius:6px; display:inline-block; margin-bottom:8px; }
+.kb-card-score.high { background:rgba(190,255,0,0.1); color:var(--accent); }
+.kb-card-score.mid { background:rgba(255,176,32,0.1); color:var(--amber); }
+.kb-card-score.low { background:var(--bg4); color:var(--text4); }
+.kb-next-row { display:flex; align-items:center; gap:6px; margin-bottom:8px; }
+.kb-next-label { font-size:10px; color:var(--text4); flex-shrink:0; }
+.kb-next-select { font-family:'Inter',sans-serif; font-size:11px; padding:4px 8px; min-height:28px; border-radius:6px; border:1px solid var(--border); background:var(--bg2); color:var(--text3); cursor:pointer; outline:none; -webkit-appearance:none; appearance:none; flex:1; min-width:0; }
+.kb-card-note { width:100%; background:var(--bg2); border:1px solid var(--border); border-radius:6px; padding:6px 8px; font-family:'Inter',sans-serif; font-size:11px; color:var(--text2); resize:none; outline:none; min-height:32px; line-height:1.4; margin-bottom:8px; transition:border-color 0.15s; box-sizing:border-box; }
+.kb-card-note::placeholder { color:var(--text4); }
+.kb-card-note:focus { border-color:rgba(190,255,0,0.2); }
+.kb-card-actions { display:flex; gap:4px; flex-wrap:wrap; }
+.kb-btn { font-family:'Inter',sans-serif; font-size:11px; font-weight:600; padding:6px 10px; min-height:32px; border-radius:6px; border:1px solid var(--border); background:transparent; color:var(--text3); cursor:pointer; transition:all 0.1s; white-space:nowrap; display:inline-flex; align-items:center; gap:3px; -webkit-tap-highlight-color:transparent; text-decoration:none; }
+.kb-btn:hover { color:var(--text2); border-color:var(--border2); }
+.kb-btn.kb-call { background:var(--accent); color:#08080D; border-color:transparent; font-weight:700; }
+.kb-btn.kb-call:hover { box-shadow:0 0 8px rgba(190,255,0,0.2); }
+.kb-btn.kb-move { background:var(--accent-dim); color:var(--accent); border-color:rgba(190,255,0,0.15); }
+.kb-btn.kb-move:hover { background:rgba(190,255,0,0.12); }
+.kb-btn.kb-back { color:var(--text4); }
+.kb-btn.kb-del { color:var(--text4); }
+.kb-btn.kb-del:hover { color:#FF8080; border-color:rgba(255,80,80,0.2); }
+.kb-empty { text-align:center; padding:32px 12px; color:var(--text4); font-size:12px; line-height:1.6; }
+.kb-empty-icon { font-size:16px; margin-bottom:4px; opacity:0.3; }
+.pipe-nav-btn { display:none; align-items:center; gap:6px; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; padding:8px 14px; min-height:44px; border-radius:var(--r-sm); border:1px solid var(--border2); background:var(--bg2); color:var(--text2); cursor:pointer; transition:all 0.15s; white-space:nowrap; -webkit-tap-highlight-color:transparent; flex-shrink:0; }
+.pipe-nav-btn:hover { border-color:rgba(190,255,0,0.2); color:var(--text); background:var(--bg3); }
+.pipe-nav-btn.active { border-color:rgba(190,255,0,0.25); background:var(--accent-dim); color:var(--accent); }
+.pipe-nav-count { font-size:10px; font-weight:700; padding:1px 6px; border-radius:10px; background:var(--accent-dim); color:var(--accent); border:1px solid rgba(190,255,0,0.15); min-width:18px; text-align:center; }
+@media(max-width:640px) { .pipe-nav-btn { padding:8px 10px; } .pipe-nav-label { display:none; } }
 </style>
 </head>
 <body style="background:#08080D;">
@@ -1171,6 +1229,11 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
         ProspectScout
       </div>
       <div class="nav-right" id="navRight"></div>
+      <button class="pipe-nav-btn" id="pipeNavBtn" onclick="openHistoryPage()" style="display:none;" aria-label="Pipeline">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg>
+        <span class="pipe-nav-label">Pipeline</span>
+        <span class="pipe-nav-count" id="pipeNavCount" style="display:none;">0</span>
+      </button>
       <button class="hamburger" id="hamburgerBtn" onclick="toggleMobileMenu()" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
@@ -1433,6 +1496,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
       <div class="dash-tier-badge">
         <span class="tier-chip" id="dashTierChip">Free</span>
         <button class="upgrade-nudge" onclick="showPage('pricing')" id="dashUpgradeBtn">Upgrade plan →</button>
+        <span id="dashSpotsHint" style="font-size:10px;color:var(--teal);font-weight:600;display:none;"></span>
       </div>
     </div>
 
@@ -1630,7 +1694,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 
 <!-- PIPELINE PAGE -->
 <div class="page" id="page-history">
-  <div class="container" class="page-inner">
+  <div class="container" style="padding-top:48px; padding-bottom:0;">
     <div class="dash-header">
       <div>
         <div class="dash-greeting">My <em>Pipeline</em></div>
@@ -1638,54 +1702,14 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
       </div>
       <button class="nav-btn" onclick="showPage('dashboard')" style="font-size:13px;">← Scout more</button>
     </div>
-
-    <div class="pipeline-stats" id="historyStats"></div>
-
-    <!-- WIN RATE BY LOCATION -->
-    <div id="locationWins" style="margin-bottom:20px;"></div>
-
-    <!-- OVERDUE BADGE -->
-    <div id="overdueAlert" style="display:none; margin-bottom:16px;"></div>
-
-    <!-- PIPELINE VALUE BAR -->
-    <div id="pipelineValueBar" style="display:none; margin-bottom:20px;"></div>
-
-    <!-- SEARCH + SORT ROW -->
-    <!-- CAMPAIGN PIPELINE STATS -->
-    <div id="campaignPipelineStats"></div>
-
-    <!-- CAMPAIGN FILTER BAR -->
-    <div id="campaignFilterBar"></div>
-
-    <div class="pipeline-controls">
-      <div class="pipeline-search-wrap">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input class="pipeline-search" id="pipelineSearch" type="text" placeholder="Search prospects..." oninput="renderHistoryList(currentHistoryFilter)" />
-      </div>
-      <select class="pipeline-sort-select" id="pipelineSort" onchange="renderHistoryList(currentHistoryFilter)">
-        <option value="newest">Newest first</option>
-        <option value="oldest">Oldest first</option>
-        <option value="score">Highest score</option>
-        <option value="status">By status</option>
-        <option value="followup">Follow-up due</option>
-      </select>
-      <button class="export-btn" onclick="exportCSV()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Export CSV
-      </button>
-    </div>
-
-    <div class="pipeline-tabs" id="pipelineTabs">
-      <button class="pipeline-tab active" id="tab-all"       onclick="filterHistory('all')">All <span class="pipeline-tab-count" id="cnt-all">0</span></button>
-      <button class="pipeline-tab"        id="tab-new"       onclick="filterHistory('new')"><span class="status-dot dot-new"></span>New <span class="pipeline-tab-count" id="cnt-new">0</span></button>
-      <button class="pipeline-tab"        id="tab-contacted" onclick="filterHistory('contacted')"><span class="status-dot dot-contacted"></span>Contacted <span class="pipeline-tab-count" id="cnt-contacted">0</span></button>
-      <button class="pipeline-tab"        id="tab-engaged"   onclick="filterHistory('engaged')"><span class="status-dot dot-engaged"></span>Responded <span class="pipeline-tab-count" id="cnt-engaged">0</span></button>
-      <button class="pipeline-tab"        id="tab-qualified" onclick="filterHistory('qualified')"><span class="status-dot dot-qualified"></span>Meeting Set <span class="pipeline-tab-count" id="cnt-qualified">0</span></button>
-      <button class="pipeline-tab"        id="tab-converted" onclick="filterHistory('converted')"><span class="status-dot dot-converted"></span>Closed <span class="pipeline-tab-count" id="cnt-converted">0</span></button>
-    </div>
-
-    <div id="historyList"></div>
   </div>
+  <div id="kbStreak" class="kb-streak"></div>
+  <div id="kbHotAlert" class="kb-hot-alert" onclick="scrollToFirstHot()">
+    <span class="kb-hot-alert-text" id="kbHotText"></span>
+    <span class="kb-hot-alert-arrow">↓ View</span>
+  </div>
+  <div id="kbStats" class="kb-stats"></div>
+  <div id="kbMount"></div>
 </div>
 
 
@@ -1972,12 +1996,18 @@ function showSignup()    { openModal(); }
 function isDemoEligible() { return false; }
 function scheduleDemoRun() {}
 function updateNavPipeline() {
-  if (!currentUser) return;
-  var badge = document.getElementById('nav-pipeline-badge');
-  if (!badge) return;
-  var count = getHistory(currentUser.email).length;
-  if (count > 0) { badge.textContent = count; badge.style.display = ''; }
-  else { badge.style.display = 'none'; }
+  var btn = document.getElementById('pipeNavBtn');
+  if (!btn) return;
+  if (!currentUser) { btn.style.display = 'none'; return; }
+  btn.style.display = 'inline-flex';
+  var history = getHistory(currentUser.email);
+  var countEl = document.getElementById('pipeNavCount');
+  if (countEl) {
+    if (history.length > 0) { countEl.textContent = history.length; countEl.style.display = ''; }
+    else { countEl.style.display = 'none'; }
+  }
+  var onPipeline = document.getElementById('page-history') && document.getElementById('page-history').classList.contains('active');
+  btn.classList.toggle('active', !!onPipeline);
 }
 
 function startBeta() {
@@ -2026,7 +2056,10 @@ function updateNav() {
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>'+
             'Dashboard'+
           '</button>'+
-          /* Pipeline hidden - CRM features temporarily disabled */
+          '<button class="dropdown-item" onclick="closeProfileMenu();openHistoryPage()">'+
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg>'+
+            'Pipeline'+
+          '</button>'+
           '<button class="dropdown-item" onclick="closeProfileMenu();openSearchHistory()">'+
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'+
             'Search History'+
@@ -2064,6 +2097,7 @@ function updateNav() {
       '<button class="nav-btn" onclick="showPage(&quot;pricing&quot;)">Pricing</button>'+
       '<button class="nav-btn primary" onclick="openModal(&quot;signup&quot;)">Get started</button>';
   }
+  updateNavPipeline();
 }
 
 function toggleProfileMenu(e) {
@@ -2077,9 +2111,15 @@ function closeProfileMenu() {
 }
 // Close dropdown when clicking outside
 document.addEventListener('click', function() { closeProfileMenu(); });
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeAccessModal();
+    closeModal();
+  }
+});
 
 // PAGES
-function showPage(name) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); var pg=document.getElementById('page-'+name); if(pg) pg.classList.add('active'); window.scrollTo(0,0); if(name==='pricing') renderPricingGrid('pricingGrid'); }
+function showPage(name) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); var pg=document.getElementById('page-'+name); if(pg) pg.classList.add('active'); window.scrollTo(0,0); if(name==='pricing') renderPricingGrid('pricingGrid'); updateNavPipeline(); }
 function goHome()        { currentUser ? showPage('dashboard') : showPage('home'); }
 let _logoTaps = 0, _logoTimer = null;
 function handleLogoClick() {
@@ -2302,6 +2342,18 @@ function updateDashboard() {
   chip.className = `tier-chip ${tier.chipClass}`;
 
   document.getElementById('dashUpgradeBtn').style.display = currentUser.tier==='pro' ? 'none' : '';
+
+  // Show spots remaining hint for free users
+  var spotsHint = document.getElementById('dashSpotsHint');
+  if (spotsHint) {
+    if (currentUser.tier === 'free') {
+      var plusSpots = _laSpots('plus');
+      spotsHint.textContent = plusSpots > 0 ? plusSpots+' Plus spots left' : 'Waitlist open';
+      spotsHint.style.display = '';
+    } else {
+      spotsHint.style.display = 'none';
+    }
+  }
   document.getElementById('usageNumbers').textContent = `${used} / ${limit} today`;
 
   const fill = document.getElementById('usageFill');
@@ -2347,9 +2399,176 @@ function renderPricingGrid(id) {
     </div>`).join('')}</div>`;
 }
 
+// ── LIMITED ACCESS SYSTEM ─────────────────────────────────────────
+var _LA = {
+  plus: { max:50, codes:['PLUS-EARLY1','PLUS-EARLY2','PLUS-VIP01','PLUS-VIP02','PLUS-VIP03','PLUS-BETA1','PLUS-BETA2','PLUS-BETA3','PLUS-BETA4','PLUS-BETA5'] },
+  pro:  { max:25, codes:['PRO-ELITE01','PRO-ELITE02','PRO-VIP001','PRO-VIP002','PRO-VIP003','PRO-ALPHA1','PRO-ALPHA2'] }
+};
+
+function _laUsed(tier) {
+  try { return JSON.parse(localStorage.getItem('ps_la_used_'+tier)||'0'); } catch{ return 0; }
+}
+function _laIncrement(tier) {
+  localStorage.setItem('ps_la_used_'+tier, String(_laUsed(tier)+1));
+}
+function _laUnlocked(tier) {
+  return localStorage.getItem('ps_la_unlocked_'+tier) === '1';
+}
+function _laUnlock(tier) {
+  if (_laUnlocked(tier)) return; // already counted, don't double-increment
+  localStorage.setItem('ps_la_unlocked_'+tier,'1');
+  _laIncrement(tier);
+}
+function _laSpots(tier) {
+  return Math.max(0, _LA[tier].max - _laUsed(tier));
+}
+function _laValidCode(tier, code) {
+  return _LA[tier].codes.includes((code||'').trim().toUpperCase());
+}
+
+function renderPricingGrid(id) {
+  const plans = [
+    { id:'free', name:'Free',  price:'$0',  period:'forever',  limit:'3 prospects / search · 5/day',   badge:null,          cardCls:'',          btnCls:'price-btn-free', btnTxt:'Get started free',  checkCls:'check',        features:['3 prospects per search','5 searches/day total','Contact info & maps','AI-written talk tracks','Objection handling scripts'] },
+    { id:'plus', name:'Plus',  price:'$19', period:'/month',   limit:'5 prospects / search · 25/day',  badge:'Most Popular', cardCls:'featured',  btnCls:'price-btn-plus', btnTxt:'Get early access', checkCls:'check',        features:['5 prospects per search','25 searches/day total','Everything in Free','Priority business data','Search history & tracking'] },
+    { id:'pro',  name:'Pro',   price:'$49', period:'/month',   limit:'25 prospects / search · 100/day',badge:null,           cardCls:'pro-card',  btnCls:'price-btn-pro',  btnTxt:'Get early access', checkCls:'check check-purple', features:['25 prospects per search','100 searches/day total','Everything in Plus','Export to CSV','Team sharing (soon)'] }
+  ];
+  document.getElementById(id).innerHTML = '<div class="pricing-grid">'+plans.map(function(p){
+    var spots = (p.id!=='free') ? _laSpots(p.id) : null;
+    var isFull = spots !== null && spots <= 0;
+    var isUnlocked = (p.id!=='free') && _laUnlocked(p.id);
+    var spotsHtml = '';
+    if (spots !== null && !isUnlocked) {
+      var color = spots <= 5 ? '#FF8080' : spots <= 15 ? 'var(--amber)' : 'var(--teal)';
+      spotsHtml = '<div style="font-size:11px;font-weight:700;color:'+color+';margin-bottom:12px;display:flex;align-items:center;gap:5px;">'
+        +'<span style="width:6px;height:6px;border-radius:50%;background:'+color+';flex-shrink:0;display:inline-block;"></span>'
+        +(isFull ? 'Waitlist only' : spots+' spot'+(spots===1?'':'s')+' left')
+        +'</div>';
+    } else if (isUnlocked) {
+      spotsHtml = '<div style="font-size:11px;font-weight:700;color:var(--teal);margin-bottom:12px;display:flex;align-items:center;gap:5px;">'
+        +'<span style="width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0;display:inline-block;"></span>Access unlocked</div>';
+    }
+    var btnTxt = isUnlocked ? '✓ Unlocked — Get started' : isFull ? 'Join waitlist' : p.btnTxt;
+    var btnStyle = isUnlocked ? 'opacity:0.7;cursor:default;' : '';
+    return '<div class="price-card '+p.cardCls+'">'
+      +(p.badge?'<div class="popular-badge">'+p.badge+'</div>':'<div class="badge-spacer"></div>')
+      +'<div class="price-tier">'+p.name+'</div>'
+      +'<div class="price-amount">'+p.price+'<span>'+p.period+'</span></div>'
+      +'<div class="price-period">'+(p.id==='free'?'No credit card needed':'Billed monthly · cancel anytime')+'</div>'
+      +spotsHtml
+      +'<div class="price-limit">'+p.limit+'</div>'
+      +'<ul class="price-features">'+p.features.map(function(f){ return '<li><span class="'+p.checkCls+'">✓</span>'+f+'</li>'; }).join('')+'</ul>'
+      +'<button class="price-btn '+p.btnCls+'" style="'+btnStyle+'" onclick="pricingCTA(\''+p.id+'\')">'+btnTxt+'</button>'
+      +'</div>';
+  }).join('')+'</div>';
+}
+
 function pricingCTA(tierId) {
-  if (tierId==='free') { currentUser ? showPage('dashboard') : openModal('signup'); }
-  else { openModal('signup'); }
+  if (tierId==='free') { currentUser ? showPage('dashboard') : openModal('signup'); return; }
+  if (_laUnlocked(tierId)) { currentUser ? enterDashboard() : openModal('signup'); return; }
+  openAccessModal(tierId);
+}
+
+// ── ACCESS MODAL ──────────────────────────────────────────────────
+function openAccessModal(tier) {
+  var spots = _laSpots(tier);
+  var isFull = spots <= 0;
+  var label = tier==='plus' ? 'Plus' : 'Pro';
+  var color = tier==='plus' ? 'var(--accent)' : 'var(--purple)';
+  var btnBg  = tier==='plus' ? 'var(--accent)' : 'var(--purple)';
+  var btnClr = tier==='plus' ? '#08080D' : '#fff';
+
+  var html = '<div class="modal-overlay open" id="accessModal" onclick="if(event.target===this)closeAccessModal()">'
+    +'<div class="modal" style="max-width:400px;">'
+    +'<button class="modal-close" onclick="closeAccessModal()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>'
+    +'<div style="font-size:22px;margin-bottom:10px;">'+(tier==='plus'?'⚡':'👑')+'</div>'
+    +'<div class="modal-title" style="color:'+color+';">'+label+' Access</div>'
+    +(isFull
+      ? '<div class="modal-sub">All '+_LA[tier].max+' spots are taken. Join the waitlist and we\'ll reach out when space opens up.</div>'
+        +'<div id="accessErr" class="modal-error"></div>'
+        +'<div class="modal-field"><label>Your email</label><input class="modal-input" id="accessWaitlistEmail" type="email" placeholder="you@example.com" /></div>'
+        +'<button class="modal-btn" style="background:'+btnBg+';color:'+btnClr+';" onclick="submitWaitlist(\''+tier+'\')">Join waitlist →</button>'
+      : '<div class="modal-sub">'+spots+' spot'+(spots===1?'':'s')+' remaining. Enter your access code to unlock '+label+'.</div>'
+        +'<div id="accessErr" class="modal-error"></div>'
+        +'<div class="modal-field"><label>Access code</label><input class="modal-input" id="accessCodeInput" type="text" placeholder="e.g. PLUS-EARLY1" style="letter-spacing:1px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key===\'Enter\')submitAccessCode(\''+tier+'\')" /></div>'
+        +'<button class="modal-btn" style="background:'+btnBg+';color:'+btnClr+';" onclick="submitAccessCode(\''+tier+'\')">Unlock '+label+' →</button>'
+        +'<div class="modal-switch">Don\'t have a code? <a onclick="switchToWaitlist(\''+tier+'\')">Join waitlist</a></div>'
+    )
+    +'</div></div>';
+
+  var el = document.createElement('div');
+  el.id = 'accessModalWrap';
+  el.innerHTML = html;
+  document.body.appendChild(el);
+  setTimeout(function(){ var inp=document.getElementById(isFull?'accessWaitlistEmail':'accessCodeInput'); if(inp) inp.focus(); }, 150);
+}
+
+function closeAccessModal() {
+  var el = document.getElementById('accessModalWrap');
+  if (el) el.remove();
+}
+
+function submitAccessCode(tier) {
+  var input = document.getElementById('accessCodeInput');
+  var err   = document.getElementById('accessErr');
+  if (!input || !err) return;
+  var code = input.value.trim();
+  if (!code) { showAccessError('Enter your access code.'); return; }
+  if (!_laValidCode(tier, code)) { showAccessError('Invalid code. Check for typos or join the waitlist.'); return; }
+  _laUnlock(tier);
+  closeAccessModal();
+  renderPricingGrid('pricingGrid');
+  showToast('🎉 '+( tier==='plus'?'Plus':'Pro')+' access unlocked!', 'success');
+  setTimeout(function(){ currentUser ? enterDashboard() : openModal('signup'); }, 800);
+}
+
+function switchToWaitlist(tier) {
+  closeAccessModal();
+  var label = tier==='plus' ? 'Plus' : 'Pro';
+  var color = tier==='plus' ? 'var(--accent)' : 'var(--purple)';
+  var btnBg  = tier==='plus' ? 'var(--accent)' : 'var(--purple)';
+  var btnClr = tier==='plus' ? '#08080D' : '#fff';
+  var html = '<div class="modal-overlay open" id="accessModal" onclick="if(event.target===this)closeAccessModal()">'
+    +'<div class="modal" style="max-width:400px;">'
+    +'<button class="modal-close" onclick="closeAccessModal()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>'
+    +'<div style="font-size:22px;margin-bottom:10px;">📬</div>'
+    +'<div class="modal-title">Join the '+label+' waitlist</div>'
+    +'<div class="modal-sub" style="color:'+color+';">'+_laSpots(tier)+' spot'+(  _laSpots(tier)===1?'':'s')+' left — we\'ll email you when one opens up.</div>'
+    +'<div id="accessErr" class="modal-error"></div>'
+    +'<div class="modal-field"><label>Your email</label><input class="modal-input" id="accessWaitlistEmail" type="email" placeholder="you@example.com" /></div>'
+    +'<button class="modal-btn" style="background:'+btnBg+';color:'+btnClr+';" onclick="submitWaitlist(\''+tier+'\')">Notify me →</button>'
+    +'<div class="modal-switch">Have a code? <a onclick="closeAccessModal();openAccessModal(\''+tier+'\')">Enter it here</a></div>'
+    +'</div></div>';
+  var el = document.createElement('div');
+  el.id = 'accessModalWrap';
+  el.innerHTML = html;
+  document.body.appendChild(el);
+  setTimeout(function(){ var inp=document.getElementById('accessWaitlistEmail'); if(inp) inp.focus(); }, 150);
+}
+
+function submitWaitlist(tier) {
+  var input = document.getElementById('accessWaitlistEmail');
+  var err   = document.getElementById('accessErr');
+  if (!input) return;
+  var email = input.value.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showAccessError('Enter a valid email address.'); return;
+  }
+  // Save to localStorage (no backend)
+  try {
+    var key = 'ps_waitlist_'+tier;
+    var list = JSON.parse(localStorage.getItem(key)||'[]');
+    if (!list.includes(email)) { list.push(email); localStorage.setItem(key, JSON.stringify(list)); }
+  } catch(e) {}
+  closeAccessModal();
+  showToast('You\'re on the waitlist! We\'ll be in touch.', 'success');
+}
+
+function showAccessError(msg) {
+  var el = document.getElementById('accessErr');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(function(){ el.style.display='none'; }, 4000);
 }
 
 // PIPELINE STATUS CONFIG
@@ -2415,8 +2634,9 @@ function setStatus(id, newStatus) {
     showToast('🎉 Deal closed! Amazing work!', 'success');
   }
   updateOverdueBadge();
+  recordStreak();
   if (document.getElementById('page-history').classList.contains('active')) {
-    renderHistoryStats(); renderHistoryList(currentHistoryFilter);
+    renderKanban();
   }
 }
 
@@ -2424,7 +2644,7 @@ function deleteProspect(id) {
   if (!currentUser) return;
   const history = getHistory(currentUser.email).filter(h=>h.id!==id);
   saveHistory(currentUser.email, history);
-  renderHistoryStats(); renderHistoryList(currentHistoryFilter);
+  renderKanban();
 }
 
 function togglePipelineCard(id) {
@@ -2583,26 +2803,196 @@ function checkDuplicate(name) {
 let currentHistoryFilter = 'all';
 let currentSearchQuery = '';
 
+var KB_COLS = [
+  { id:'new',       label:'New',        color:'var(--text4)',  next:'contacted', prev:null },
+  { id:'contacted', label:'Contacted',  color:'var(--accent)', next:'engaged',   prev:'new' },
+  { id:'engaged',   label:'Interested', color:'var(--teal)',   next:'converted', prev:'contacted' },
+  { id:'converted', label:'Closed',     color:'var(--purple)', next:null,        prev:'engaged' }
+];
+var KB_ACTIONS = ['','Call back','Follow up','Send info','Close deal'];
+
+function isHotLead(h) {
+  return ((h.score||0) >= 8 || (h.status||'new') === 'engaged') && (h.status||'new') !== 'converted';
+}
+
+// ── STREAK ──────────────────────────────────────────────────────────────────
+function getToday() { return new Date().toISOString().slice(0,10); }
+
+function recordStreak() {
+  var today = getToday();
+  var data = JSON.parse(localStorage.getItem('ps_streak')||'{}');
+  if (data.lastDate === today) return; // already counted today
+  var yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+  if (data.lastDate === yesterday) {
+    data.count = (data.count||0) + 1;
+  } else {
+    data.count = 1;
+  }
+  data.lastDate = today;
+  localStorage.setItem('ps_streak', JSON.stringify(data));
+  renderStreak();
+}
+
+function renderStreak() {
+  var el = document.getElementById('kbStreak');
+  if (!el) return;
+  var data = JSON.parse(localStorage.getItem('ps_streak')||'{}');
+  var today = getToday();
+  var yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+  if (data.lastDate === today || data.lastDate === yesterday) {
+    var count = data.count || 0;
+    if (count > 0) {
+      el.textContent = '🔥 ' + count + ' day streak — keep it going!';
+      el.classList.add('visible');
+      return;
+    }
+  }
+  el.classList.remove('visible');
+}
+
+// ── HOT ALERT ───────────────────────────────────────────────────────────────
+function renderHotAlert() {
+  if (!currentUser) return;
+  var el = document.getElementById('kbHotAlert');
+  var txt = document.getElementById('kbHotText');
+  if (!el || !txt) return;
+  var hot = getHistory(currentUser.email).filter(isHotLead);
+  if (hot.length > 0) {
+    txt.textContent = '🔥 You have ' + hot.length + ' hot lead' + (hot.length>1?'s':'') + ' ready to call';
+    el.classList.add('visible');
+  } else {
+    el.classList.remove('visible');
+  }
+}
+
+function scrollToFirstHot() {
+  var first = document.querySelector('.kb-card.hot');
+  if (first) {
+    first.scrollIntoView({ behavior:'smooth', block:'center', inline:'center' });
+    first.style.boxShadow = '0 0 0 2px rgba(255,120,50,0.4)';
+    setTimeout(function() { first.style.boxShadow = ''; }, 1500);
+  }
+}
+
+// ── KANBAN ───────────────────────────────────────────────────────────────────
 function openHistoryPage() {
-  currentHistoryFilter = 'all';
-  renderHistoryStats();
-  renderLocationWins();
-  renderOverdueAlert();
-  renderPipelineValueBar();
-  _pipelineCampaignFilter = 'all';
-  renderCampaignFilterBar();
-  renderHistoryList('all');
+  renderKanban();
   showPage('history');
 }
 
-function filterHistory(filter) {
-  currentHistoryFilter = filter;
-  var allKeys = ['all'].concat(Object.keys(STATUSES)); allKeys.forEach(function(f) {
-    const el = document.getElementById('tab-'+f);
-    if (el) el.classList.toggle('active', f===filter);
+function renderKanban() {
+  if (!currentUser) return;
+  var mount = document.getElementById('kbMount');
+  var statsEl = document.getElementById('kbStats');
+  if (!mount) return;
+  var history = getHistory(currentUser.email);
+
+  var groups = {};
+  KB_COLS.forEach(function(c) { groups[c.id] = []; });
+  history.forEach(function(h) {
+    var s = h.status || 'new';
+    if (!groups[s]) s = 'new';
+    groups[s].push(h);
   });
-  renderHistoryList(filter);
+  Object.keys(groups).forEach(function(k) {
+    groups[k].sort(function(a,b) { return (b.savedAt||0) - (a.savedAt||0); });
+  });
+
+  if (statsEl) {
+    statsEl.innerHTML = KB_COLS.map(function(c) {
+      return '<div class="kb-stat"><div class="kb-stat-num" style="color:'+c.color+';">'+groups[c.id].length+'</div><div class="kb-stat-label">'+c.label+'</div></div>';
+    }).join('');
+  }
+
+  var sub = document.getElementById('historySub');
+  if (sub) {
+    var total = history.length, closed = groups.converted.length;
+    var rate = total ? Math.round(closed/total*100) : 0;
+    sub.textContent = total + ' prospect' + (total!==1?'s':'') + ' · ' + closed + ' closed · ' + rate + '% conversion';
+  }
+
+  mount.innerHTML = '<div class="kb-wrap"><div class="kb-board">' +
+    KB_COLS.map(function(col) {
+      var cards = groups[col.id];
+      return '<div class="kb-col"><div class="kb-col-head">' +
+        '<span class="kb-col-label"><span class="kb-dot" style="background:'+col.color+';"></span>'+col.label+'</span>' +
+        '<span class="kb-col-count">'+cards.length+'</span></div>' +
+        '<div class="kb-col-body">' +
+        (cards.length===0 ? '<div class="kb-empty"><div class="kb-empty-icon">◻</div>No leads</div>' :
+          cards.map(function(h) { return kbCard(h,col); }).join('')) +
+        '</div></div>';
+    }).join('') +
+  '</div></div>';
+
+  renderHotAlert();
+  renderStreak();
 }
+
+function kbCard(h, col) {
+  var score = h.score||0, sCls = score>=8?'high':score>=5?'mid':'low';
+  var name = (h.name||'Unknown').replace(/</g,'&lt;').replace(/'/g,'&#39;');
+  var phone = h.phone||'', note = (h.notes||'').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+  var hot = isHotLead(h), nextAction = h.nextAction||'';
+
+  var callBtn = phone ? '<a href="tel:'+phone.replace(/\D/g,'')+'" class="kb-btn kb-call" onclick="event.stopPropagation()">📞 Call</a>' : '';
+  var backBtn = col.prev ? '<button class="kb-btn kb-back" onclick="kbMove(\''+h.id+'\',\''+col.prev+'\')">←</button>' : '';
+  var fwdBtn = col.next ? '<button class="kb-btn kb-move" onclick="kbMove(\''+h.id+'\',\''+col.next+'\')">'+KB_COLS.filter(function(c){return c.id===col.next})[0].label+' →</button>' : '';
+  var delBtn = '<button class="kb-btn kb-del" onclick="kbDel(\''+h.id+'\',\''+name+'\')">✕</button>';
+
+  return '<div class="kb-card'+(hot?' hot':'')+'" data-id="'+h.id+'">' +
+    '<div class="kb-card-top"><div class="kb-card-name">'+name+'</div>'+(hot?'<span class="kb-hot-badge">🔥 Hot</span>':'')+'</div>' +
+    (h.type?'<div class="kb-card-type">'+h.type+'</div>':'') +
+    (score?'<div class="kb-card-score '+sCls+'">Score '+score+'</div>':'') +
+    '<div class="kb-next-row"><span class="kb-next-label">Next:</span><select class="kb-next-select" onchange="kbAction(\''+h.id+'\',this.value)">' +
+      KB_ACTIONS.map(function(a){return '<option value="'+a+'"'+(a===nextAction?' selected':'')+'>'+(a||'— pick —')+'</option>';}).join('') +
+    '</select></div>' +
+    '<textarea class="kb-card-note" placeholder="Add a note..." rows="1" onblur="kbNote(\''+h.id+'\',this.value)">'+note+'</textarea>' +
+    '<div class="kb-card-actions">'+callBtn+backBtn+fwdBtn+delBtn+'</div></div>';
+}
+
+function kbMove(id, newStatus) {
+  if (!currentUser) return;
+  var hist = getHistory(currentUser.email);
+  var item = hist.find(function(h){return h.id===id;});
+  if (!item) return;
+  item.status = newStatus; item.statusUpdatedAt = Date.now();
+  saveHistory(currentUser.email, hist);
+  recordStreak();
+  renderKanban();
+  if (typeof updateNavPipeline==='function') updateNavPipeline();
+  if (newStatus==='converted' && typeof fireConfetti==='function') { fireConfetti(); showToast('🎉 Deal closed!','success'); }
+}
+
+function kbDel(id, name) {
+  if (!confirm('Remove '+name+'?')) return;
+  if (!currentUser) return;
+  saveHistory(currentUser.email, getHistory(currentUser.email).filter(function(h){return h.id!==id;}));
+  renderKanban();
+  if (typeof updateNavPipeline==='function') updateNavPipeline();
+}
+
+function kbNote(id, text) {
+  if (!currentUser) return;
+  var hist = getHistory(currentUser.email);
+  var item = hist.find(function(h){return h.id===id;});
+  if (!item) return;
+  item.notes = text;
+  saveHistory(currentUser.email, hist);
+  recordStreak();
+}
+
+function kbAction(id, action) {
+  if (!currentUser) return;
+  var hist = getHistory(currentUser.email);
+  var item = hist.find(function(h){return h.id===id;});
+  if (!item) return;
+  item.nextAction = action;
+  saveHistory(currentUser.email, hist);
+  recordStreak();
+}
+
+function filterHistory() { openHistoryPage(); }
+function renderHistoryList() { renderKanban(); }
 
 // ── NOTES ────────────────────────────────────────────────────────────────────
 function saveNote(id, text) {
@@ -2674,28 +3064,13 @@ function renderHistoryStats() {
   if (!currentUser) return;
   const history = getHistory(currentUser.email);
   const counts = { new:0, contacted:0, engaged:0, qualified:0, converted:0 };
-  let overdue = 0;
-  history.forEach(h => {
-    const s = h.status||'new';
-    if (counts[s]!==undefined) counts[s]++;
-    if (isOverdue(h)) overdue++;
-  });
-
-  document.getElementById('cnt-all').textContent = history.length;
-  Object.keys(counts).forEach(s => {
-    const el = document.getElementById('cnt-'+s);
-    if (el) el.textContent = counts[s];
-  });
-
-  const convRate = history.length ? Math.round(counts.converted/history.length*100) : 0;
-  document.getElementById('historyStats').innerHTML =
-    '<div class="pipeline-stat"><div class="pipeline-stat-num" style="color:var(--text2);">'+history.length+'</div><div class="pipeline-stat-label">Total</div></div>'+
-    '<div class="pipeline-stat"><div class="pipeline-stat-num" style="color:var(--accent);">'+counts.contacted+'</div><div class="pipeline-stat-label">Contacted</div></div>'+
-    '<div class="pipeline-stat"><div class="pipeline-stat-num" style="color:var(--teal);">'+counts.engaged+'</div><div class="pipeline-stat-label">Responded</div></div>'+
-    '<div class="pipeline-stat"><div class="pipeline-stat-num" style="color:var(--amber);">'+counts.qualified+'</div><div class="pipeline-stat-label">Meetings</div></div>'+
-    '<div class="pipeline-stat"><div class="pipeline-stat-num" style="color:var(--purple);">'+counts.converted+'</div><div class="pipeline-stat-label">Closed</div></div>';
-
-  document.getElementById('historySub').textContent = history.length+' prospect'+(history.length!==1?'s':'')+' · '+counts.converted+' closed · '+convRate+'% conversion'+(overdue?' · '+overdue+' overdue':'');
+  history.forEach(h => { const s = h.status||'new'; if (counts[s]!==undefined) counts[s]++; });
+  var cntAll = document.getElementById('cnt-all'); if (cntAll) cntAll.textContent = history.length;
+  Object.keys(counts).forEach(s => { const el = document.getElementById('cnt-'+s); if (el) el.textContent = counts[s]; });
+  var statsEl = document.getElementById('historyStats');
+  if (statsEl) statsEl.innerHTML = '<div class="pipeline-stat"><div class="pipeline-stat-num" style="color:var(--text2);">'+history.length+'</div><div class="pipeline-stat-label">Total</div></div><div class="pipeline-stat"><div class="pipeline-stat-num" style="color:var(--accent);">'+counts.contacted+'</div><div class="pipeline-stat-label">Contacted</div></div><div class="pipeline-stat"><div class="pipeline-stat-num" style="color:var(--teal);">'+counts.engaged+'</div><div class="pipeline-stat-label">Interested</div></div><div class="pipeline-stat"><div class="pipeline-stat-num" style="color:var(--purple);">'+counts.converted+'</div><div class="pipeline-stat-label">Closed</div></div>';
+  var subEl = document.getElementById('historySub');
+  if (subEl) { const r = history.length ? Math.round(counts.converted/history.length*100) : 0; subEl.textContent = history.length+' prospect'+(history.length!==1?'s':'')+' · '+counts.converted+' closed · '+r+'% conversion'; }
 }
 
 // ── REMINDER PILL BUILDER ────────────────────────────────────────────────────
@@ -2718,95 +3093,6 @@ function buildReminderBtn(h) {
       'Remind me</button>';
   }
 }
-
-// ── MAIN LIST RENDER ─────────────────────────────────────────────────────────
-function renderHistoryList(filter) {
-  if (!currentUser) return;
-  var container = document.getElementById('historyList');
-  if (!container) return;
-  var history = getHistory(currentUser.email);
-
-  // Filter by status tab
-  if (filter && filter !== 'all') {
-    history = history.filter(function(h) { return (h.status || 'new') === filter; });
-  }
-
-  // Search
-  var q = (document.getElementById('pipelineSearch') || {}).value || '';
-  q = q.toLowerCase().trim();
-  if (q) {
-    history = history.filter(function(h) {
-      return (h.name||'').toLowerCase().indexOf(q) > -1 ||
-             (h.type||'').toLowerCase().indexOf(q) > -1 ||
-             (h.phone||'').toLowerCase().indexOf(q) > -1;
-    });
-  }
-
-  // Sort
-  var sort = (document.getElementById('pipelineSort') || {}).value || 'newest';
-  if (sort === 'oldest')    history.sort(function(a,b){ return (a.savedAt||0)-(b.savedAt||0); });
-  else if (sort === 'score')   history.sort(function(a,b){ return (b.score||0)-(a.score||0); });
-  else if (sort === 'status') {
-    var ORDER = {converted:0,qualified:1,engaged:2,contacted:3,'new':4};
-    history.sort(function(a,b){ return (ORDER[a.status||'new']||4)-(ORDER[b.status||'new']||4); });
-  } else if (sort === 'followup') {
-    history.sort(function(a,b){ return (a.reminderAt||Infinity)-(b.reminderAt||Infinity); });
-  } else {
-    history.sort(function(a,b){ return (b.savedAt||0)-(a.savedAt||0); });
-  }
-
-  // Empty state
-  if (!history.length) {
-    container.innerHTML = '<div class="pipeline-empty" style="text-align:center;padding:60px 20px;color:var(--text3);">' +
-      '<div style="font-size:36px;margin-bottom:12px;opacity:0.4;">🚀</div>' +
-      '<div style="font-size:14px;line-height:1.6;max-width:300px;margin:0 auto;">' +
-      (q ? 'No prospects match "'+q+'"' : 'No prospects yet. Run a search and save leads to build your pipeline.') +
-      '</div></div>';
-    return;
-  }
-
-  var SLABELS = {new:'New',contacted:'Contacted',engaged:'Responded',qualified:'Meeting Set',converted:'Closed'};
-  var SCOLORS = {new:'var(--text4)',contacted:'var(--accent)',engaged:'var(--teal)',qualified:'var(--amber)',converted:'var(--purple)'};
-  var SNEXT   = {new:'contacted',contacted:'engaged',engaged:'qualified',qualified:'converted'};
-  var PCT     = {new:10,contacted:30,engaged:55,qualified:80,converted:100};
-
-  container.innerHTML = history.map(function(h) {
-    var st = h.status || 'new';
-    var scoreColor = (h.score||0) >= 8 ? 'var(--accent)' : (h.score||0) >= 6 ? 'var(--amber)' : 'var(--text3)';
-    var phone = h.phone || '';
-    var name = (h.name||'Unknown').replace(/</g,'&lt;').replace(/'/g,'&#39;');
-    var nextStatus = SNEXT[st];
-    var pct = PCT[st] || 10;
-    var pColor = SCOLORS[st] || 'var(--text4)';
-
-    var callBtn = phone
-      ? '<a href="tel:'+phone.replace(/\D/g,'')+'" class="p-btn p-call" onclick="event.stopPropagation()">📞 Call</a>'
-      : '';
-    var advBtn = nextStatus
-      ? '<button class="p-btn p-advance" onclick="event.stopPropagation();setStatus(\''+h.id+'\',\''+nextStatus+'\')">'+SLABELS[nextStatus]+' →</button>'
-      : '';
-    var reminderHtml = typeof buildReminderBtn === 'function'
-      ? '<span class="reminder-btn-wrap" id="rbwrap-'+h.id+'">' + buildReminderBtn(h) + '</span>'
-      : '';
-    var delBtn = '<button class="p-btn p-del" onclick="event.stopPropagation();if(confirm(\'Remove '+name+'?\'))deleteProspect(\''+h.id+'\')">✕</button>';
-
-    return '<div class="p-card">' +
-      '<div class="p-card-head">' +
-        '<div class="p-card-name">'+name+'</div>' +
-        '<div class="p-card-score" style="color:'+scoreColor+';">'+(h.score||'—')+'</div>' +
-      '</div>' +
-      '<div class="p-card-meta">' +
-        '<span><span class="status-dot dot-'+st+'"></span> '+SLABELS[st]+'</span>' +
-        (h.type ? '<span>'+h.type+'</span>' : '') +
-        (h.searchLocation ? '<span>'+h.searchLocation.split(',')[0]+'</span>' : '') +
-      '</div>' +
-      (phone ? '<div class="p-card-phone">'+phone+'</div>' : '') +
-      '<div class="p-card-actions">' + callBtn + advBtn + reminderHtml + delBtn + '</div>' +
-      '<div class="p-card-progress"><div class="p-card-progress-fill" style="width:'+pct+'%;background:'+pColor+';"></div></div>' +
-    '</div>';
-  }).join('');
-}
-
 
 function showToast(msg, type) {
   var existing = document.getElementById('ps-toast');
@@ -3006,7 +3292,11 @@ function renderMobileMenu() {
         'Dashboard' +
       '</button>' +
 
-/* Pipeline hidden from mobile menu */
+      '<button class="mobile-menu-item" onclick="closeMobileMenu();openHistoryPage()">' +
+        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg>' +
+        'Pipeline' +
+      '</button>' +
+
       '<button class="mobile-menu-item" onclick="closeMobileMenu();openSearchHistory()">' +
         '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
         'Search History' +
