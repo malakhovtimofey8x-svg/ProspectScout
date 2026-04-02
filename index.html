@@ -2530,7 +2530,7 @@ function switchToWaitlist(tier) {
   var html = '<div class="modal-overlay open" id="accessModal" onclick="if(event.target===this)closeAccessModal()">'
     +'<div class="modal" style="max-width:400px;">'
     +'<button class="modal-close" onclick="closeAccessModal()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>'
-    +'<div style="font-size:22px;margin-bottom:10px;">📬</div>'
+    + '<div style="font-size:22px;margin-bottom:10px;">Mail</div>'
     +'<div class="modal-title">Join the '+label+' waitlist</div>'
     +'<div class="modal-sub" style="color:'+color+';">'+_laSpots(tier)+' spot'+(  _laSpots(tier)===1?'':'s')+' left — we\'ll email you when one opens up.</div>'
     +'<div id="accessErr" class="modal-error"></div>'
