@@ -7395,8 +7395,10 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   supabase.auth.onAuthStateChange(async function(event, session) {
+    var authModal = document.getElementById("auth-modal");
     if (session) {
       console.log("USER SESSION:", session.user);
+      if (authModal) authModal.style.display = "none";
       var userId = session.user.id;
       var userEmail = session.user.email;
       var { data: existingUser, error } = await supabase.from("users").select("id").eq("id", userId).single();
@@ -7408,6 +7410,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     } else {
       console.log("NO USER");
+      if (authModal) authModal.style.display = "flex";
     }
   });
 });
