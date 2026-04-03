@@ -7339,72 +7339,79 @@ document.addEventListener("DOMContentLoaded", async function () {
   const supabase = window.supabase.createClient(SUPA_URL, SUPA_KEY);
   window._supabase = supabase;
 
-  var _authMode = 'login'; // 'login' or 'signup'
+  const modal = document.getElementById("authModal");
+  const hideModal = () => { if (modal) modal.style.display = "none"; };
+  const showModal = () => { if (modal) modal.style.display = "flex"; };
 
-  window.toggleAuthMode = function() {
-    _authMode = _authMode === 'login' ? 'signup' : 'login';
-    var sub = document.getElementById('authModalSub');
-    var btn = document.getElementById('authSubmitBtn');
-    var toggle = document.querySelector('#authModal .modal-switch a');
-    if (_authMode === 'signup') {
-      if (sub) sub.textContent = 'Create your account to get started.';
-      if (btn) btn.textContent = 'Create account →';
-      if (toggle) toggle.textContent = 'Already have an account? Sign in';
+  hideModal();
+
+  var _authMode = "login";
+
+  window.toggleAuthMode = function () {
+    _authMode = _authMode === "login" ? "signup" : "login";
+    var sub = document.getElementById("authModalSub");
+    var btn = document.getElementById("authSubmitBtn");
+    var toggle = document.querySelector("#authModal .modal-switch a");
+    if (_authMode === "signup") {
+      if (sub) sub.textContent = "Create your account to get started.";
+      if (btn) btn.textContent = "Create account →";
+      if (toggle) toggle.textContent = "Already have an account? Sign in";
     } else {
-      if (sub) sub.textContent = 'Sign in to start finding leads.';
-      if (btn) btn.textContent = 'Sign in →';
+      if (sub) sub.textContent = "Sign in to start finding leads.";
+      if (btn) btn.textContent = "Sign in →";
       if (toggle) toggle.textContent = "Don't have an account? Sign up";
     }
-    var errEl = document.getElementById('authError');
-    if (errEl) errEl.style.display = 'none';
+    var errEl = document.getElementById("authError");
+    if (errEl) errEl.style.display = "none";
   };
 
-  window.handleAuthSubmit = async function() {
-    var email = (document.getElementById('authEmail') || {}).value || '';
-    var password = (document.getElementById('authPassword') || {}).value || '';
-    var errEl = document.getElementById('authError');
-    var btn = document.getElementById('authSubmitBtn');
+  window.handleAuthSubmit = async function () {
+    var email = (document.getElementById("authEmail") || {}).value || "";
+    var password = (document.getElementById("authPassword") || {}).value || "";
+    var errEl = document.getElementById("authError");
+    var btn = document.getElementById("authSubmitBtn");
     if (!email || !password) {
-      if (errEl) { errEl.textContent = 'Please enter your email and password.'; errEl.style.display = 'block'; }
+      if (errEl) { errEl.textContent = "Please enter your email and password."; errEl.style.display = "block"; }
       return;
     }
-    if (btn) { btn.disabled = true; btn.textContent = 'Please wait...'; }
-    var result;
-    if (_authMode === 'signup') {
-      result = await supabase.auth.signUp({ email: email, password: password });
-    } else {
-      result = await supabase.auth.signInWithPassword({ email: email, password: password });
+    if (btn) { btn.disabled = true; btn.textContent = "Please wait..."; }
+    try {
+      var result;
+      if (_authMode === "signup") {
+        result = await supabase.auth.signUp({ email, password });
+        if (result.error) throw result.error;
+        if (errEl) errEl.style.display = "none";
+        var sub = document.getElementById("authModalSub");
+        if (sub) sub.textContent = "Check your email to confirm your account, then sign in.";
+        if (btn) btn.style.display = "none";
+        return;
+      } else {
+        result = await supabase.auth.signInWithPassword({ email, password });
+        if (result.error) throw result.error;
+        console.log("LOGIN SUCCESS:", result.data);
+      }
+    } catch (err) {
+      console.log("AUTH ERROR:", err);
+      if (errEl) { errEl.textContent = err.message; errEl.style.display = "block"; }
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = _authMode === "signup" ? "Create account →" : "Sign in →"; btn.style.display = ""; }
     }
-    if (btn) { btn.disabled = false; btn.textContent = _authMode === 'signup' ? 'Create account →' : 'Sign in →'; }
-    if (result.error) {
-      console.log('LOGIN ERROR:', result.error);
-      alert(result.error.message);
-      if (errEl) { errEl.textContent = result.error.message; errEl.style.display = 'block'; }
-      return;
-    }
-    if (_authMode === 'signup') {
-      if (errEl) { errEl.style.display = 'none'; }
-      var sub = document.getElementById('authModalSub');
-      if (sub) sub.textContent = 'Check your email to confirm your account, then sign in.';
-      if (btn) btn.style.display = 'none';
-      return;
-    }
-    console.log('LOGIN SUCCESS:', result.data);
   };
 
-  const modals = document.querySelectorAll('[id="authModal"]');
-  modals.forEach(m => m.style.display = "none");
-  const { data } = await supabase.auth.getSession();
-  if (!data.session) {
-    modals.forEach(m => m.style.display = "flex");
-    console.log("NO SESSION");
+  const { data: sessionData } = await supabase.auth.getSession();
+  if (sessionData.session) {
+    console.log("INITIAL SESSION:", sessionData.session.user);
+    hideModal();
+    if (typeof startBetaWithUser === "function") startBetaWithUser(sessionData.session.user);
   } else {
-    console.log("SESSION:", data.session.user);
+    console.log("NO INITIAL SESSION");
+    showModal();
   }
+
   supabase.auth.onAuthStateChange(async (event, session) => {
     if (session) {
-      modals.forEach(m => m.style.display = "none");
       console.log("USER SESSION:", session.user);
+      hideModal();
       const userId = session.user.id;
       const userEmail = session.user.email;
       const { data: existingUser, error } = await supabase.from("users").select("id").eq("id", userId).single();
@@ -7415,49 +7422,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.log("USER EXISTS");
       }
       if (typeof startBetaWithUser === "function") startBetaWithUser(session.user);
-      if (typeof closeModal === "function") closeModal();
     } else {
-      modals.forEach(m => m.style.display = "flex");
       console.log("NO USER");
-    }
-  });
-});
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  var emailEl = document.getElementById("email");
-  var passwordEl = document.getElementById("password");
-  var signupBtn = document.getElementById("signup-btn");
-  var loginBtn = document.getElementById("login-btn");
-  var supabase = window._supabase;
-
-  if (!signupBtn || !loginBtn || !emailEl || !passwordEl || !supabase) return;
-
-  signupBtn.addEventListener("click", async function () {
-    signupBtn.textContent = "Loading...";
-    var result = await supabase.auth.signUp({ email: emailEl.value, password: passwordEl.value });
-    signupBtn.textContent = "Sign Up";
-    if (result.error) { console.log(result.error); alert(result.error.message); return; }
-    alert("Signup successful");
-  });
-
-  loginBtn.addEventListener("click", async function () {
-    loginBtn.textContent = "Please wait...";
-    try {
-      var result = await supabase.auth.signInWithPassword({ email: emailEl.value, password: passwordEl.value });
-      if (result.error) {
-        console.log("LOGIN ERROR:", result.error);
-        alert(result.error.message);
-      } else {
-        console.log("LOGIN SUCCESS:", result.data);
-        alert("Login successful");
-        location.reload();
-      }
-    } catch (e) {
-      console.log("LOGIN ERROR:", e);
-      alert(e.message);
-    } finally {
-      loginBtn.textContent = "Login";
+      showModal();
     }
   });
 });
