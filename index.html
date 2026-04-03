@@ -7390,8 +7390,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
     console.log('LOGIN SUCCESS:', result.data);
-    alert('Login successful');
-    location.reload();
   };
 
   supabase.auth.getSession().then(function(res) {
@@ -7406,10 +7404,8 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   supabase.auth.onAuthStateChange(async function(event, session) {
-    var authModal = document.getElementById("authModal");
     if (session) {
       console.log("USER SESSION:", session.user);
-      if (authModal) authModal.classList.remove("open");
       var userId = session.user.id;
       var userEmail = session.user.email;
       var { data: existingUser, error } = await supabase.from("users").select("id").eq("id", userId).single();
@@ -7419,9 +7415,11 @@ document.addEventListener("DOMContentLoaded", function () {
       } else {
         console.log("USER EXISTS");
       }
+      if (typeof startBetaWithUser === "function") startBetaWithUser(session.user);
+      closeModal();
     } else {
       console.log("NO USER");
-      if (authModal) authModal.classList.add("open");
+      document.getElementById("authModal")?.classList.add("open");
     }
   });
 });
