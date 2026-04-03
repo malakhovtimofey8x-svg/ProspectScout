@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>ProspectScout — Find Businesses Ready to Buy</title>
@@ -7188,7 +7189,7 @@ document.addEventListener('DOMContentLoaded', function() {
   setInterval(draw, 33);
 })();
 </script>
-<script>
+
 // ── MOTION ENGINE ─────────────────────────────────────────────────────────────
 (function() {
   var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -7271,6 +7272,20 @@ document.addEventListener('DOMContentLoaded', function() {
     initReveal();
   });
 })();
+</script>
+<script>
+const supabase = window.supabase.createClient(
+  "https://lyjxwwlywvnykgoirhwv.supabase.co",
+  "sb_publishable_Ct_M9J4JGR0OKihNpkSqrA_1Xh7IV-L"
+);
+
+async function testConnection() {
+  const { data, error } = await supabase.from('users').select('*');
+  console.log("DATA:", data);
+  console.log("ERROR:", error);
+}
+
+testConnection();
 </script>
 <form name="waitlist" netlify netlify-honeypot="bot-field" hidden>
   <input name="bot-field" />
