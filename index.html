@@ -7322,8 +7322,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function createUser(email, tier) {
     const { data, error } = await supabase
-      .from("users")
-      .insert([{ email: email, tier: tier }]);
+      .from('users')
+      .insert([{ email: email, tier: tier }])
+      .select()
+      .single();
     console.log("CREATE USER:", data);
     console.log("CREATE ERROR:", error);
   }
