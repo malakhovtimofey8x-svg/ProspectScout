@@ -7276,18 +7276,19 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-  const supabase = window.supabase.createClient(
-    "https://lyjxwwlywvnykgoirhwv.supabase.co",
-    "sb_publishable_Ct_M9J4JGR0OKihNpkSqrA_1Xh7IV-L"
-  );
+  const supabase = window.supabase.createClient(...);
 
   async function testConnection() {
-    const { data, error } = await supabase.from('users').select('*');
-    console.log("DATA:", data);
-    console.log("ERROR:", error);
+    ...
   }
 
   testConnection();
+
+  async function createUser(email, tier) {
+    ...
+  }
+
+  createUser("test@example.com", "free");
 
 });
 </script>
