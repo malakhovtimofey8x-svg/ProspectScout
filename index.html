@@ -2387,9 +2387,15 @@ function updateDashboard() {
     btn.title = isUnlocked ? '' : 'Unlock '+t.charAt(0).toUpperCase()+t.slice(1)+' to switch';
     btn.style.opacity = isUnlocked ? '' : '0.45';
     btn.style.cursor  = isUnlocked ? '' : 'not-allowed';
-   btn.onclick = function() {
-  switchTier(t);
-};
+   btn.onclick = isUnlocked
+  ? function(){ 
+      console.log("SWITCHING"); 
+      switchTier(t); 
+    }
+  : function(){ 
+      console.log("LOCKED - going to pricing"); 
+      showPage('pricing'); 
+    };
   });
 }
 
