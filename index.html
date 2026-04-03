@@ -2394,17 +2394,20 @@ function updateDashboard() {
 }
 
 function switchTier(newTier) {
-  if (!currentUser) return;
+  localStorage.setItem('ps_tier', newTier);
   // Gate: can only switch to plus/pro if unlocked
   if (newTier === 'plus' && !_laUnlocked('plus')) { showPage('pricing'); return; }
   if (newTier === 'pro'  && !_laUnlocked('pro'))  { showPage('pricing'); return; }
+  if (currentUser) {
   const users = getUsers();
   users[currentUser.email].tier = newTier;
   saveUsers(users);
+
   currentUser.tier = newTier;
-  localStorage.setItem('ps_tier', newTier);
+}
   _syncCurrentTier();
   updateDashboard(); updateNav();
+  location.reload();
 }
 
 // PRICING GRID
