@@ -2387,14 +2387,15 @@ function updateDashboard() {
     btn.title = isUnlocked ? '' : 'Unlock '+t.charAt(0).toUpperCase()+t.slice(1)+' to switch';
     btn.style.opacity = isUnlocked ? '' : '0.45';
     btn.style.cursor  = isUnlocked ? '' : 'not-allowed';
-    btn.onclick = isUnlocked
-      ? function(){ switchTier(t); }
-      : function(){ showPage('pricing'); };
+   btn.onclick = function() {
+  switchTier(t);
+};
   });
 }
 
 function switchTier(newTier) {
   localStorage.setItem('ps_tier', newTier);
+  console.log("SWITCH TIER CALLED:", newTier); // 👈 ADD THIS
   // Gate: can only switch to plus/pro if unlocked
   if (newTier === 'plus' && !_laUnlocked('plus')) { showPage('pricing'); return; }
   if (newTier === 'pro'  && !_laUnlocked('pro'))  { showPage('pricing'); return; }
