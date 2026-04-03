@@ -7328,7 +7328,7 @@ document.addEventListener('DOMContentLoaded', function() {
   <input name="email" type="email" />
 </form>
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
   if (!window.supabase || !window.supabase.createClient) {
     console.warn('Supabase not loaded');
     return;
@@ -7392,25 +7392,22 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log('LOGIN SUCCESS:', result.data);
   };
 
-  var authModal = document.getElementById("authModal");
-  if (authModal) authModal.style.display = "none";
-
-  supabase.auth.getSession().then(function(res) {
-    if (res.data && res.data.session) {
-      console.log("INITIAL SESSION:", res.data.session.user);
-    } else {
-      console.log("NO INITIAL SESSION");
-      if (authModal) authModal.style.display = "flex";
-    }
-  });
-
-  supabase.auth.onAuthStateChange(async function(event, session) {
+  const modals = document.querySelectorAll('[id="authModal"]');
+  modals.forEach(m => m.style.display = "none");
+  const { data } = await supabase.auth.getSession();
+  if (!data.session) {
+    modals.forEach(m => m.style.display = "flex");
+    console.log("NO SESSION");
+  } else {
+    console.log("SESSION:", data.session.user);
+  }
+  supabase.auth.onAuthStateChange(async (event, session) => {
     if (session) {
+      modals.forEach(m => m.style.display = "none");
       console.log("USER SESSION:", session.user);
-      if (authModal) authModal.style.display = "none";
-      var userId = session.user.id;
-      var userEmail = session.user.email;
-      var { data: existingUser, error } = await supabase.from("users").select("id").eq("id", userId).single();
+      const userId = session.user.id;
+      const userEmail = session.user.email;
+      const { data: existingUser, error } = await supabase.from("users").select("id").eq("id", userId).single();
       if (error && error.code === "PGRST116") {
         console.log("CREATING USER");
         await supabase.from("users").insert([{ id: userId, email: userEmail, tier: "free" }]);
@@ -7420,8 +7417,8 @@ document.addEventListener("DOMContentLoaded", function () {
       if (typeof startBetaWithUser === "function") startBetaWithUser(session.user);
       if (typeof closeModal === "function") closeModal();
     } else {
+      modals.forEach(m => m.style.display = "flex");
       console.log("NO USER");
-      if (authModal) authModal.style.display = "flex";
     }
   });
 });
