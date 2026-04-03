@@ -7394,6 +7394,17 @@ document.addEventListener("DOMContentLoaded", function () {
     location.reload();
   };
 
+  supabase.auth.getSession().then(function(res) {
+    var authModal = document.getElementById("auth-modal");
+    if (res.data && res.data.session) {
+      console.log("INITIAL SESSION:", res.data.session.user);
+      if (authModal) authModal.style.display = "none";
+    } else {
+      console.log("NO INITIAL SESSION");
+      if (authModal) authModal.style.display = "flex";
+    }
+  });
+
   supabase.auth.onAuthStateChange(async function(event, session) {
     var authModal = document.getElementById("auth-modal");
     if (session) {
