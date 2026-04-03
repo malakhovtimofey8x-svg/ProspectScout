@@ -7383,9 +7383,15 @@ document.addEventListener("DOMContentLoaded", function () {
     if (typeof startBetaWithUser === 'function') startBetaWithUser(user);
   };
 
-  supabase.auth.onAuthStateChange(function(event, session) {
+  supabase.auth.onAuthStateChange(async function(event, session) {
     if (session) {
       console.log("USER SESSION:", session.user);
+      var userId = session.user.id;
+      var userEmail = session.user.email;
+      var { data: existingUser } = await supabase.from("users").select("id").eq("id", userId).single();
+      if (!existingUser) {
+        await supabase.from("users").insert([{ id: userId, email: userEmail, tier: "free" }]);
+      }
     } else {
       console.log("NO USER");
     }
