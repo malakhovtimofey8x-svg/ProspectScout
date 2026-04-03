@@ -7431,13 +7431,23 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   loginBtn.addEventListener("click", async function () {
-    loginBtn.textContent = "Loading...";
-    var result = await supabase.auth.signInWithPassword({ email: emailEl.value, password: passwordEl.value });
-    loginBtn.textContent = "Login";
-    if (result.error) { console.log(result.error); alert(result.error.message); return; }
-    console.log("LOGIN SUCCESS:", result.data);
-    alert("Login successful");
-    location.reload();
+    loginBtn.textContent = "Please wait...";
+    try {
+      var result = await supabase.auth.signInWithPassword({ email: emailEl.value, password: passwordEl.value });
+      if (result.error) {
+        console.log("LOGIN ERROR:", result.error);
+        alert(result.error.message);
+      } else {
+        console.log("LOGIN SUCCESS:", result.data);
+        alert("Login successful");
+        location.reload();
+      }
+    } catch (e) {
+      console.log("LOGIN ERROR:", e);
+      alert(e.message);
+    } finally {
+      loginBtn.textContent = "Login";
+    }
   });
 });
 </script>
