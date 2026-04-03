@@ -1206,10 +1206,12 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
     </button>
     <div style="font-size:28px;margin-bottom:12px;">🎯</div>
     <div class="modal-title">Welcome to ProspectScout</div>
-    <div class="modal-sub">Enter your name to get started — free beta access, no account needed.</div>
-    <div class="modal-field"><label>Your name</label><input class="modal-input" type="text" id="betaNameInput" placeholder="e.g. Alex" onkeydown="if(event.key==='Enter')startBeta()" /></div>
-    <button class="modal-btn" onclick="startBeta()">Start finding leads →</button>
-    <div style="text-align:center;margin-top:14px;font-size:11px;color:var(--text4);">Free beta · No credit card · No password</div>
+    <div class="modal-sub" id="authModalSub">Sign in to start finding leads.</div>
+    <div id="authError" class="modal-error"></div>
+    <div class="modal-field"><label>Email</label><input class="modal-input" type="email" id="authEmail" placeholder="you@example.com" onkeydown="if(event.key==='Enter')handleAuthSubmit()" /></div>
+    <div class="modal-field"><label>Password</label><input class="modal-input" type="password" id="authPassword" placeholder="Your password" onkeydown="if(event.key==='Enter')handleAuthSubmit()" /></div>
+    <button class="modal-btn" id="authSubmitBtn" onclick="handleAuthSubmit()">Sign in →</button>
+    <div class="modal-switch"><a onclick="toggleAuthMode()">Don't have an account? Sign up</a></div>
   </div>
 </div>
 
@@ -2017,13 +2019,22 @@ function updateNavPipeline() {
 
 function startBeta() {
   var name = (document.getElementById('betaNameInput')?.value || '').trim();
-  if (!name) { document.getElementById('betaNameInput').focus(); return; }
-  // Restore tier from previous unlock if any
+  if (!name) { return; }
   var savedTier = localStorage.getItem('ps_tier') || 'free';
   currentUser = { email:'beta@user.local', name:name, tier:savedTier };
   localStorage.setItem('ps_beta_user', JSON.stringify(currentUser));
   _syncCurrentTier();
   closeModal();
+  enterDashboard();
+  if (isDemoEligible()) { scheduleDemoRun(); }
+}
+
+function startBetaWithUser(supaUser) {
+  var savedTier = localStorage.getItem('ps_tier') || 'free';
+  var name = (supaUser.user_metadata && supaUser.user_metadata.full_name) || supaUser.email.split('@')[0];
+  currentUser = { email: supaUser.email, name: name, tier: savedTier, supaId: supaUser.id };
+  localStorage.setItem('ps_beta_user', JSON.stringify(currentUser));
+  _syncCurrentTier();
   enterDashboard();
   if (isDemoEligible()) { scheduleDemoRun(); }
 }
@@ -2034,6 +2045,7 @@ function doLogout() {
   currentUser = null;
   currentTier = 'free';
   localStorage.removeItem('ps_beta_user');
+  if (window._supabase) { window._supabase.auth.signOut(); }
   updateNav();
   showPage('home');
 }
@@ -7315,6 +7327,61 @@ document.addEventListener("DOMContentLoaded", function () {
   var SUPA_KEY = "sb_publishable_Ct_M9J4JGR0OKihNpkSqrA_1Xh7IV-L";
 
   const supabase = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+  window._supabase = supabase;
+
+  var _authMode = 'login'; // 'login' or 'signup'
+
+  window.toggleAuthMode = function() {
+    _authMode = _authMode === 'login' ? 'signup' : 'login';
+    var sub = document.getElementById('authModalSub');
+    var btn = document.getElementById('authSubmitBtn');
+    var toggle = document.querySelector('#authModal .modal-switch a');
+    if (_authMode === 'signup') {
+      if (sub) sub.textContent = 'Create your account to get started.';
+      if (btn) btn.textContent = 'Create account →';
+      if (toggle) toggle.textContent = 'Already have an account? Sign in';
+    } else {
+      if (sub) sub.textContent = 'Sign in to start finding leads.';
+      if (btn) btn.textContent = 'Sign in →';
+      if (toggle) toggle.textContent = "Don't have an account? Sign up";
+    }
+    var errEl = document.getElementById('authError');
+    if (errEl) errEl.style.display = 'none';
+  };
+
+  window.handleAuthSubmit = async function() {
+    var email = (document.getElementById('authEmail') || {}).value || '';
+    var password = (document.getElementById('authPassword') || {}).value || '';
+    var errEl = document.getElementById('authError');
+    var btn = document.getElementById('authSubmitBtn');
+    if (!email || !password) {
+      if (errEl) { errEl.textContent = 'Please enter your email and password.'; errEl.style.display = 'block'; }
+      return;
+    }
+    if (btn) { btn.disabled = true; btn.textContent = 'Please wait...'; }
+    var result;
+    if (_authMode === 'signup') {
+      result = await supabase.auth.signUp({ email: email, password: password });
+    } else {
+      result = await supabase.auth.signInWithPassword({ email: email, password: password });
+    }
+    if (btn) { btn.disabled = false; btn.textContent = _authMode === 'signup' ? 'Create account →' : 'Sign in →'; }
+    if (result.error) {
+      if (errEl) { errEl.textContent = result.error.message; errEl.style.display = 'block'; }
+      return;
+    }
+    if (_authMode === 'signup') {
+      if (errEl) { errEl.style.display = 'none'; }
+      var sub = document.getElementById('authModalSub');
+      if (sub) sub.textContent = 'Check your email to confirm your account, then sign in.';
+      if (btn) btn.style.display = 'none';
+      return;
+    }
+    // Login success — boot the app
+    var user = result.data.user;
+    closeModal();
+    if (typeof startBetaWithUser === 'function') startBetaWithUser(user);
+  };
 
   supabase.auth.onAuthStateChange(function(event, session) {
     if (session) {
