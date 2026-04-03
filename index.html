@@ -7367,6 +7367,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     if (btn) { btn.disabled = false; btn.textContent = _authMode === 'signup' ? 'Create account →' : 'Sign in →'; }
     if (result.error) {
+      console.log('LOGIN ERROR:', result.error);
+      alert(result.error.message);
       if (errEl) { errEl.textContent = result.error.message; errEl.style.display = 'block'; }
       return;
     }
@@ -7377,10 +7379,9 @@ document.addEventListener("DOMContentLoaded", function () {
       if (btn) btn.style.display = 'none';
       return;
     }
-    // Login success — boot the app
-    var user = result.data.user;
-    closeModal();
-    if (typeof startBetaWithUser === 'function') startBetaWithUser(user);
+    console.log('LOGIN SUCCESS:', result.data);
+    alert('Login successful');
+    location.reload();
   };
 
   supabase.auth.onAuthStateChange(async function(event, session) {
