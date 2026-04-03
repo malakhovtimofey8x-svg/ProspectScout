@@ -7326,6 +7326,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const supabase = window.supabase.createClient(SUPA_URL, SUPA_KEY);
 
+  (async function() {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error) {
+      console.log("ERROR GETTING USER:", error);
+    } else {
+      console.log("CURRENT USER:", user);
+    }
+  })();
+
   var signupBtn = document.getElementById('signup-btn');
   if (signupBtn) {
     signupBtn.addEventListener('click', async function() {
