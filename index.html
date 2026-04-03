@@ -7303,18 +7303,40 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-  const supabase = window.supabase.createClient("https://lyjxwwlywvnykgoirhwv.supabase.co", "sb_publishable_Ct_M9J4JGR0OKihNpkSqrA_1Xh7IV-L");
+  const supabase = window.supabase.createClient(
+    "https://lyjxwwlywvnykgoirhwv.supabase.co",
+    "sb_publishable_Ct_M9J4JGR0OKihNpkSqrA_1Xh7IV-L"
+  );
 
   async function createUser(email, tier) {
-  const { data, error } = await supabase
-  .from('users')
-  .insert([{ email: email, tier: tier }])
-  .select();
+    const { data, error } = await supabase
+      .from('users')
+      .insert([{ email: email, tier: tier }])
+      .select();
+
     console.log("CREATE USER:", data);
     console.log("CREATE ERROR:", error);
   }
 
+  const form = document.querySelector('form[name="waitlist"]');
+
+  if (form) {
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const email = form.querySelector('input[name="email"]').value;
+      const tier = form.querySelector('input[name="tier"]').value || "free";
+
+      await createUser(email, tier);
+
+      alert("You're on the waitlist 🚀");
+    });
+  }
+
+});
+
   <form name="waitlist">
+                          
 
 });
 </script>
