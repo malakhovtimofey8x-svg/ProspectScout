@@ -7395,21 +7395,21 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   supabase.auth.getSession().then(function(res) {
-    var authModal = document.getElementById("auth-modal");
+    var authModal = document.getElementById("authModal");
     if (res.data && res.data.session) {
       console.log("INITIAL SESSION:", res.data.session.user);
-      if (authModal) authModal.style.display = "none";
+      if (authModal) authModal.classList.remove("open");
     } else {
       console.log("NO INITIAL SESSION");
-      if (authModal) authModal.style.display = "flex";
+      if (authModal) authModal.classList.add("open");
     }
   });
 
   supabase.auth.onAuthStateChange(async function(event, session) {
-    var authModal = document.getElementById("auth-modal");
+    var authModal = document.getElementById("authModal");
     if (session) {
       console.log("USER SESSION:", session.user);
-      if (authModal) authModal.style.display = "none";
+      if (authModal) authModal.classList.remove("open");
       var userId = session.user.id;
       var userEmail = session.user.email;
       var { data: existingUser, error } = await supabase.from("users").select("id").eq("id", userId).single();
@@ -7421,7 +7421,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     } else {
       console.log("NO USER");
-      if (authModal) authModal.style.display = "flex";
+      if (authModal) authModal.classList.add("open");
     }
   });
 });
