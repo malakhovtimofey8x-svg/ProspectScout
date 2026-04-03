@@ -1950,6 +1950,9 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 <script>
 // Safari-safe error handler — prevents pure black screen on JS errors
 window.onerror = function(msg, src, line, col, err) {
+  console.error('ProspectScout error:', msg, 'at', src, line+':'+col, err);
+  // Only replace the page for non-trivial errors (not cross-origin script errors)
+  if (msg === 'Script error.' || msg === 'Script error') return true;
   try {
     document.body.style.cssText = 'background:#08080D;color:#EEEEF5;font-family:sans-serif;padding:40px 20px;';
     document.body.innerHTML = '<h2 style="color:#BEFF00;margin-bottom:16px">ProspectScout</h2><p>Something went wrong — please reload.</p><p style="font-size:11px;color:#888;margin-top:8px">' + msg + '</p><br><button onclick="location.reload()" style="background:#BEFF00;color:#000;border:0;padding:14px 28px;border-radius:8px;font-size:16px;margin-top:16px">Reload</button>';
@@ -7211,6 +7214,7 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 </script>
 
+<script>
 // ── MOTION ENGINE ─────────────────────────────────────────────────────────────
 (function() {
   var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -7302,42 +7306,29 @@ document.addEventListener('DOMContentLoaded', function() {
 </form>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+  // Guard: skip if Supabase not loaded or credentials are still placeholders
+  if (!window.supabase || !window.supabase.createClient) {
+    console.warn('Supabase not loaded');
+    return;
+  }
+  var SUPA_URL = "https://lyjxwwlywvnykgoirhwv.supabase.co";
+  var SUPA_KEY = "sb_publishable_Ct_M9J4JGR0OKihNpkSqrA_1Xh7IV-L";
+  if (SUPA_URL === "https://lyjxwwlywvnykgoirhwv.supabase.co" || SUPA_KEY === "sb_publishable_Ct_M9J4JGR0OKihNpkSqrA_1Xh7IV-L") {
+    console.warn('Supabase credentials not set — skipping init. Replace PROJECT_URL and PUBLISHABLE_KEY.');
+    return;
+  }
 
-  const supabase = window.supabase.createClient(
-    "https://lyjxwwlywvnykgoirhwv.supabase.co",
-    "sb_publishable_Ct_M9J4JGR0OKihNpkSqrA_1Xh7IV-L"
-  );
+  const supabase = window.supabase.createClient(SUPA_URL, SUPA_KEY);
 
   async function createUser(email, tier) {
     const { data, error } = await supabase
-      .from('users')
-      .insert([{ email: email, tier: tier }])
-      .select();
-
+      .from("users")
+      .insert([{ email: email, tier: tier }]);
     console.log("CREATE USER:", data);
     console.log("CREATE ERROR:", error);
   }
 
-  const form = document.querySelector('form[name="waitlist"]');
-
-  if (form) {
-    form.addEventListener("submit", async function (e) {
-      e.preventDefault();
-
-      const email = form.querySelector('input[name="email"]').value;
-      const tier = form.querySelector('input[name="tier"]').value || "free";
-
-      await createUser(email, tier);
-
-      alert("You're on the waitlist 🚀");
-    });
-  }
-
-});
-
-  <form name="waitlist">
-                          
-
+  createUser("test@example.com", "free");
 });
 </script>
 </body>
