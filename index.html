@@ -7320,17 +7320,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const supabase = window.supabase.createClient(SUPA_URL, SUPA_KEY);
 
-  document.getElementById('signup-btn').addEventListener('click', async function() {
-    var email = document.getElementById('email').value;
-    var password = document.getElementById('password').value;
-    var response = await supabase.auth.signUp({ email: email, password: password });
-    console.log(response);
-    if (response.error) {
-      alert(response.error.message);
-    } else {
-      alert('Signup successful');
-    }
-  });
+  var signupBtn = document.getElementById('signup-btn');
+  if (signupBtn) {
+    signupBtn.addEventListener('click', async function() {
+      var email = document.getElementById('email').value;
+      var password = document.getElementById('password').value;
+      var response = await supabase.auth.signUp({ email: email, password: password });
+      console.log(response);
+      if (response.error) {
+        alert(response.error.message);
+      } else {
+        alert('Signup successful');
+      }
+    });
+  }
 
   async function createUser(email, tier) {
     const { data, error } = await supabase
