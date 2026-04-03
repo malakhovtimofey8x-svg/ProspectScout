@@ -2405,12 +2405,21 @@ function switchTier(newTier) {
   // Gate: can only switch to plus/pro if unlocked
   if (newTier === 'plus' && !_laUnlocked('plus')) { showPage('pricing'); return; }
   if (newTier === 'pro'  && !_laUnlocked('pro'))  { showPage('pricing'); return; }
-  if (currentUser) {
-  const users = getUsers();
-  users[currentUser.email].tier = newTier;
-  saveUsers(users);
+ if (currentUser) {
+  try {
+    const users = getUsers();
 
-  currentUser.tier = newTier;
+    if (!users[currentUser.email]) {
+      users[currentUser.email] = {};
+    }
+
+    users[currentUser.email].tier = newTier;
+    saveUsers(users);
+
+    currentUser.tier = newTier;
+  } catch (e) {
+    console.warn("User sync failed, continuing with local tier");
+  }
 }
   _syncCurrentTier();
   updateDashboard(); updateNav();
