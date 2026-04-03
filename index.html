@@ -2013,8 +2013,11 @@ function updateNavPipeline() {
 function startBeta() {
   var name = (document.getElementById('betaNameInput').value || '').trim();
   if (!name) { document.getElementById('betaNameInput').focus(); return; }
-  currentUser = { email:'beta@user.local', name:name, tier:'free' };
+  // Restore tier from previous unlock if any
+  var savedTier = localStorage.getItem('ps_tier') || 'free';
+  currentUser = { email:'beta@user.local', name:name, tier:savedTier };
   localStorage.setItem('ps_beta_user', JSON.stringify(currentUser));
+  _syncCurrentTier();
   closeModal();
   enterDashboard();
   if (isDemoEligible()) { scheduleDemoRun(); }
@@ -2024,6 +2027,7 @@ function doLogin()  { startBeta(); }
 function doSignup() { startBeta(); }
 function doLogout() {
   currentUser = null;
+  currentTier = 'free';
   localStorage.removeItem('ps_beta_user');
   updateNav();
   showPage('home');
@@ -2032,8 +2036,14 @@ function doLogout() {
 function restoreSession() {
   try {
     var saved = localStorage.getItem('ps_beta_user');
-    if (saved) { currentUser = JSON.parse(saved); }
+    if (saved) {
+      currentUser = JSON.parse(saved);
+      // Always reconcile with ps_tier (unlock may have happened)
+      var savedTier = localStorage.getItem('ps_tier');
+      if (savedTier && TIERS[savedTier]) { currentUser.tier = savedTier; }
+    }
   } catch(e) {}
+  _syncCurrentTier();
 }
 
 // NAV
@@ -2133,7 +2143,7 @@ function handleLogoClick() {
   }
   _logoTimer = setTimeout(function(){ _logoTaps=0; goHome(); }, 400);
 }
-function enterDashboard(){ updateNav(); updateDashboard(); showPage('dashboard'); checkForResume(); renderDashSections(); renderGoalTracker(); updateOverdueBadge(); setTimeout(checkOnboarding, 400); }
+function enterDashboard(){ _syncCurrentTier(); updateNav(); updateDashboard(); showPage('dashboard'); checkForResume(); renderDashSections(); renderGoalTracker(); updateOverdueBadge(); setTimeout(checkOnboarding, 400); }
 
 // DASHBOARD STATE
 function updateEmptyHint() { /* disabled — search form is always visible */ }
@@ -2329,6 +2339,7 @@ function saveLastResults(businesses) {
 
 function updateDashboard() {
   if (!currentUser) return;
+  _syncCurrentTier();
   const tier = TIERS[currentUser.tier]||TIERS.free;
   const used = getUsage(currentUser.email);
   const limit = tier.daily;
@@ -2338,8 +2349,10 @@ function updateDashboard() {
   document.getElementById('dashSub').textContent  = `${tier.name} plan · ${Math.max(0,limit-used)} prospects left today`;
 
   const chip = document.getElementById('dashTierChip');
-  chip.textContent = tier.name;
+  chip.textContent = 'Current plan: ' + tier.name;
   chip.className = `tier-chip ${tier.chipClass}`;
+  chip.style.padding = '4px 10px';
+  chip.style.fontSize = '10px';
 
   document.getElementById('dashUpgradeBtn').style.display = currentUser.tier==='pro' ? 'none' : '';
 
@@ -2354,6 +2367,7 @@ function updateDashboard() {
       spotsHint.style.display = 'none';
     }
   }
+
   document.getElementById('usageNumbers').textContent = `${used} / ${limit} today`;
 
   const fill = document.getElementById('usageFill');
@@ -2364,19 +2378,32 @@ function updateDashboard() {
   if (typeof updateEmptyHint === 'function') updateEmptyHint();
   if (typeof checkForResume === 'function') checkForResume();
 
-  // tier switcher highlight
-  ['free','plus','pro'].forEach(t => {
-    const btn = document.getElementById(`btn-${t}`);
-    btn.className = 'tier-switch-btn' + (currentUser.tier===t ? ` active-${t}` : '');
+  // Tier switcher — lock buttons for non-unlocked tiers
+  ['free','plus','pro'].forEach(function(t) {
+    const btn = document.getElementById('btn-'+t);
+    if (!btn) return;
+    const isUnlocked = t==='free' || _laUnlocked(t);
+    btn.className = 'tier-switch-btn' + (currentUser.tier===t ? ' active-'+t : '');
+    btn.title = isUnlocked ? '' : 'Unlock '+t.charAt(0).toUpperCase()+t.slice(1)+' to switch';
+    btn.style.opacity = isUnlocked ? '' : '0.45';
+    btn.style.cursor  = isUnlocked ? '' : 'not-allowed';
+    btn.onclick = isUnlocked
+      ? function(){ switchTier(t); }
+      : function(){ showPage('pricing'); };
   });
 }
 
 function switchTier(newTier) {
   if (!currentUser) return;
+  // Gate: can only switch to plus/pro if unlocked
+  if (newTier === 'plus' && !_laUnlocked('plus')) { showPage('pricing'); return; }
+  if (newTier === 'pro'  && !_laUnlocked('pro'))  { showPage('pricing'); return; }
   const users = getUsers();
   users[currentUser.email].tier = newTier;
   saveUsers(users);
   currentUser.tier = newTier;
+  localStorage.setItem('ps_tier', newTier);
+  _syncCurrentTier();
   updateDashboard(); updateNav();
 }
 
@@ -2400,9 +2427,39 @@ function renderPricingGrid(id) {
 }
 
 // ── LIMITED ACCESS SYSTEM ─────────────────────────────────────────
+
+// Central tier variable — always reflects current user's tier
+var currentTier = 'free';
+function _syncCurrentTier() {
+  currentTier = (currentUser && TIERS[currentUser.tier]) ? currentUser.tier : 'free';
+}
+
 var _LA = {
-  plus: { max:50, codes:['PLUS-EARLY1','PLUS-EARLY2','PLUS-VIP01','PLUS-VIP02','PLUS-VIP03','PLUS-BETA1','PLUS-BETA2','PLUS-BETA3','PLUS-BETA4','PLUS-BETA5'] },
-  pro:  { max:25, codes:['PRO-ELITE01','PRO-ELITE02','PRO-VIP001','PRO-VIP002','PRO-VIP003','PRO-ALPHA1','PRO-ALPHA2'] }
+  plus: {
+    max: 50,
+    codes: [
+      'Q7X2-NRVK-P4BW','H9MF-3TZL-KCYD','B6WJ-8QPR-XMTA','D4YN-V5HG-WFZE','R2CU-JKBT-7LSX',
+      'M8PA-6DNQ-THYC','Z3FV-WXRK-9BJL','G5QH-TMWN-2CXP','S7BK-4YFZ-RJDV','N1WL-CPXG-8MHT',
+      'F6ZR-9QBM-JKYW','L4TX-HVNP-3DCG','K8JD-2FWB-YQMR','T5NV-XPCK-6HZL','W3MH-RKQT-BFZY',
+      'P9YC-ZJNX-4WDG','C2BF-8LMT-VPKH','Y7GX-QDRN-5KWJ','V4HC-TNZP-MRFB','J6QW-BKYD-9LXC',
+      'X1NM-FVZR-PGKT','E8TK-WJCQ-7YBL','A3ZP-MXHD-NRFC','U5LB-GQTV-CKJY','I9WR-PHXN-4ZMD',
+      'O2KF-VJZT-BLQG','Q4MX-YRDC-8NPW','H7BN-CKWP-FTJZ','B1VZ-QGXL-3RMY','D9TF-HNKJ-PWCX',
+      'R6YW-MBZD-LQVT','M3JP-XFCK-9GHN','Z8CL-WRYT-KVBQ','G2QD-NZMJ-BXHF','S4HX-TPKW-RYVC',
+      'N7FB-CGMQ-ZLJD','F1WK-BXNT-DVYP','L9ZR-QPCH-MWGJ','K6VY-JFBT-XNHD','T2MQ-LWZP-CRKX',
+      'W8DC-GKYF-BNVT','P5NJ-ZHXM-QTCR','C3XB-RVWL-PKZY','Y1GQ-DTFN-JHMW','V6TK-MCXZ-BPNY',
+      'J4BH-WQZR-GDLF','X9PM-FNCV-TKWY','E2YL-BDZK-QJXR','A7ZW-GHQT-CNMV','U3KN-XPBF-DRTJ'
+    ]
+  },
+  pro: {
+    max: 25,
+    codes: [
+      'PRX-7KQMB-NZWF4','PRX-3HVTC-YJDB8','PRX-9LWZX-RFKM2','PRX-5QBNP-GDTH6','PRX-1WCFZ-TXKJ0',
+      'PRX-8MYVR-BLQD3','PRX-4NXHK-WZPC7','PRX-6DTJB-QMFYN','PRX-2ZPWG-CKRX5','PRX-0BJFC-MVLT9',
+      'PRX-KQNZW-7BYDX','PRX-RVTHM-3GPFC','PRX-WBJDX-9NKLZ','PRX-FMQCP-5TXVR','PRX-HLZYN-1BDWK',
+      'PRX-CGTXB-8QJMF','PRX-DNWKZ-4RYPV','PRX-XVBMH-6FTQJ','PRX-QJLPF-2ZCWD','PRX-TYBWN-0KMRX',
+      'PRX-ZNFVD-7HQTC','PRX-MXKGB-3WJLP','PRX-PCRWT-9ZVHB','PRX-BQDLY-5XMKF','PRX-GVNJZ-1TPCR'
+    ]
+  }
 };
 
 function _laUsed(tier) {
@@ -2415,15 +2472,24 @@ function _laUnlocked(tier) {
   return localStorage.getItem('ps_la_unlocked_'+tier) === '1';
 }
 function _laUnlock(tier) {
-  if (_laUnlocked(tier)) return; // already counted, don't double-increment
+  if (_laUnlocked(tier)) return;
   localStorage.setItem('ps_la_unlocked_'+tier,'1');
   _laIncrement(tier);
 }
 function _laSpots(tier) {
   return Math.max(0, _LA[tier].max - _laUsed(tier));
 }
+function _laUsedCodes() {
+  try { return JSON.parse(localStorage.getItem('ps_la_used_codes')||'[]'); } catch{ return []; }
+}
+function _laMarkCodeUsed(code) {
+  var used = _laUsedCodes();
+  if (!used.includes(code)) { used.push(code); localStorage.setItem('ps_la_used_codes', JSON.stringify(used)); }
+}
 function _laValidCode(tier, code) {
-  return _LA[tier].codes.includes((code||'').trim().toUpperCase());
+  var c = (code||'').trim().toUpperCase();
+  if (_laUsedCodes().includes(c)) return false; // already redeemed
+  return _LA[tier].codes.includes(c);
 }
 
 function renderPricingGrid(id) {
@@ -2511,13 +2577,22 @@ function submitAccessCode(tier) {
   var input = document.getElementById('accessCodeInput');
   var err   = document.getElementById('accessErr');
   if (!input || !err) return;
-  var code = input.value.trim();
+  var code = input.value.trim().toUpperCase();
   if (!code) { showAccessError('Enter your access code.'); return; }
-  if (!_laValidCode(tier, code)) { showAccessError('Invalid code. Check for typos or join the waitlist.'); return; }
+  if (!_laValidCode(tier, code)) { showAccessError('Invalid or already used code. Check for typos or join the waitlist.'); return; }
+  _laMarkCodeUsed(code);
   _laUnlock(tier);
+  // Save tier to localStorage and currentUser
+  localStorage.setItem('ps_tier', tier);
+  if (currentUser) {
+    currentUser.tier = tier;
+    var users = getUsers();
+    if (users[currentUser.email]) { users[currentUser.email].tier = tier; saveUsers(users); }
+  }
+  _syncCurrentTier();
   closeAccessModal();
   renderPricingGrid('pricingGrid');
-  showToast('🎉 '+( tier==='plus'?'Plus':'Pro')+' access unlocked!', 'success');
+  showToast('🎉 '+(tier==='plus'?'Plus':'Pro')+' access unlocked!', 'success');
   setTimeout(function(){ currentUser ? enterDashboard() : openModal('signup'); }, 800);
 }
 
@@ -2760,6 +2835,11 @@ function renderPipelineValueBar() {
 // ── CSV EXPORT ───────────────────────────────────────────────────────────────
 function exportCSV() {
   if (!currentUser) return;
+  if (currentTier === 'free') {
+    showToast('Export is a Plus & Pro feature. Upgrade to unlock.', 'info');
+    setTimeout(function(){ showPage('pricing'); }, 1200);
+    return;
+  }
   const history = getHistory(currentUser.email);
   if (!history.length) { alert('No prospects to export yet.'); return; }
   const STATUSES_LABELS = {new:'New',contacted:'Contacted',engaged:'Responded',qualified:'Meeting Set',converted:'Closed'};
@@ -2938,20 +3018,29 @@ function kbCard(h, col) {
   var name = (h.name||'Unknown').replace(/</g,'&lt;').replace(/'/g,'&#39;');
   var phone = h.phone||'', note = (h.notes||'').replace(/</g,'&lt;').replace(/"/g,'&quot;');
   var hot = isHotLead(h), nextAction = h.nextAction||'';
+  var isPaid = (currentTier === 'plus' || currentTier === 'pro');
 
   var callBtn = phone ? '<a href="tel:'+phone.replace(/\D/g,'')+'" class="kb-btn kb-call" onclick="event.stopPropagation()">📞 Call</a>' : '';
-  var backBtn = col.prev ? '<button class="kb-btn kb-back" onclick="kbMove(\''+h.id+'\',\''+col.prev+'\')">←</button>' : '';
+  var backBtn = col.prev ? '<button class="kb-btn kb-back" onclick="kbMove(\''+h.id+'\',\''+col.prev+'\')">← Back</button>' : '';
   var fwdBtn = col.next ? '<button class="kb-btn kb-move" onclick="kbMove(\''+h.id+'\',\''+col.next+'\')">'+KB_COLS.filter(function(c){return c.id===col.next})[0].label+' →</button>' : '';
   var delBtn = '<button class="kb-btn kb-del" onclick="kbDel(\''+h.id+'\',\''+name+'\')">✕</button>';
+
+  // Notes & next-action gated to Plus/Pro
+  var nextActionHtml = isPaid
+    ? '<div class="kb-next-row"><span class="kb-next-label">Next:</span><select class="kb-next-select" onchange="kbAction(\''+h.id+'\',this.value)">'
+        + KB_ACTIONS.map(function(a){return '<option value="'+a+'"'+(a===nextAction?' selected':'')+'>'+(a||'— pick —')+'</option>';}).join('')
+        + '</select></div>'
+    : '<div class="kb-next-row" style="opacity:0.4;font-size:11px;color:var(--text4);cursor:pointer;" onclick="showPage(\'pricing\')" title="Upgrade to Plus">🔒 Next actions — Plus only</div>';
+  var noteHtml = isPaid
+    ? '<textarea class="kb-card-note" placeholder="Add a note..." rows="1" onblur="kbNote(\''+h.id+'\',this.value)">'+note+'</textarea>'
+    : '<div style="font-size:11px;color:var(--text4);opacity:0.4;cursor:pointer;padding:4px 0;" onclick="showPage(\'pricing\')" title="Upgrade to Plus">🔒 Notes — Plus only</div>';
 
   return '<div class="kb-card'+(hot?' hot':'')+'" data-id="'+h.id+'">' +
     '<div class="kb-card-top"><div class="kb-card-name">'+name+'</div>'+(hot?'<span class="kb-hot-badge">🔥 Hot</span>':'')+'</div>' +
     (h.type?'<div class="kb-card-type">'+h.type+'</div>':'') +
     (score?'<div class="kb-card-score '+sCls+'">Score '+score+'</div>':'') +
-    '<div class="kb-next-row"><span class="kb-next-label">Next:</span><select class="kb-next-select" onchange="kbAction(\''+h.id+'\',this.value)">' +
-      KB_ACTIONS.map(function(a){return '<option value="'+a+'"'+(a===nextAction?' selected':'')+'>'+(a||'— pick —')+'</option>';}).join('') +
-    '</select></div>' +
-    '<textarea class="kb-card-note" placeholder="Add a note..." rows="1" onblur="kbNote(\''+h.id+'\',this.value)">'+note+'</textarea>' +
+    nextActionHtml +
+    noteHtml +
     '<div class="kb-card-actions">'+callBtn+backBtn+fwdBtn+delBtn+'</div></div>';
 }
 
@@ -4637,6 +4726,16 @@ function addToPipeline(i) {
   if (!b) return;
   const btn = document.getElementById('pipe-btn-'+i);
   if (btn && btn.dataset.added === '1') { openHistoryPage(); return; }
+
+  // Free tier: cap pipeline at 10 leads
+  if (currentTier === 'free') {
+    const existing = getHistory(currentUser.email);
+    if (existing.length >= 10) {
+      showToast('Free plan: 10 pipeline leads max. Upgrade to add more.', 'info');
+      setTimeout(function(){ showPage('pricing'); }, 1400);
+      return;
+    }
+  }
 
   // Duplicate detection
   if (checkDuplicate(b.name)) {
