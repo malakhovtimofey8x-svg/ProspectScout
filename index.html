@@ -7388,9 +7388,12 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log("USER SESSION:", session.user);
       var userId = session.user.id;
       var userEmail = session.user.email;
-      var { data: existingUser } = await supabase.from("users").select("id").eq("id", userId).single();
-      if (!existingUser) {
+      var { data: existingUser, error } = await supabase.from("users").select("id").eq("id", userId).single();
+      if (error && error.code === "PGRST116") {
+        console.log("CREATING USER");
         await supabase.from("users").insert([{ id: userId, email: userEmail, tier: "free" }]);
+      } else {
+        console.log("USER EXISTS");
       }
     } else {
       console.log("NO USER");
