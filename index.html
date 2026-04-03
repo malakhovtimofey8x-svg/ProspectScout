@@ -7312,6 +7312,16 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 </script>
 
+<div id="auth-box" style="margin:20px;padding:16px;border:1px solid #ccc;display:inline-block;">
+  <h3>Auth</h3>
+  <div style="margin-top:10px;">
+    <input id="email" type="email" placeholder="Email" style="display:block;margin-bottom:8px;" />
+    <input id="password" type="password" placeholder="Password" style="display:block;margin-bottom:8px;" />
+    <button id="signup-btn" style="margin-right:8px;">Sign Up</button>
+    <button id="login-btn">Login</button>
+  </div>
+</div>
+
 <form name="waitlist" netlify netlify-honeypot="bot-field" hidden>
   <input name="bot-field" />
   <input name="tier" />
@@ -7399,6 +7409,35 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       console.log("NO USER");
     }
+  });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var emailEl = document.getElementById("email");
+  var passwordEl = document.getElementById("password");
+  var signupBtn = document.getElementById("signup-btn");
+  var loginBtn = document.getElementById("login-btn");
+  var supabase = window._supabase;
+
+  if (!signupBtn || !loginBtn || !emailEl || !passwordEl || !supabase) return;
+
+  signupBtn.addEventListener("click", async function () {
+    signupBtn.textContent = "Loading...";
+    var result = await supabase.auth.signUp({ email: emailEl.value, password: passwordEl.value });
+    signupBtn.textContent = "Sign Up";
+    if (result.error) { console.log(result.error); alert(result.error.message); return; }
+    alert("Signup successful");
+  });
+
+  loginBtn.addEventListener("click", async function () {
+    loginBtn.textContent = "Loading...";
+    var result = await supabase.auth.signInWithPassword({ email: emailEl.value, password: passwordEl.value });
+    loginBtn.textContent = "Login";
+    if (result.error) { console.log(result.error); alert(result.error.message); return; }
+    console.log("LOGIN SUCCESS:", result.data);
+    alert("Login successful");
+    location.reload();
   });
 });
 </script>
