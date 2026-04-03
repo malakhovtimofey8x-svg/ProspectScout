@@ -1192,13 +1192,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 </style>
 </head>
 <body style="background:#08080D;">
-<div id="signup-section" style="padding:20px; background:#111; color:white;">
-  <h2>Signup</h2>
-  <input id="email" placeholder="Email" style="display:block; margin:10px 0;" />
-  <input id="password" type="password" placeholder="Password" style="display:block; margin:10px 0;" />
-  <button id="signup-btn">Sign Up</button>
-  <button id="login-btn">Login</button>
-</div>
+
 <canvas id="matrixCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.18;pointer-events:none;"></canvas>
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
@@ -7313,71 +7307,22 @@ document.addEventListener('DOMContentLoaded', function() {
 </form>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-  // Guard: skip if Supabase not loaded or credentials are still placeholders
   if (!window.supabase || !window.supabase.createClient) {
     console.warn('Supabase not loaded');
     return;
   }
   var SUPA_URL = "https://lyjxwwlywvnykgoirhwv.supabase.co";
   var SUPA_KEY = "sb_publishable_Ct_M9J4JGR0OKihNpkSqrA_1Xh7IV-L";
-  if (SUPA_URL === "PROJECT_URL" || SUPA_KEY === "PUBLISHABLE_KEY") {
-    console.warn('Supabase credentials not set — skipping init. Replace PROJECT_URL and PUBLISHABLE_KEY.');
-    return;
-  }
 
   const supabase = window.supabase.createClient(SUPA_URL, SUPA_KEY);
 
-  var loginBtn = document.getElementById('login-btn');
-  if (loginBtn) {
-    loginBtn.addEventListener('click', async function() {
-      var email = document.getElementById('email').value;
-      var password = document.getElementById('password').value;
-      var { data, error } = await supabase.auth.signInWithPassword({ email: email, password: password });
-      if (error) {
-        console.log("LOGIN ERROR:", error);
-        alert(error.message);
-      } else {
-        console.log("LOGIN SUCCESS:", data);
-        alert("Login successful");
-      }
-    });
-  }
-
-  (async function() {
-    const { data: { user }, error } = await supabase.auth.getUser();
-    if (error) {
-      console.log("ERROR GETTING USER:", error);
+  supabase.auth.onAuthStateChange(function(event, session) {
+    if (session) {
+      console.log("USER SESSION:", session.user);
     } else {
-      console.log("CURRENT USER:", user);
+      console.log("NO USER");
     }
-  })();
-
-  var signupBtn = document.getElementById('signup-btn');
-  if (signupBtn) {
-    signupBtn.addEventListener('click', async function() {
-      var email = document.getElementById('email').value;
-      var password = document.getElementById('password').value;
-      var response = await supabase.auth.signUp({ email: email, password: password });
-      console.log(response);
-      if (response.error) {
-        alert(response.error.message);
-      } else {
-        alert('Signup successful');
-      }
-    });
-  }
-
-  async function createUser(email, tier) {
-    const { data, error } = await supabase
-      .from('users')
-      .insert([{ email: email, tier: tier }])
-      .select()
-      .single();
-    console.log("CREATE USER:", data);
-    console.log("CREATE ERROR:", error);
-  }
-
-  createUser("test@example.com", "free");
+  });
 });
 </script>
 </body>
