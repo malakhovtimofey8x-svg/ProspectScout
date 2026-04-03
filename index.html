@@ -7274,18 +7274,22 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 </script>
 <script>
-const supabase = window.supabase.createClient(
-  "https://lyjxwwlywvnykgoirhwv.supabase.co",
-  "sb_publishable_Ct_M9J4JGR0OKihNpkSqrA_1Xh7IV-L"
-);
+document.addEventListener("DOMContentLoaded", function () {
 
-async function testConnection() {
-  const { data, error } = await supabase.from('users').select('*');
-  console.log("DATA:", data);
-  console.log("ERROR:", error);
-}
+  const supabase = window.supabase.createClient(
+    "https://lyjxwwlywvnykgoirhwv.supabase.co",
+    "sb_publishable_Ct_M9J4JGR0OKihNpkSqrA_1Xh7IV-L"
+  );
 
-testConnection();
+  async function testConnection() {
+    const { data, error } = await supabase.from('users').select('*');
+    console.log("DATA:", data);
+    console.log("ERROR:", error);
+  }
+
+  testConnection();
+
+});
 </script>
 <form name="waitlist" netlify netlify-honeypot="bot-field" hidden>
   <input name="bot-field" />
