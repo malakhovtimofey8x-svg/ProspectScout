@@ -1502,6 +1502,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
         <button class="upgrade-nudge" onclick="showPage('pricing')" id="dashUpgradeBtn">Upgrade plan →</button>
         <span id="dashSpotsHint" style="font-size:10px;color:var(--teal);font-weight:600;display:none;"></span>
       </div>
+      <div id="usage-display" style="font-size:12px;color:var(--text3);font-weight:500;"></div>
     </div>
 
     <!-- CAMPAIGN CONTEXT BANNER -->
@@ -7425,6 +7426,8 @@ document.addEventListener("DOMContentLoaded", async function () {
       } else {
         supaCurrentUser = existingUser;
       }
+      const usageEl = document.getElementById("usage-display");
+      if (usageEl && supaCurrentUser) usageEl.textContent = supaCurrentUser.used_today + " / " + supaCurrentUser.daily_limit + " used today";
       if (typeof startBetaWithUser === "function") startBetaWithUser(session.user);
     } else {
       console.log("NO USER");
@@ -7442,6 +7445,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     await supabase.from("users").update({ used_today: supaCurrentUser.used_today + 1 }).eq("id", supaCurrentUser.id);
     supaCurrentUser.used_today += 1;
     console.log("Usage updated:", supaCurrentUser.used_today);
+    const usageEl = document.getElementById("usage-display");
+    if (usageEl) usageEl.textContent = supaCurrentUser.used_today + " / " + supaCurrentUser.daily_limit + " used today";
   });
 });
 </script>
