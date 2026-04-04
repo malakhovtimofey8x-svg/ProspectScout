@@ -7408,24 +7408,40 @@ document.addEventListener("DOMContentLoaded", async function () {
     showModal();
   }
 
+  let supaCurrentUser = null;
+
   supabase.auth.onAuthStateChange(async (event, session) => {
     if (session) {
       console.log("USER SESSION:", session.user);
       hideModal();
       const userId = session.user.id;
       const userEmail = session.user.email;
-      const { data: existingUser, error } = await supabase.from("users").select("id").eq("id", userId).single();
+      const { data: existingUser, error } = await supabase.from("users").select("*").eq("id", userId).single();
       if (error && error.code === "PGRST116") {
         console.log("CREATING USER");
         await supabase.from("users").insert([{ id: userId, email: userEmail, tier: "free" }]);
+        const { data: newUser } = await supabase.from("users").select("*").eq("id", userId).single();
+        supaCurrentUser = newUser;
       } else {
-        console.log("USER EXISTS");
+        supaCurrentUser = existingUser;
       }
       if (typeof startBetaWithUser === "function") startBetaWithUser(session.user);
     } else {
       console.log("NO USER");
+      supaCurrentUser = null;
       showModal();
     }
+  });
+
+  document.getElementById("analyzeBtn").addEventListener("click", async function () {
+    if (!supaCurrentUser) return;
+    if (supaCurrentUser.used_today >= supaCurrentUser.daily_limit) {
+      alert("Daily limit reached");
+      return;
+    }
+    await supabase.from("users").update({ used_today: supaCurrentUser.used_today + 1 }).eq("id", supaCurrentUser.id);
+    supaCurrentUser.used_today += 1;
+    console.log("Usage updated:", supaCurrentUser.used_today);
   });
 });
 </script>
