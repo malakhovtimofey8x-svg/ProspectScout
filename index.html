@@ -2617,16 +2617,42 @@ function closeAccessModal() {
   if (el) el.remove();
 }
 
-function submitAccessCode(tier) {
+async function submitAccessCode(tier) {
   var input = document.getElementById('accessCodeInput');
   var err   = document.getElementById('accessErr');
   if (!input || !err) return;
   var code = input.value.trim().toUpperCase();
   if (!code) { showAccessError('Enter your access code.'); return; }
-  if (!_laValidCode(tier, code)) { showAccessError('Invalid or already used code. Check for typos or join the waitlist.'); return; }
-  _laMarkCodeUsed(code);
+  var btn = document.querySelector('#accessModalWrap .modal-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Checking...'; }
+  var supabase = window._supabase;
+  if (supabase) {
+    var { data: keys } = await supabase.from('access_keys').select('*').eq('key', code).eq('used', false);
+    if (!keys || keys.length === 0) {
+      if (btn) { btn.disabled = false; btn.textContent = 'Unlock '+(tier==='plus'?'Plus':'Pro')+' →'; }
+      showAccessError('Invalid or already used code. Check for typos or join the waitlist.');
+      return;
+    }
+    var key = keys[0];
+    if (key.tier !== tier) {
+      if (btn) { btn.disabled = false; btn.textContent = 'Unlock '+(tier==='plus'?'Plus':'Pro')+' →'; }
+      showAccessError('This code is for the '+(key.tier==='plus'?'Plus':'Pro')+' plan, not '+tier+'.');
+      return;
+    }
+    var { data: { user } } = await supabase.auth.getUser();
+    if (!user) { showAccessError('You must be logged in to unlock a plan.'); if (btn) { btn.disabled = false; btn.textContent = 'Unlock '+(tier==='plus'?'Plus':'Pro')+' →'; } return; }
+    var dailyLimit = tier === 'plus' ? 25 : 100;
+    await supabase.from('users').update({ tier: tier, daily_limit: dailyLimit }).eq('id', user.id);
+    await supabase.from('access_keys').update({ used: true, used_by: user.id }).eq('id', key.id);
+  } else {
+    if (!_laValidCode(tier, code)) {
+      if (btn) { btn.disabled = false; btn.textContent = 'Unlock '+(tier==='plus'?'Plus':'Pro')+' →'; }
+      showAccessError('Invalid or already used code. Check for typos or join the waitlist.');
+      return;
+    }
+    _laMarkCodeUsed(code);
+  }
   _laUnlock(tier);
-  // Save tier to localStorage and currentUser
   localStorage.setItem('ps_tier', tier);
   if (currentUser) {
     currentUser.tier = tier;
