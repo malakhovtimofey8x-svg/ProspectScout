@@ -1503,6 +1503,8 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
         <span id="dashSpotsHint" style="font-size:10px;color:var(--teal);font-weight:600;display:none;"></span>
       </div>
       <div id="usage-display" style="font-size:12px;color:var(--text3);font-weight:500;"></div>
+      <button id="upgrade-plus" style="margin-right:8px;">Upgrade to Plus</button>
+      <button id="upgrade-pro">Upgrade to Pro</button>
     </div>
 
     <!-- CAMPAIGN CONTEXT BANNER -->
@@ -7426,6 +7428,12 @@ document.addEventListener("DOMContentLoaded", async function () {
       } else {
         supaCurrentUser = existingUser;
       }
+      const tierLimits = { free: 10, plus: 25, pro: 100 };
+      const correctLimit = tierLimits[supaCurrentUser.tier] || 10;
+      if (supaCurrentUser.daily_limit !== correctLimit) {
+        supaCurrentUser.daily_limit = correctLimit;
+        await supabase.from("users").update({ daily_limit: correctLimit }).eq("id", supaCurrentUser.id);
+      }
       const usageEl = document.getElementById("usage-display");
       if (usageEl && supaCurrentUser) usageEl.textContent = supaCurrentUser.used_today + " / " + supaCurrentUser.daily_limit + " used today";
       if (typeof startBetaWithUser === "function") startBetaWithUser(session.user);
@@ -7439,7 +7447,13 @@ document.addEventListener("DOMContentLoaded", async function () {
   document.getElementById("analyzeBtn").addEventListener("click", async function () {
     if (!supaCurrentUser) return;
     if (supaCurrentUser.used_today >= supaCurrentUser.daily_limit) {
-      alert("Daily limit reached");
+      if (supaCurrentUser.tier === "free") {
+        alert("You've reached your free limit. Upgrade to Plus or Pro to continue.");
+      } else if (supaCurrentUser.tier === "plus") {
+        alert("You've reached your Plus limit. Upgrade to Pro for more access.");
+      } else {
+        alert("Daily limit reached");
+      }
       return;
     }
     await supabase.from("users").update({ used_today: supaCurrentUser.used_today + 1 }).eq("id", supaCurrentUser.id);
@@ -7447,6 +7461,34 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.log("Usage updated:", supaCurrentUser.used_today);
     const usageEl = document.getElementById("usage-display");
     if (usageEl) usageEl.textContent = supaCurrentUser.used_today + " / " + supaCurrentUser.daily_limit + " used today";
+  });
+
+  document.getElementById("upgrade-plus").addEventListener("click", async function () {
+    const inputKey = prompt("Enter access key");
+    if (!inputKey) return;
+    const { data: keys } = await supabase.from("access_keys").select().eq("key", inputKey).eq("used", false);
+    if (!keys || keys.length === 0) { alert("Invalid or used key"); return; }
+    const key = keys[0];
+    if (key.tier !== "plus") { alert("Wrong key for this plan"); return; }
+    const { data: { user } } = await supabase.auth.getUser();
+    await supabase.from("users").update({ tier: "plus", daily_limit: 25 }).eq("id", user.id);
+    await supabase.from("access_keys").update({ used: true, used_by: user.id }).eq("key", inputKey);
+    alert("Upgrade successful");
+    location.reload();
+  });
+
+  document.getElementById("upgrade-pro").addEventListener("click", async function () {
+    const inputKey = prompt("Enter access key");
+    if (!inputKey) return;
+    const { data: keys } = await supabase.from("access_keys").select().eq("key", inputKey).eq("used", false);
+    if (!keys || keys.length === 0) { alert("Invalid or used key"); return; }
+    const key = keys[0];
+    if (key.tier !== "pro") { alert("Wrong key for this plan"); return; }
+    const { data: { user } } = await supabase.auth.getUser();
+    await supabase.from("users").update({ tier: "pro", daily_limit: 100 }).eq("id", user.id);
+    await supabase.from("access_keys").update({ used: true, used_by: user.id }).eq("key", inputKey);
+    alert("Upgrade successful");
+    location.reload();
   });
 });
 </script>
