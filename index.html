@@ -323,7 +323,7 @@ h1 em { font-style:normal; color:var(--accent); }
 
 
 /* TOAST */
-.ps-toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(16px); background:var(--bg3); border:1px solid var(--border2); border-radius:var(--r-lg); padding:12px 24px; font-size:13px; font-weight:500; color:var(--text); z-index:9999; opacity:0; transition:opacity 0.25s cubic-bezier(0.16,1,0.3,1), transform 0.25s cubic-bezier(0.16,1,0.3,1); white-space:nowrap; box-shadow:var(--shadow-lg); pointer-events:none; }
+.ps-toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(16px); z-index:10000; background:var(--bg3); border:1px solid var(--border2); border-radius:var(--r-lg); padding:12px 24px; font-size:13px; font-weight:500; color:var(--text); z-index:9999; opacity:0; transition:opacity 0.25s cubic-bezier(0.16,1,0.3,1), transform 0.25s cubic-bezier(0.16,1,0.3,1); white-space:nowrap; box-shadow:var(--shadow-lg); pointer-events:none; }
 .ps-toast.visible { opacity:1; transform:translateX(-50%) translateY(0); }
 .ps-toast.success { border-color:rgba(190,255,0,0.25); color:var(--accent); }
 .ps-toast.info { border-color:var(--border2); }
@@ -2175,16 +2175,16 @@ window.onerror = function(msg, src, line, col, err) {
 };
 
 
-var OPENAI_KEY = '';
+var OPENAI_KEY = window.__ENV_OPENAI_KEY__ || '';
 (async function() {
-  // Only attempt the config fetch when running on a real server (not file://)
   if (location.protocol === 'file:') return;
+  if (OPENAI_KEY) return; // already set via env injection
   try {
     var r = await fetch('/.netlify/functions/config');
-    if (!r.ok) return;
+    if (!r.ok) return; // silently ignore — function may not exist yet
     var cfg = await r.json();
     if (cfg.openaiKey) OPENAI_KEY = cfg.openaiKey;
-  } catch(e) {}
+  } catch(e) {} // silently ignore network errors
 })();
 const YELP_KEY = window.__ENV_YELP_KEY__ || '';
 const TIERS = {
@@ -2204,7 +2204,10 @@ function addUsage(email,n) { const k=`ps_usage_${email}_${new Date().toDateStrin
 function openModal(view) {
   if (currentUser) { enterDashboard(); return; }
   var m = document.getElementById('authModal');
-  if (m) { m.style.display = 'flex'; m.classList.add('open'); }
+  if (!m) return;
+  if (m.style.display === 'flex') return; // already open
+  m.style.display = 'flex';
+  m.classList.add('open');
   setTimeout(function(){ var inp = document.getElementById('authEmail'); if(inp) inp.focus(); }, 200);
 }
 function closeModal() {
@@ -2245,9 +2248,9 @@ function startBeta() {
 }
 
 function startBetaWithUser(supaUser) {
-  var savedTier = localStorage.getItem('ps_tier') || 'free';
-  var name = (supaUser.user_metadata && (supaUser.user_metadata.display_name || supaUser.user_metadata.full_name)) || supaUser.email.split('@')[0];
-  currentUser = { email: supaUser.email, name: name, tier: savedTier, supaId: supaUser.id };
+  var savedTier = localStorage.getItem('ps_tier') || (supaUser.user_metadata && supaUser.user_metadata.tier) || 'free';
+  var name = (supaUser.user_metadata && (supaUser.user_metadata.display_name || supaUser.user_metadata.full_name)) || (supaUser.email ? supaUser.email.split('@')[0] : 'User');
+  currentUser = { email: supaUser.email || '', name: name, tier: savedTier, supaId: supaUser.id };
   localStorage.setItem('ps_beta_user', JSON.stringify(currentUser));
   _syncCurrentTier();
   enterDashboard();
@@ -2385,7 +2388,7 @@ function renderDashSections() {
   if (!currentUser) return;
   var history = getHistory(currentUser.email);
   var tier = TIERS[currentUser.tier] || TIERS.free;
-  var allSearches = JSON.parse(localStorage.getItem('ps_searches_' + currentUser.email) || '[]');
+  var allSearches = window._searchHistoryCache || [];
 
   // ── Calendar streak summary on dashboard button ──
   var calStreakEl = document.getElementById('dashCalendarStreak');
@@ -2430,11 +2433,13 @@ function renderDashSections() {
   var recentList = document.getElementById('recentList');
   if (recentEl && recentList && allSearches.length) {
     recentEl.style.display = 'block';
-    recentList.innerHTML = allSearches.slice(0, 4).map(function(s, idx) {
-      var date = new Date(s.ts).toLocaleDateString('en-US',{month:'short',day:'numeric'});
-      var meta = [s.product, s.target, date, s.count + ' prospects'].filter(Boolean).join(' · ');
+    recentList.innerHTML = allSearches.filter(function(s){ return s && (s.product || s.query); }).slice(0, 4).map(function(s, idx) {
+      var ts = s.ts || (s.created_at ? new Date(s.created_at).getTime() : null);
+      var date = ts ? new Date(ts).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
+      var productLabel = s.product || s.query || '';
+      var meta = [productLabel, s.target, date, s.count ? s.count + ' prospects' : ''].filter(Boolean).join(' · ');
       return '<div class="recent-item">' +
-        '<div class="recent-info"><div class="recent-location">' + s.location + '</div><div class="recent-meta">' + meta + '</div></div>' +
+        '<div class="recent-info"><div class="recent-location">' + (s.location||'') + '</div><div class="recent-meta">' + meta + '</div></div>' +
         '<button class="recent-redo" onclick="redoSearchByIndex(' + idx + ')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> Redo</button>' +
       '</div>';
     }).join('');
@@ -2543,10 +2548,9 @@ function fillSearch(locationOrEl, product, target) {
 
 function redoSearchByIndex(idx) {
   if (!currentUser) return;
-  var searches = JSON.parse(localStorage.getItem('ps_searches_' + currentUser.email) || '[]');
-  var s = searches[idx];
+  var s = window._searchHistoryCache && window._searchHistoryCache[idx];
   if (!s) return;
-  fillSearch(s.location||'', s.product||'', s.target||'');
+  fillSearch(s.location||'', s.query||s.product||'', s.target||'');
   setTimeout(function(){ analyze(); }, 150);
 }
 
@@ -2555,14 +2559,22 @@ function redoSearch(s) {
   setTimeout(function(){ analyze(); }, 150);
 }
 
-function saveSearchRecord(location, product, target, count) {
-  if (!currentUser) return;
-  var key = 'ps_searches_' + currentUser.email;
-  var searches = JSON.parse(localStorage.getItem(key) || '[]');
-  searches = searches.filter(function(s){ return !(s.location===location && s.product===product && s.target===target); });
-  searches.unshift({ location:location, product:product, target:target, count:count, ts:Date.now() });
-  searches = searches.slice(0, 10);
-  localStorage.setItem(key, JSON.stringify(searches));
+async function saveSearchRecord(location, product, target, count) {
+  if (!currentUser || !window._supabase || !product) return;
+  try {
+    const { data: authData } = await window._supabase.auth.getUser();
+    const user = authData && authData.user;
+    if (user) {
+      const { error } = await window._supabase.from('search_history').insert([{
+        user_id: user.id,
+        query: product.trim(),
+        location: (location || '').trim(),
+        target: (target || '').trim(),
+        count: count || 0
+      }]);
+      if (error) console.error('saveSearchRecord error:', error);
+    }
+  } catch(e) { console.error('saveSearchRecord error:', e); }
 }
 
 function saveLastResults(businesses) {
@@ -2964,8 +2976,104 @@ const STATUSES = {
 };
 
 // PROSPECT HISTORY
-function getHistory(email) { try { return JSON.parse(localStorage.getItem(`ps_history_${email}`)||'[]'); } catch{ return []; } }
-function saveHistory(email,h) { localStorage.setItem(`ps_history_${email}`,JSON.stringify(h)); }
+// Pipeline cache key
+function _pipeKey(email) { return 'ps_history_' + email; }
+
+// getHistory reads from in-memory cache (populated by loadPipeline)
+// Falls back to localStorage only as emergency backup
+function getHistory(email) {
+  if (!email) return [];
+  if (window._pipelineCache && window._pipelineCache[email]) {
+    return window._pipelineCache[email];
+  }
+  try { return JSON.parse(localStorage.getItem(_pipeKey(email)) || '[]'); } catch(e) { return []; }
+}
+
+// saveHistory writes to in-memory cache + localStorage cache + Supabase async
+function saveHistory(email, h) {
+  if (!window._pipelineCache) window._pipelineCache = {};
+  window._pipelineCache[email] = h;
+  // Keep localStorage as backup cache
+  try { localStorage.setItem(_pipeKey(email), JSON.stringify(h)); } catch(e) {}
+  // Sync mutations to Supabase asynchronously
+  _syncPipelineToSupabase(h);
+}
+
+// Sync full pipeline state to Supabase
+async function _syncPipelineToSupabase(items) {
+  const supabase = window._supabase;
+  if (!supabase || !currentUser) return;
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    // Upsert all items
+    const rows = items.filter(function(h){ return h.name && h.name.trim(); }).map(function(h) {
+      return {
+        id: (typeof h.id === 'string' && h.id.startsWith('supa_')) ? h.id.replace('supa_', '') : undefined,
+        user_id: user.id,
+        name: h.name || '',
+        score: h.score || null,
+        phone: h.phone || null,
+        website: h.website || null,
+        stage: h.status || 'new',
+        type: h.type || null,
+        address: h.address || null,
+        opener: h.opener || null,
+        reason: h.reason || null,
+        opportunity: h.opportunity || null,
+        saved_at: h.savedAt ? new Date(h.savedAt).toISOString() : new Date().toISOString()
+      };
+    }).filter(function(r) { return r.name; });
+    if (rows.length > 0) {
+      await supabase.from('pipeline_items').upsert(rows, { onConflict: 'id', ignoreDuplicates: false });
+    }
+  } catch(e) {
+    console.error('Supabase sync error:', e);
+  }
+}
+
+async function loadPipeline() {
+  if (!currentUser) { renderKanban(); return; }
+  const supabase = window._supabase;
+  if (!supabase) { renderKanban(); return; }
+  try {
+    const { data: authData } = await supabase.auth.getUser();
+    const user = authData && authData.user;
+    if (!user) { renderKanban(); return; }
+    const { data, error } = await supabase.from('pipeline_items').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+    if (error) { console.error('loadPipeline error:', error); renderKanban(); return; }
+    const items = (data || []).map(function(row) {
+      return {
+        id: 'supa_' + row.id,
+        name: row.name || '',
+        type: row.type || '',
+        phone: row.phone || '',
+        website: row.website || '',
+        address: row.address || '',
+        googlemaps: row.googlemaps || '',
+        score: row.score || 0,
+        status: row.stage || 'new',
+        savedAt: row.saved_at ? new Date(row.saved_at).getTime() : (row.created_at ? new Date(row.created_at).getTime() : Date.now()),
+        statusUpdatedAt: null,
+        reachedOut: false,
+        reachedOutAt: null,
+        opener: row.opener || '',
+        reason: row.reason || '',
+        opportunity: row.opportunity || 'Medium',
+        campaignId: null,
+        campaignName: null
+      };
+    });
+    console.log('Loaded pipeline from Supabase:', items.length, 'items');
+    if (!window._pipelineCache) window._pipelineCache = {};
+    window._pipelineCache[currentUser.email] = items;
+    // Also update localStorage backup
+    try { localStorage.setItem(_pipeKey(currentUser.email), JSON.stringify(items)); } catch(e) {}
+  } catch(e) {
+    console.error('loadPipeline error:', e);
+  }
+  renderKanban();
+}
 
 function saveProspectsToHistory(email, businesses, searchMeta) {
   const history = getHistory(email);
@@ -2995,9 +3103,11 @@ function setStatus(id, newStatus) {
   if (!item) return;
   item.status = newStatus;
   item.statusUpdatedAt = Date.now();
-  // legacy compat
   item.reachedOut = newStatus !== 'new';
   saveHistory(currentUser.email, history);
+  if (window._supabase && typeof id === 'string' && id.startsWith('supa_')) {
+    window._supabase.from('pipeline_items').update({ stage: newStatus }).eq('id', id.replace('supa_', '')).then(function(r){ if (r.error) console.error('setStatus error:', r.error); });
+  }
 
   // Update quick button on results cards if present
   const qBtn = document.getElementById(`reach-${id}`);
@@ -3024,10 +3134,36 @@ function setStatus(id, newStatus) {
 }
 
 function deleteProspect(id) {
-  if (!currentUser) return;
-  const history = getHistory(currentUser.email).filter(h=>h.id!==id);
+  if (!currentUser || !id) return;
+  const history = getHistory(currentUser.email).filter(function(h){ return h.id !== id; });
   saveHistory(currentUser.email, history);
+  if (window._supabase && typeof id === 'string' && id.startsWith('supa_')) {
+    window._supabase.from('pipeline_items').delete().eq('id', id.replace('supa_', '')).then(function(r){ if (r.error) console.error('Delete error:', r.error); });
+  }
   renderKanban();
+}
+
+function kbMove(id, newStatus) {
+  if (!currentUser || !id || !newStatus) return;
+  var hist = getHistory(currentUser.email);
+  var item = hist.find(function(h){ return h.id===id; });
+  if (!item) return;
+  item.status = newStatus;
+  item.statusUpdatedAt = Date.now();
+  saveHistory(currentUser.email, hist);
+  if (window._supabase && typeof id === 'string' && id.startsWith('supa_')) {
+    window._supabase.from('pipeline_items').update({ stage: newStatus }).eq('id', id.replace('supa_', '')).then(function(r){ if (r.error) console.error('kbMove error:', r.error); });
+  }
+  recordStreak();
+  renderKanban();
+  if (typeof updateNavPipeline === 'function') updateNavPipeline();
+  if (newStatus === 'converted' && typeof fireConfetti === 'function') { fireConfetti(); showToast('🎉 Deal closed!', 'success'); }
+}
+
+function kbDel(id, name) {
+  if (!confirm('Remove ' + name + '?')) return;
+  deleteProspect(id);
+  if (typeof updateNavPipeline === 'function') updateNavPipeline();
 }
 
 function togglePipelineCard(id) {
@@ -3216,6 +3352,9 @@ function saveNote(id, text) {
   item.notes = text;
   item.notesUpdatedAt = Date.now();
   saveHistory(currentUser.email, hist);
+  if (window._supabase && id.startsWith('supa_')) {
+    window._supabase.from('pipeline_items').update({ notes: text }).eq('id', id.replace('supa_', '')).then(function(r){ if (r.error) console.error('saveNote Supabase error:', r.error); });
+  }
 }
 
 function setReminder(id, val) {
@@ -3226,6 +3365,10 @@ function setReminder(id, val) {
   if (!val || val === 'clear') { item.reminderAt = null; }
   else { item.reminderAt = Date.now() + parseInt(val) * 86400000; }
   saveHistory(currentUser.email, hist);
+  if (window._supabase && id.startsWith('supa_')) {
+    var remAt = item.reminderAt ? new Date(item.reminderAt).toISOString() : null;
+    window._supabase.from('pipeline_items').update({ reminder_at: remAt }).eq('id', id.replace('supa_', '')).then(function(r){ if (r.error) console.error('setReminder Supabase error:', r.error); });
+  }
   renderKanban();
 }
 
@@ -3300,7 +3443,7 @@ function scrollToFirstHot() {
 // ── KANBAN ───────────────────────────────────────────────────────────────────
 function openHistoryPage() {
   if(typeof updateMobNav==='function') updateMobNav();
-  renderKanban();
+  loadPipeline();
   showPage('history');
 }
 
@@ -3348,8 +3491,8 @@ function renderKanban() {
     }).join('') +
   '</div></div>';
 
-  renderHotAlert();
-  renderStreak();
+  if (typeof renderHotAlert === 'function') renderHotAlert();
+  if (typeof renderStreak === 'function') renderStreak();
 }
 
 function kbCard(h, col) {
@@ -3621,12 +3764,21 @@ function adminResetUsage() {
   showToast('Usage reset ✓');
 }
 function adminClearPipeline() {
-  if (!currentUser || !confirm('Delete ALL pipeline prospects?')) return;
+  if (!currentUser) return;
   saveHistory(currentUser.email, []);
-  renderAdminPanel();
-  showToast('Pipeline cleared ✓');
+  if (window._pipelineCache) window._pipelineCache[currentUser.email] = [];
+  if (window._supabase) {
+    window._supabase.auth.getUser().then(function(r){
+      if (r.data && r.data.user) {
+        window._supabase.from('pipeline_items').delete().eq('user_id', r.data.user.id).then(function(d){ if (d.error) console.error('Clear pipeline error:', d.error); else console.log('Pipeline cleared from Supabase'); });
+      }
+    });
+  }
+  renderKanban();
+  showToast('Pipeline cleared', 'info');
 }
 function adminClearAll() {
+  if (!currentUser) return;
   if (!confirm('Delete ALL local data?') || !confirm('Really sure? This cannot be undone.')) return;
   localStorage.clear(); location.reload();
 }
@@ -3936,7 +4088,7 @@ function openAnalyticsPage() {
 function renderAnalyticsPage() {
   if (!currentUser) return;
   var history = getHistory(currentUser.email);
-  var searches = JSON.parse(localStorage.getItem('ps_searches_' + currentUser.email) || '[]');
+  var searches = window._searchHistoryCache || [];
   var manualCalls = JSON.parse(localStorage.getItem('ps_manual_calls_' + currentUser.email) || '{}');
   var byDow = [0,0,0,0,0,0,0];
   var byHour = new Array(24).fill(0);
@@ -4704,23 +4856,16 @@ async function enrichSingleBusiness(biz, index, product, location, industryHints
     '"messageIdea":"A 1-2 sentence natural outreach message that sounds like a smart human observation, NOT a template. Must reference the signal and hint at the value of the offer."' +
     '}';
 
+  if (!OPENAI_KEY) { console.warn('OpenAI key not loaded yet'); throw new Error('No API key'); }
+  var _body1 = JSON.stringify({ model: 'gpt-4o-mini', messages: [ { role: 'system', content: 'You are a high-level sales strategist. Return ONLY valid JSON. No markdown. No backticks. Every field must be written for THIS specific prospect and THIS specific offer. Generic language is a failure. Consequence-driven, urgent, specific language is a success.' }, { role: 'user', content: prompt } ], temperature: 0.35, max_tokens: 500 });
+  console.log('OpenAI req body (call 1):', _body1.slice(0,200));
   var res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENAI_KEY },
-    body: JSON.stringify({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: 'You are a high-level sales strategist. Return ONLY valid JSON. No markdown. No backticks. '
-    + 'Every field must be written for THIS specific prospect and THIS specific offer. '
-    + 'Generic language is a failure. Consequence-driven, urgent, specific language is a success.' },
-        { role: 'user',   content: prompt }
-      ],
-      temperature: 0.35,
-      max_tokens: 500
-    })
+    body: _body1
   });
 
-  if (!res.ok) throw new Error('API ' + res.status);
+  if (!res.ok) { var _err1 = await res.json().catch(function(){return{};}); console.error('OpenAI 400 error:', _err1); throw new Error('API ' + res.status + ' ' + ((_err1.error&&_err1.error.message)||'')); }
   var data = await res.json();
   var text = (data.choices[0].message.content || '').replace(/```json|```/g, '').trim();
   var match = text.match(/\{[\s\S]*\}/);
@@ -4817,20 +4962,16 @@ async function fetchBatchAI(location, product, target, batchCount, excludeNames)
     + ' Each object must have: name, type, opportunity ("High"/"Medium"), reason, opener, score (1-10), phone, address, website, googlemaps, decision_maker, best_time, pain_points (array of 3), talk_track, objections (array of 3 with objection+response), industry_notes, company_size, annual_revenue, buying_signals.'
     + ' Return ONLY valid JSON array.';
 
+  if (!OPENAI_KEY) { console.warn('OpenAI key not loaded yet'); throw new Error('No API key'); }
+  if (!prompt || !prompt.trim()) { console.error('Empty prompt in fetchBatchAI'); throw new Error('Empty prompt'); }
+  var _body2 = JSON.stringify({ model: 'gpt-4o-mini', messages: [ { role: 'system', content: 'Return ONLY a valid JSON array. No markdown. No backticks.' }, { role: 'user', content: prompt } ], temperature: 0.3, max_tokens: 1400 });
+  console.log('OpenAI req body (fetchBatchAI):', _body2.slice(0,200));
   var res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENAI_KEY },
-    body: JSON.stringify({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: 'Return ONLY a valid JSON array. No markdown. No backticks.' },
-        { role: 'user',   content: prompt }
-      ],
-      temperature: 0.3,
-      max_tokens: 1400
-    })
+    body: _body2
   });
-  if (!res.ok) { var e = await res.json().catch(function(){return{};}); throw new Error((e&&e.error&&e.error.message)||'API error '+res.status); }
+  if (!res.ok) { var e = await res.json().catch(function(){return{};}); console.error('OpenAI 400 error (fetchBatchAI):', e); throw new Error((e&&e.error&&e.error.message)||'API error '+res.status); }
   var data = await res.json();
   var text = ((data&&data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'').replace(/```json|```/g,'').trim();
   var match = text.match(/\[[\s\S]*\]/);
@@ -4840,6 +4981,36 @@ async function fetchBatchAI(location, product, target, batchCount, excludeNames)
 }
 
 // ── MAIN ANALYZE — PARALLEL BATCHES ──────────────────────────────────────────
+async function checkAndTrackUsage() {
+  if (!window._supabase) return true; // allow if Supabase not loaded
+  try {
+    const { data: { user } } = await window._supabase.auth.getUser();
+    if (!user) { alert('Not logged in'); return false; }
+    const today = new Date().toISOString().split('T')[0];
+    const tier = (currentUser && currentUser.tier) || localStorage.getItem('ps_tier') || 'free';
+    const LIMITS = { free: 10, plus: 25, pro: 100 };
+    const limit = LIMITS[tier] || 10;
+    const { data, error } = await window._supabase.from('usage_tracking').select('*').eq('user_id', user.id).eq('date', today).maybeSingle();
+    const usage = (data && data.actions_used) || 0;
+    if (usage >= limit) {
+      var errEl = document.getElementById('errorMsg');
+      if (errEl) errEl.innerHTML = '<div class="error-msg">You\'ve used all <strong>' + limit + ' prospects</strong> for today. <a onclick="showPage(\'pricing\')" style="color:var(--accent);cursor:pointer;font-weight:600;">Upgrade for more →</a></div>';
+      return false;
+    }
+    if (data && data.id) {
+      const { error: upErr } = await window._supabase.from('usage_tracking').update({ actions_used: usage + 1 }).eq('id', data.id);
+      if (upErr) console.error('usage update error:', upErr);
+    } else {
+      const { error: insErr } = await window._supabase.from('usage_tracking').insert([{ user_id: user.id, date: today, actions_used: 1 }]);
+      if (insErr) console.error('usage insert error:', insErr);
+    }
+    return true;
+  } catch(e) {
+    console.error('checkAndTrackUsage error:', e);
+    return true; // allow on error to not block users
+  }
+}
+
 async function analyze() {
   if (!currentUser) { openModal('login'); return; }
   var tier = TIERS[currentUser.tier] || TIERS.free;
@@ -4854,8 +5025,11 @@ async function analyze() {
   window._lastProduct = product; // Store for signal fallback
   if (!product) { document.getElementById('errorMsg').innerHTML = '<div class="error-msg">Please describe what you sell to find the right opportunities.</div>'; document.getElementById('productInput').focus(); return; }
   if (!location) location = 'United States';
+  // Server-side usage enforcement
+  const allowed = await checkAndTrackUsage();
+  if (!allowed) return;
 
-  var count = Math.min(tier.perSearch, tier.daily - used);
+  var count = Math.max(1, Math.min(tier.perSearch, tier.daily - used));
   var _ganalyzeB = document.getElementById('analyzeBtn'); if (_ganalyzeB) _ganalyzeB.disabled = true;
   var _ginputSec = document.getElementById('inputSection'); if (_ginputSec) _ginputSec.style.display = 'none';
   var _gloadingS = document.getElementById('loadingState'); if (_gloadingS) _gloadingS.style.display = 'block';
@@ -5042,10 +5216,39 @@ async function addToPipeline(i) {
     if (!confirm(b.name+' looks like it might already be in your pipeline. Add it anyway?')) return;
   }
 
+  // Insert to Supabase first (source of truth)
+  let savedId = 'pipe_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+  if (window._supabase) {
+    try {
+      const { data: { user } } = await window._supabase.auth.getUser();
+      if (user) {
+        const { data: inserted, error } = await window._supabase.from('pipeline_items').insert([{
+          user_id: user.id,
+          name: b.name || 'Unknown',
+          type: b.type || null,
+          address: b.address || null,
+          phone: b.phone || null,
+          website: b.website || null,
+          googlemaps: b.googlemaps || null,
+          score: b.score || null,
+          opportunity: b.opportunity || null,
+          opener: b.opener || null,
+          reason: b.reason || null,
+          stage: 'new',
+          saved_at: new Date().toISOString()
+        }]).select('id').single();
+        if (error) { console.error('Supabase insert error:', error); }
+        else if (inserted && inserted.id) { savedId = 'supa_' + inserted.id; console.log('Saved to Supabase:', savedId); }
+      }
+    } catch (e) {
+      console.error('Supabase pipeline save error:', e);
+    }
+  }
+
+  // Update in-memory cache + localStorage backup
   const history = getHistory(currentUser.email);
-  const id = 'pipe_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
   history.unshift({
-    id: id, name: b.name, type: b.type, address: b.address||'', phone: b.phone||'',
+    id: savedId, name: b.name, type: b.type, address: b.address||'', phone: b.phone||'',
     website: b.website||'', googlemaps: b.googlemaps||'',
     opportunity: b.opportunity, score: b.score,
     reason: b.reason, opener: b.opener,
@@ -5054,31 +5257,12 @@ async function addToPipeline(i) {
     searchLocation: window._lastSearchLocation||'', savedAt: Date.now(),
     status: 'new', statusUpdatedAt: null,
     reachedOut: false, reachedOutAt: null,
-    campaignId:   _activeCampaignId   || null,
+    campaignId: _activeCampaignId || null,
     campaignName: _activeCampaignName || null
   });
-  saveHistory(currentUser.email, history);
-
-  // Supabase insert (alongside localStorage)
-  if (window._supabase) {
-    try {
-      const { data: { user } } = await window._supabase.auth.getUser();
-      if (user) {
-        const { error } = await window._supabase.from('pipeline_items').insert([{
-          user_id: user.id,
-          name: b.name,
-          score: b.score || null,
-          phone: b.phone || null,
-          website: b.website || null,
-          stage: 'new'
-        }]);
-        if (error) { console.error('Supabase insert error:', error); }
-        else { console.log('Saved to Supabase'); }
-      }
-    } catch (e) {
-      console.error('Supabase pipeline save error:', e);
-    }
-  }
+  if (!window._pipelineCache) window._pipelineCache = {};
+  window._pipelineCache[currentUser.email] = history;
+  try { localStorage.setItem(_pipeKey(currentUser.email), JSON.stringify(history)); } catch(e) {}
 
   if (btn) {
     btn.dataset.added = '1';
@@ -5425,41 +5609,55 @@ function updateOverdueBadge() {
 // ── SEARCH HISTORY PAGE ───────────────────────────────────────────────────────
 
 // ── SEARCH HISTORY PAGE ───────────────────────────────────────────────────────
-function renderSearchHistoryPage() {
-  if (!currentUser) return;
-  var key = 'ps_searches_' + currentUser.email;
-  var searches = JSON.parse(localStorage.getItem(key) || '[]');
+function _renderSearchList(searches) {
   var sub  = document.getElementById('searchHistorySub');
   var list = document.getElementById('searchHistoryList');
   if (!list) return;
-
   if (sub) sub.textContent = searches.length + ' past search' + (searches.length !== 1 ? 'es' : '');
-
   if (!searches.length) {
     list.innerHTML = '<div class="pipeline-empty"><div class="pipeline-empty-icon">🔍</div><div class="pipeline-empty-text">No searches yet. Run your first search to see your history here.</div></div>';
     return;
   }
-
   list.innerHTML = searches.map(function(s, idx) {
-    var date = s.ts ? new Date(s.ts).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit'}) : '';
+    var productLabel = s.product || s.query || s.offer || 'Search';
+    var ts = s.ts || (s.created_at ? new Date(s.created_at).getTime() : null);
+    var date = ts ? new Date(ts).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit'}) : '';
     return '<div class="pipeline-card" style="margin-bottom:8px;cursor:default;">' +
       '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">' +
         '<div style="flex:1;min-width:0;">' +
-          '<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (s.product || s.offer || 'Search') + '</div>' +
+          '<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + productLabel + '</div>' +
           '<div style="font-size:12px;color:var(--text3);display:flex;align-items:center;gap:10px;flex-wrap:wrap;">' +
             (s.location ? '<span>' + s.location + '</span>' : '') +
-            (s.target ? '<span>· ' + s.target + '</span>' : '') +
-            (s.count ? '<span style="color:var(--accent);font-weight:600;">· ' + s.count + ' prospects</span>' : '') +
+            (s.target ? '<span>\xb7 ' + s.target + '</span>' : '') +
+            (s.count ? '<span style="color:var(--accent);font-weight:600;">\xb7 ' + s.count + ' prospects</span>' : '') +
           '</div>' +
           (date ? '<div style="font-size:11px;color:var(--text4);margin-top:4px;">' + date + '</div>' : '') +
         '</div>' +
         '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">' +
           '<button onclick="redoSearchByIndex(' + idx + ');showPage(\'dashboard\')" style="font-size:12px;font-weight:600;padding:6px 12px;background:var(--accent-dim);color:var(--accent);border:1px solid rgba(190,255,0,0.2);border-radius:var(--r-sm);cursor:pointer;">Re-run</button>' +
-          '<button onclick="deleteSearchHistory(' + idx + ')" style="font-size:11px;padding:6px 10px;background:none;border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text4);cursor:pointer;">✕</button>' +
+          '<button onclick="deleteSearchHistory(' + idx + ')" style="font-size:11px;padding:6px 10px;background:none;border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text4);cursor:pointer;">\u2715</button>' +
         '</div>' +
       '</div>' +
     '</div>';
   }).join('');
+}
+
+async function loadSearchHistory() {
+  if (!currentUser || !window._supabase) return;
+  try {
+    const { data: authData } = await window._supabase.auth.getUser();
+    const user = authData && authData.user;
+    if (!user) return;
+    const { data, error } = await window._supabase.from('search_history').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(10);
+    if (error) { console.error('Error loading searches:', error); _renderSearchList([]); return; }
+    window._searchHistoryCache = data || [];
+    _renderSearchList(window._searchHistoryCache);
+  } catch(e) { console.error('loadSearchHistory error:', e); _renderSearchList([]); }
+}
+
+function renderSearchHistoryPage() {
+  if (!currentUser) return;
+  loadSearchHistory();
 }
 
 function openSearchHistory() {
@@ -5746,13 +5944,16 @@ function redoAndGo(idx) {
 }
 
 function deleteSearchHistory(idx) {
-  if (!currentUser) return;
-  var key = 'ps_searches_' + currentUser.email;
-  var searches = JSON.parse(localStorage.getItem(key) || '[]');
-  searches.splice(idx, 1);
-  localStorage.setItem(key, JSON.stringify(searches));
-  renderSearchHistoryPage();
-  renderDashSections();
+  if (!currentUser || !window._supabase) return;
+  var item = window._searchHistoryCache && window._searchHistoryCache[idx];
+  if (item && item.id) {
+    window._supabase.from('search_history').delete().eq('id', item.id).then(function(r){
+      if (r.error) { console.error('Delete search error:', r.error); return; }
+      if (window._searchHistoryCache) window._searchHistoryCache.splice(idx, 1);
+      renderSearchHistoryPage();
+      renderDashSections();
+    });
+  }
 }
 
 // ── CAMPAIGN PLANNER ─────────────────────────────────────────────────────────
@@ -7686,11 +7887,13 @@ document.addEventListener("DOMContentLoaded", async function () {
       const { data: existingUser, error } = await supabase.from("users").select("*").eq("id", userId).single();
       if (error && error.code === "PGRST116") {
         console.log("CREATING USER");
-        await supabase.from("users").insert([{ id: userId, email: userEmail, tier: "free" }]);
+        await supabase.from("users").insert([{ id: userId, email: userEmail, tier: "free", used_today: 0, daily_limit: 10 }]);
         const { data: newUser } = await supabase.from("users").select("*").eq("id", userId).single();
-        supaCurrentUser = newUser;
-      } else {
+        supaCurrentUser = newUser || { id: userId, email: userEmail, tier: "free", used_today: 0, daily_limit: 10 };
+      } else if (!error && existingUser) {
         supaCurrentUser = existingUser;
+      } else {
+        supaCurrentUser = { id: userId, email: userEmail, tier: "free", used_today: 0, daily_limit: 10 };
       }
       const tierLimits = { free: 10, plus: 25, pro: 100 };
       const correctLimit = tierLimits[supaCurrentUser.tier] || 10;
@@ -7712,24 +7915,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   });
 
-  document.getElementById("analyzeBtn").addEventListener("click", async function () {
-    if (!supaCurrentUser) return;
-    if (supaCurrentUser.used_today >= supaCurrentUser.daily_limit) {
-      if (supaCurrentUser.tier === "free") {
-        alert("You've reached your free limit. Upgrade to Plus or Pro to continue.");
-      } else if (supaCurrentUser.tier === "plus") {
-        alert("You've reached your Plus limit. Upgrade to Pro for more access.");
-      } else {
-        alert("Daily limit reached");
-      }
-      return;
-    }
-    await supabase.from("users").update({ used_today: supaCurrentUser.used_today + 1 }).eq("id", supaCurrentUser.id);
-    supaCurrentUser.used_today += 1;
-    console.log("Usage updated:", supaCurrentUser.used_today);
-    const usageEl = document.getElementById("usage-display");
-    if (usageEl) usageEl.textContent = supaCurrentUser.used_today + " / " + supaCurrentUser.daily_limit + " used today";
-  });
+
 
 });
 
