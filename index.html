@@ -2635,11 +2635,14 @@ async function submitAccessCode(tier) {
   var supaKey = null;
   var supaUser = null;
   if (supabase) {
-    var { data: keys } = await supabase.from('access_keys').select('*').eq('key', code).eq('used', false);
+    var { data: keys, error: keysError } = await supabase.from('access_keys').select('*').eq('key', code).eq('used', false);
+    console.log('SUPABASE KEY LOOKUP:', code, keys, keysError);
     if (keys && keys.length > 0) supaKey = keys[0];
     var authRes = await supabase.auth.getUser();
     if (authRes.data && authRes.data.user) supaUser = authRes.data.user;
+    console.log('SUPABASE USER:', supaUser ? supaUser.id : 'none');
   }
+  console.log('LOCAL VALID:', validLocal, '| SUPA KEY:', supaKey);
 
   // Step 3: reject if neither source validates the code
   if (!validLocal && !supaKey) {
@@ -2658,10 +2661,14 @@ async function submitAccessCode(tier) {
   // Step 5: sync to Supabase if user is logged in
   if (supabase && supaUser) {
     var dailyLimit = tier === 'plus' ? 25 : 100;
-    await supabase.from('users').update({ tier: tier, daily_limit: dailyLimit }).eq('id', supaUser.id);
+    var { data: ud, error: ue } = await supabase.from('users').update({ tier: tier, daily_limit: dailyLimit }).eq('id', supaUser.id);
+    console.log('USER UPDATE:', ud, ue);
     if (supaKey) {
-      await supabase.from('access_keys').update({ used: true, used_by: supaUser.id }).eq('id', supaKey.id);
+      var { data: kd, error: ke } = await supabase.from('access_keys').update({ used: true, used_by: supaUser.id }).eq('id', supaKey.id);
+      console.log('KEY MARK USED:', kd, ke);
     }
+  } else {
+    console.log('SKIPPING SUPABASE UPDATE — supabase:', !!supabase, 'supaUser:', !!supaUser);
   }
 
   // Step 6: mark used locally
