@@ -1906,6 +1906,45 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
           <button class="admin-btn danger" onclick="adminClearAll()">Nuke all local data</button>
         </div>
       </div>
+      <div class="admin-card" style="grid-column:1/-1;">
+        <div class="admin-card-title" style="color:var(--teal);">Access Key Spots</div>
+        <div style="display:flex;gap:24px;margin-top:10px;flex-wrap:wrap;">
+          <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:12px 20px;">
+            <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Plus spots left</div>
+            <div id="adminPlusSpots" style="font-size:28px;font-weight:700;color:var(--accent);">—</div>
+          </div>
+          <div style="background:var(--bg3);border:1px solid rgba(167,139,250,0.2);border-radius:8px;padding:12px 20px;">
+            <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Pro spots left</div>
+            <div id="adminProSpots" style="font-size:28px;font-weight:700;color:var(--purple);">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-title" style="color:var(--accent);">Generate Access Key</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap;">
+          <select id="adminKeyTier" style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:8px 12px;font-size:13px;">
+            <option value="plus">Plus</option>
+            <option value="pro">Pro</option>
+          </select>
+          <button class="admin-btn" onclick="adminGenerateKey()">Generate Key</button>
+          <span id="adminKeyResult" style="font-family:monospace;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:6px 12px;font-size:13px;color:var(--accent);letter-spacing:1px;display:none;"></span>
+        </div>
+      </div>
+      <div class="admin-card" style="grid-column:1/-1;">
+        <div class="admin-card-title" style="color:var(--purple);">Supabase Users</div>
+        <div id="adminSupaUsersStatus" style="font-size:13px;color:var(--text3);margin-top:8px;">Loading...</div>
+        <table id="adminSupaTable" style="display:none;width:100%;border-collapse:collapse;margin-top:12px;">
+          <thead>
+            <tr>
+              <th style="text-align:left;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:6px 10px;border-bottom:1px solid var(--border);">Email</th>
+              <th style="text-align:left;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:6px 10px;border-bottom:1px solid var(--border);">Tier</th>
+              <th style="text-align:left;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:6px 10px;border-bottom:1px solid var(--border);">Change Tier</th>
+              <th style="text-align:left;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:6px 10px;border-bottom:1px solid var(--border);">Action</th>
+            </tr>
+          </thead>
+          <tbody id="adminSupaBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
@@ -3379,6 +3418,79 @@ function openAdminPanel() {
   showPage('admin');
 }
 
+window.admin = function() {
+  openAdminPanel();
+};
+
+async function adminLoadSupaUsers() {
+  const supabase = window._supabase;
+  if (!supabase) return;
+  const status = document.getElementById('adminSupaUsersStatus');
+  const table = document.getElementById('adminSupaTable');
+  const tbody = document.getElementById('adminSupaBody');
+  if (!status || !tbody) return;
+  const { data: users, error } = await supabase.from('users').select('*').order('email');
+  if (error || !users) { if (status) status.textContent = 'Failed to load: ' + (error && error.message); return; }
+  if (status) status.style.display = 'none';
+  tbody.innerHTML = '';
+  users.forEach(function(u) {
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td style="padding:8px 10px;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.04);">' + (u.email || '—') + '</td>'
+      + '<td style="padding:8px 10px;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.04);"><span style="background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:2px 7px;font-size:11px;font-weight:600;text-transform:uppercase;">' + (u.tier || 'free') + '</span></td>'
+      + '<td style="padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.04);">'
+        + '<select id="supatier_' + u.id + '" style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:5px 8px;font-size:12px;">'
+          + '<option value="free"' + (u.tier==='free'?' selected':'') + '>Free</option>'
+          + '<option value="plus"' + (u.tier==='plus'?' selected':'') + '>Plus</option>'
+          + '<option value="pro"' + (u.tier==='pro'?' selected':'') + '>Pro</option>'
+        + '</select></td>'
+      + '<td style="padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.04);">'
+        + '<button class="admin-btn" onclick="adminUpdateSupaUser(&quot;' + u.id + '&quot;,&quot;' + (u.email||'').replace(/"/g,'') + '&quot;)">Update</button></td>';
+    tbody.appendChild(tr);
+  });
+  if (table) table.style.display = 'table';
+}
+
+async function adminUpdateSupaUser(id, email) {
+  const supabase = window._supabase;
+  if (!supabase) return;
+  const sel = document.getElementById('supatier_' + id);
+  if (!sel) return;
+  const tier = sel.value;
+  const dailyLimit = tier === 'free' ? 10 : tier === 'plus' ? 25 : 100;
+  const { error } = await supabase.from('users').update({ tier: tier, daily_limit: dailyLimit }).eq('id', id);
+  if (error) { showToast('Update failed: ' + error.message, 'error'); return; }
+  showToast('Updated ' + email + ' → ' + tier, 'success');
+  await adminLoadSupaUsers();
+}
+
+async function adminLoadSpots() {
+  const supabase = window._supabase;
+  if (!supabase) return;
+  const { data: plusKeys } = await supabase.from('access_keys').select('id').eq('tier', 'plus').eq('used', false);
+  const { data: proKeys } = await supabase.from('access_keys').select('id').eq('tier', 'pro').eq('used', false);
+  var pe = document.getElementById('adminPlusSpots');
+  var re = document.getElementById('adminProSpots');
+  if (pe) pe.textContent = plusKeys ? plusKeys.length : 0;
+  if (re) re.textContent = proKeys ? proKeys.length : 0;
+}
+
+async function adminGenerateKey() {
+  const supabase = window._supabase;
+  if (!supabase) return;
+  const tierEl = document.getElementById('adminKeyTier');
+  if (!tierEl) return;
+  const tier = tierEl.value;
+  const prefix = tier === 'plus' ? 'PLUS' : 'PRO';
+  const suffix = String(Math.floor(Math.random() * 900) + 100);
+  const key = prefix + '-' + suffix;
+  const { error } = await supabase.from('access_keys').insert([{ key: key, tier: tier, used: false }]);
+  if (error) { showToast('Key creation failed: ' + error.message, 'error'); return; }
+  var result = document.getElementById('adminKeyResult');
+  if (result) { result.textContent = key; result.style.display = 'inline-block'; }
+  showToast('Key created: ' + key, 'success');
+  await adminLoadSpots();
+}
+
 function renderAdminPanel() {
   if (!currentUser) return;
   var t = TIERS[currentUser.tier] || TIERS.free;
@@ -3412,6 +3524,8 @@ function renderAdminPanel() {
     ps.innerHTML = Object.entries(byStatus).map(function(e){ return '<b>'+e[0]+':</b> '+e[1]; }).join(' · ') +
       '<br><b>Deal value:</b> $' + totalVal.toLocaleString();
   }
+  adminLoadSupaUsers();
+  adminLoadSpots();
 }
 
 function adminResetUsage() {
