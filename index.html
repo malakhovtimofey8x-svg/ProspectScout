@@ -518,9 +518,9 @@ body.light-mode .logo-icon svg path, body.light-mode .logo-icon svg circle, body
 @keyframes confettiFall { 0%{opacity:1;transform:translateY(0) rotate(0deg);} 100%{opacity:0;transform:translateY(100vh) rotate(720deg);} }
 
 /* ── ONBOARDING ── */
-.onboarding-overlay { position:fixed; top:0;left:0;right:0;bottom:0; background:rgba(0,0,0,0.85); z-index:9000; display:none; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(6px); }
+.onboarding-overlay { position:fixed; top:0;left:0;right:0;bottom:0; background:rgba(0,0,0,0.85); z-index:9000; display:none; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(6px); -webkit-overflow-scrolling:touch; }
 .onboarding-overlay.open { display:flex; }
-.onboarding-modal { background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r-xl); padding:36px; width:100%; max-width:480px; position:relative; box-shadow:var(--shadow-lg); animation:modalIn 0.3s cubic-bezier(0.16,1,0.3,1); }
+.onboarding-modal { background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r-xl); padding:36px; width:100%; max-width:480px; position:relative; box-shadow:var(--shadow-lg); animation:modalIn 0.3s cubic-bezier(0.16,1,0.3,1); max-height:90vh; overflow-y:auto; -webkit-overflow-scrolling:touch; }
 .onboarding-modal::before { content:''; position:absolute; top:-1px; left:15%; right:15%; height:1px; background:linear-gradient(90deg,transparent,var(--accent),transparent); }
 .onboarding-steps { display:flex; gap:6px; margin-bottom:28px; }
 .onboarding-step-dot { flex:1; height:3px; border-radius:2px; background:var(--bg4); transition:background 0.3s; }
@@ -534,7 +534,7 @@ body.light-mode .logo-icon svg path, body.light-mode .logo-icon svg circle, body
 .onboarding-btn-primary:hover { box-shadow:0 4px 16px rgba(190,255,0,0.2); transform:translateY(-1px); }
 .onboarding-btn-skip { padding:12px 16px; min-height:44px; background:transparent; color:var(--text3); font-family:'Inter',sans-serif; font-size:13px; border:1px solid var(--border2); border-radius:var(--r-md); cursor:pointer; transition:all 0.15s; display:flex; align-items:center; justify-content:center; }
 .onboarding-btn-skip:hover { color:var(--text2); border-color:var(--border2); }
-@media(max-width:640px) { .onboarding-overlay { align-items:flex-end; padding:0; } .onboarding-modal { border-radius:24px 24px 0 0; max-width:100%; padding:28px 20px 44px; } }
+@media(max-width:640px) { .onboarding-overlay { align-items:flex-start; padding:16px; padding-top:max(52px,env(safe-area-inset-top)); } .onboarding-modal { border-radius:22px; max-width:100%; padding:26px 20px 22px; } }
 
 /* ── CALL STREAK CALENDAR ── */
 .streak-calendar { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-xl); padding:24px; box-shadow:var(--shadow-sm); }
@@ -762,10 +762,10 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
 /* ── COMPREHENSIVE MOBILE FIXES ── */
 @media(max-width:600px) {
   /* Layout & spacing */
-  .container { padding-left:16px; padding-right:16px; padding-bottom:100px; }
-  .dash-header { flex-direction:column; align-items:flex-start; gap:8px; margin-top:16px; margin-bottom:20px; }
-  .dash-greeting { font-size:22px; word-break:break-word; max-width:100%; }
-  .dash-sub { font-size:13px; max-width:100%; word-break:break-word; color:var(--text3); }
+  .container { padding-left:18px; padding-right:18px; padding-bottom:100px; }
+  .dash-header { flex-direction:column; align-items:flex-start; gap:6px; margin-top:10px; margin-bottom:14px; }
+  .dash-greeting { font-size:20px; word-break:break-word; max-width:100%; }
+  .dash-sub { font-size:12px; max-width:100%; word-break:break-word; color:var(--text3); }
   .dash-tier-badge { display:none; }
   #usage-display { font-size:13px; color:var(--text3); font-weight:500; }
 
@@ -777,14 +777,14 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
 
   /* Form fields */
   .fields-row { grid-template-columns:1fr; gap:10px; }
-  .scout-card { padding:18px 16px; }
+  .scout-card { padding:16px 16px 18px; border-radius:18px; }
   .location-input, .text-input { padding:13px 14px; font-size:16px; }
   .cta-btn { min-height:60px; font-size:17px; padding:18px; border-radius:16px; width:100%; }
 
   /* Hero */
-  h1 { font-size:32px; letter-spacing:-1.5px; }
-  .hero { padding:32px 0 24px; }
-  .hero-sub { font-size:15px; margin-bottom:24px; }
+  h1 { font-size:28px; letter-spacing:-1.2px; }
+  .hero { padding:20px 0 16px; }
+  .hero-sub { font-size:14px; margin-bottom:18px; line-height:1.6; }
   .hero-btns { flex-direction:column; gap:10px; }
   .hero-btns .btn-primary, .hero-btns .btn-ghost { width:100%; padding:15px; text-align:center; min-height:50px; }
   .features { grid-template-columns:1fr; }
@@ -802,7 +802,7 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
   .stat-label { font-size:10px; }
 
   /* Biz cards */
-  .biz-card { padding:16px; gap:0; margin-bottom:10px; }
+  .biz-card { padding:14px 16px; gap:0; margin-bottom:12px; }
   .biz-name { font-size:14px; }
   .expanded-grid { grid-template-columns:1fr; gap:8px; }
   .contact-row { gap:8px; flex-wrap:wrap; }
@@ -987,21 +987,21 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
     width: 100%;
   }
   .bc-score {
-    font-size: 48px;
-    width: 60px;
+    font-size: 42px;
+    width: 52px;
     flex-shrink: 0;
-    letter-spacing: -2px;
+    letter-spacing: -1.5px;
     line-height: 1;
-    margin-top: 0;
+    margin-top: 2px;
     text-align: center;
   }
   .bc-info { flex: 1; min-width: 0; }
   .bc-name {
-    font-size: 19px;
+    font-size: 17px;
     white-space: normal;
     word-break: break-word;
-    line-height: 1.2;
-    margin-bottom: 6px;
+    line-height: 1.25;
+    margin-bottom: 5px;
   }
   .bc-type { font-size: 11px; margin-bottom: 5px; display:none; }
   .bc-signal {
@@ -1018,18 +1018,18 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   }
   .save-btn {
     width: 100%;
-    min-height: 60px;
-    font-size: 17px;
-    border-radius: 16px;
-    letter-spacing: -0.5px;
-    box-shadow: 0 4px 28px rgba(190,255,0,0.3);
+    min-height: 54px;
+    font-size: 16px;
+    border-radius: 14px;
+    letter-spacing: -0.4px;
+    box-shadow: 0 3px 20px rgba(190,255,0,0.25);
     font-family: Syne, sans-serif;
   }
   .call-main {
     width: 100%;
-    min-height: 52px;
+    min-height: 46px;
     font-size: 14px;
-    border-radius: 14px;
+    border-radius: 12px;
     color: var(--text3);
     border-color: rgba(255,255,255,0.08);
   }
@@ -1125,9 +1125,9 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   .pipeline-card-bottom { padding-top:12px; }
 
   /* Snap grid */
-  .snap-num { font-size:24px; }
+  .snap-num { font-size:22px; }
   .snap-label { font-size:10px; }
-  .snap-card { padding:14px 10px; border-radius:14px; }
+  .snap-card { padding:12px 10px; border-radius:12px; }
   .snap-grid { grid-template-columns:repeat(2,1fr); gap:8px; }
 
   /* Dropdown items */
@@ -1145,7 +1145,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   .streak-bar { flex-wrap:wrap; gap:10px; padding:14px 16px; }
 
   /* Section titles */
-  .dash-section { margin-top:24px; }
+  .dash-section { margin-top:20px; }
   .dash-section-title { font-size:11px; margin-bottom:10px; }
 
   /* Overdue banner */
@@ -1247,9 +1247,9 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   background: rgba(8,8,14,0.97);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border-top: 1px solid rgba(255,255,255,0.08);
-  padding: 6px 24px;
-  padding-bottom: max(10px, env(safe-area-inset-bottom));
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding: 4px 20px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
   gap: 4px;
 }
 .mob-nav-btn {
@@ -1258,19 +1258,19 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  padding: 10px 8px;
+  gap: 4px;
+  padding: 8px 6px;
   border: none;
   background: transparent;
   color: var(--text4);
   font-family: 'Inter', sans-serif;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.3px;
   cursor: pointer;
-  border-radius: 14px;
+  border-radius: 12px;
   transition: color 0.12s, background 0.12s;
-  min-height: 58px;
+  min-height: 52px;
   -webkit-tap-highlight-color: transparent;
   position: relative;
 }
@@ -1293,8 +1293,8 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   #mobileBottomNav { display: none !important; }
 }
 @media(max-width:600px) {
-  body { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
-  .container { padding-bottom: calc(96px + env(safe-area-inset-bottom)) !important; }
+  body { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  .container { padding-bottom: calc(88px + env(safe-area-inset-bottom)) !important; }
   .ps-toast { bottom: calc(88px + env(safe-area-inset-bottom)); }
   header { position: sticky; top: 0; z-index: 100; }
 }
@@ -1302,7 +1302,7 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 @media(max-width:600px){
   .kb-wrap { padding:0 16px 32px; scroll-padding-left:16px; }
   .kb-board { gap:12px; padding:4px 0 20px; scroll-snap-type:x mandatory; }
-  .kb-col { width:82vw; flex:0 0 82vw; max-height:none; min-height:120px; border-radius:16px; scroll-snap-align:start; }
+  .kb-col { width:80vw; flex:0 0 80vw; max-height:none; min-height:120px; border-radius:16px; scroll-snap-align:start; }
   .kb-col-body { max-height:65vh; padding:10px; gap:8px; }
   .kb-col-head { padding:12px 14px; }
   .kb-card { padding:14px; border-radius:12px; }
@@ -1344,13 +1344,28 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   #locationInput, #targetInput { min-height:48px; font-size:16px; }
 }
 @media(max-width:600px){
-  #page-history .dash-header { margin-top:16px; margin-bottom:12px; }
-  #page-history .dash-greeting { font-size:22px; }
+  #page-history .dash-header { margin-top:12px; margin-bottom:10px; }
+  #page-history .dash-greeting { font-size:20px; }
   #page-history .dash-sub { font-size:12px; }
   #page-history .nav-btn { min-height:44px; }
 }
 .desktop-only { display:block; }
-@media(max-width:600px){ .desktop-only { display:none !important; } }</style>
+@media(max-width:600px){ .desktop-only { display:none !important; } }
+@media(max-width:600px){
+  .onboarding-overlay { align-items:flex-start; padding:16px 16px 0; padding-top:max(56px, env(safe-area-inset-top)); }
+  .onboarding-modal { border-radius:22px; max-width:100%; padding:28px 22px 24px; max-height:82vh; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+  .onboarding-modal::before { left:30%; right:30%; }
+  .onboarding-icon { font-size:32px; margin-bottom:10px; }
+  .onboarding-title { font-size:20px; margin-bottom:8px; }
+  .onboarding-desc { font-size:14px; line-height:1.6; margin-bottom:20px; }
+  .onboarding-steps { margin-bottom:18px; }
+  .onboarding-btn-primary, .onboarding-btn-skip { min-height:50px; font-size:15px; border-radius:12px; }
+}
+@media(max-width:600px){
+  html { -webkit-overflow-scrolling:touch; }
+  .kb-wrap, .kb-col-body { -webkit-overflow-scrolling:touch; }
+  .score-filter-wrap { -webkit-overflow-scrolling:touch; }
+}</style>
 </head>
 <body style="background:#08080D;">
 
@@ -5285,12 +5300,10 @@ function fireConfetti() {
 // ── ONBOARDING ────────────────────────────────────────────────────────────────
 var _onboardingStep = 0;
 var ONBOARDING_STEPS = [
-  { icon:"🎯", title:"Welcome to ProspectScout!", desc:"Your AI-powered lead generation sidekick. Find real prospects and get personalized intelligence insights, talk tracks and objection handlers for each one." },
-  { icon:"📍", title:"Step 1 — Enter a location", desc:"Type any city, neighborhood or area. Be specific for better results — try downtown Austin TX or Walnut Creek CA rather than just a state." },
-  { icon:"💼", title:"Step 2 — What are you selling?", desc:"Enter your product or service — website design, solar panels, CRM software. The AI tailors every opener and talk track to your exact pitch." },
-  { icon:"🏢", title:"Step 3 — Target business type", desc:"Optional but powerful. Add restaurants, law firms, or contractors to filter results to exactly the businesses you want to call." },
-  { icon:"📞", title:"Your call script is ready", desc:"Each card shows a real phone number, personalized opener, full talk track, objection handlers and buying signals. Tap any card to expand it." },
-  { icon:"🚀", title:"Track everything in Pipeline", desc:"Add prospects to your pipeline, log call outcomes, set follow-up reminders and track deal values. Your win rate and streak are tracked automatically." }
+  { icon:"🎯", title:"Welcome to ProspectScout", desc:"Find real businesses ready to buy what you sell — with AI-written openers, talk tracks, and buying signals for every result." },
+  { icon:"🔍", title:"Describe your offer", desc:"Tell us what you sell and where. We find businesses already showing signals they need it — scored and ranked for you." },
+  { icon:"💾", title:"Save leads to Pipeline", desc:"Tap '+ Save to Pipeline' on any result to track it. Move leads through stages as you close them." },
+  { icon:"🚀", title:"You're ready", desc:"Start by typing what you sell in the search box. Your first leads are 30 seconds away." }
 ];
 
 function startOnboarding() {
