@@ -3185,6 +3185,40 @@ function isHotLead(h) {
   return ((h.score||0) >= 8 || (h.status||'new') === 'engaged') && (h.status||'new') !== 'converted';
 }
 
+function isOverdue(h) {
+  return h.reminderAt && h.reminderAt < Date.now() && (h.status||'new') !== 'converted';
+}
+
+function saveNote(id, text) {
+  if (!currentUser) return;
+  var hist = getHistory(currentUser.email);
+  var item = hist.find(function(h){return h.id===id;});
+  if (!item) return;
+  item.notes = text;
+  item.notesUpdatedAt = Date.now();
+  saveHistory(currentUser.email, hist);
+}
+
+function setReminder(id, val) {
+  if (!currentUser) return;
+  var hist = getHistory(currentUser.email);
+  var item = hist.find(function(h){return h.id===id;});
+  if (!item) return;
+  if (!val || val === 'clear') { item.reminderAt = null; }
+  else { item.reminderAt = Date.now() + parseInt(val) * 86400000; }
+  saveHistory(currentUser.email, hist);
+  renderKanban();
+}
+
+function renderOverdueAlert() {
+  var el = document.getElementById('overdueAlert');
+  if (!el || !currentUser) return;
+  var overdue = getHistory(currentUser.email).filter(isOverdue);
+  if (!overdue.length) { el.style.display='none'; return; }
+  el.style.display = 'block';
+  el.innerHTML = '<div class="overdue-banner"><strong>'+overdue.length+' follow-up'+(overdue.length>1?'s':'')+' overdue</strong></div>';
+}
+
 // ── STREAK ──────────────────────────────────────────────────────────────────
 function getToday() { return new Date().toISOString().slice(0,10); }
 
