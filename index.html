@@ -2203,10 +2203,14 @@ function addUsage(email,n) { const k=`ps_usage_${email}_${new Date().toDateStrin
 // AUTH
 function openModal(view) {
   if (currentUser) { enterDashboard(); return; }
-  document.getElementById('authModal')?.classList.add('open');
-  setTimeout(function(){ var inp = document.getElementById('betaNameInput'); if(inp) inp.focus(); }, 200);
+  var m = document.getElementById('authModal');
+  if (m) { m.style.display = 'flex'; m.classList.add('open'); }
+  setTimeout(function(){ var inp = document.getElementById('authEmail'); if(inp) inp.focus(); }, 200);
 }
-function closeModal()    { document.getElementById('authModal')?.classList.remove('open'); }
+function closeModal() {
+  var m = document.getElementById('authModal');
+  if (m) { m.style.display = 'none'; m.classList.remove('open'); }
+}
 function showLogin()     { openModal(); }
 function showSignup()    { openModal(); }
 
@@ -7575,8 +7579,8 @@ document.addEventListener("DOMContentLoaded", async function () {
   window._supabase = supabase;
 
   const modal = document.getElementById("authModal");
-  const hideModal = () => { if (modal) modal.style.display = "none"; };
-  const showModal = () => { if (modal) modal.style.display = "flex"; };
+  const hideModal = () => { if (modal) { modal.style.display = "none"; modal.classList.remove("open"); } };
+  const showModal = () => { if (modal) { modal.style.display = "flex"; modal.classList.add("open"); } };
 
   hideModal();
 
