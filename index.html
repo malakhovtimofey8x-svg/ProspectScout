@@ -5020,7 +5020,7 @@ function renderResults(businesses) {
 }
 
 
-function addToPipeline(i) {
+async function addToPipeline(i) {
   if (!currentUser) return;
   const b = window._currentBusinesses && window._currentBusinesses[i];
   if (!b) return;
@@ -5058,6 +5058,27 @@ function addToPipeline(i) {
     campaignName: _activeCampaignName || null
   });
   saveHistory(currentUser.email, history);
+
+  // Supabase insert (alongside localStorage)
+  if (window._supabase) {
+    try {
+      const { data: { user } } = await window._supabase.auth.getUser();
+      if (user) {
+        const { error } = await window._supabase.from('pipeline_items').insert([{
+          user_id: user.id,
+          name: b.name,
+          score: b.score || null,
+          phone: b.phone || null,
+          website: b.website || null,
+          stage: 'new'
+        }]);
+        if (error) { console.error('Supabase insert error:', error); }
+        else { console.log('Saved to Supabase'); }
+      }
+    } catch (e) {
+      console.error('Supabase pipeline save error:', e);
+    }
+  }
 
   if (btn) {
     btn.dataset.added = '1';
