@@ -7512,48 +7512,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 });
 </script>
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-  const plusBtn = document.getElementById("upgrade-plus");
-  const proBtn = document.getElementById("upgrade-pro");
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return;
-  const { data: userData } = await supabase.from("users").select("*").eq("id", user.id).single();
-  if (userData.tier === "plus") {
-    plusBtn.textContent = "✔ Unlocked";
-    plusBtn.disabled = true;
-  }
-  if (userData.tier === "pro") {
-    plusBtn.textContent = "✔ Unlocked";
-    plusBtn.disabled = true;
-    proBtn.textContent = "✔ Unlocked";
-    proBtn.disabled = true;
-  }
-  plusBtn.addEventListener("click", async () => {
-    const inputKey = prompt("Enter access key");
-    if (!inputKey) return;
-    const { data: keys } = await supabase.from("access_keys").select("*").eq("key", inputKey).eq("used", false);
-    if (!keys || keys.length === 0) { alert("Invalid or used key"); return; }
-    const key = keys[0];
-    if (key.tier !== "plus") { alert("Wrong key for this plan"); return; }
-    await supabase.from("users").update({ tier: "plus", daily_limit: 25 }).eq("id", user.id);
-    await supabase.from("access_keys").update({ used: true, used_by: user.id }).eq("id", key.id);
-    alert("Upgrade successful");
-    location.reload();
-  });
-  proBtn.addEventListener("click", async () => {
-    const inputKey = prompt("Enter access key");
-    if (!inputKey) return;
-    const { data: keys } = await supabase.from("access_keys").select("*").eq("key", inputKey).eq("used", false);
-    if (!keys || keys.length === 0) { alert("Invalid or used key"); return; }
-    const key = keys[0];
-    if (key.tier !== "pro") { alert("Wrong key for this plan"); return; }
-    await supabase.from("users").update({ tier: "pro", daily_limit: 100 }).eq("id", user.id);
-    await supabase.from("access_keys").update({ used: true, used_by: user.id }).eq("id", key.id);
-    alert("Upgrade successful");
-    location.reload();
-  });
-});
-</script>
+
 </body>
 </html>
