@@ -2624,34 +2624,48 @@ async function submitAccessCode(tier) {
   var code = input.value.trim().toUpperCase();
   if (!code) { showAccessError('Enter your access code.'); return; }
   var btn = document.querySelector('#accessModalWrap .modal-btn');
+  var btnLabel = 'Unlock '+(tier==='plus'?'Plus':'Pro')+' →';
   if (btn) { btn.disabled = true; btn.textContent = 'Checking...'; }
+
+  // Step 1: validate against hardcoded _LA codes
+  var validLocal = _laValidCode(tier, code);
+
+  // Step 2: also check Supabase access_keys table
   var supabase = window._supabase;
+  var supaKey = null;
+  var supaUser = null;
   if (supabase) {
     var { data: keys } = await supabase.from('access_keys').select('*').eq('key', code).eq('used', false);
-    if (!keys || keys.length === 0) {
-      if (btn) { btn.disabled = false; btn.textContent = 'Unlock '+(tier==='plus'?'Plus':'Pro')+' →'; }
-      showAccessError('Invalid or already used code. Check for typos or join the waitlist.');
-      return;
-    }
-    var key = keys[0];
-    if (key.tier !== tier) {
-      if (btn) { btn.disabled = false; btn.textContent = 'Unlock '+(tier==='plus'?'Plus':'Pro')+' →'; }
-      showAccessError('This code is for the '+(key.tier==='plus'?'Plus':'Pro')+' plan, not '+tier+'.');
-      return;
-    }
-    var { data: { user } } = await supabase.auth.getUser();
-    if (!user) { showAccessError('You must be logged in to unlock a plan.'); if (btn) { btn.disabled = false; btn.textContent = 'Unlock '+(tier==='plus'?'Plus':'Pro')+' →'; } return; }
-    var dailyLimit = tier === 'plus' ? 25 : 100;
-    await supabase.from('users').update({ tier: tier, daily_limit: dailyLimit }).eq('id', user.id);
-    await supabase.from('access_keys').update({ used: true, used_by: user.id }).eq('id', key.id);
-  } else {
-    if (!_laValidCode(tier, code)) {
-      if (btn) { btn.disabled = false; btn.textContent = 'Unlock '+(tier==='plus'?'Plus':'Pro')+' →'; }
-      showAccessError('Invalid or already used code. Check for typos or join the waitlist.');
-      return;
-    }
-    _laMarkCodeUsed(code);
+    if (keys && keys.length > 0) supaKey = keys[0];
+    var authRes = await supabase.auth.getUser();
+    if (authRes.data && authRes.data.user) supaUser = authRes.data.user;
   }
+
+  // Step 3: reject if neither source validates the code
+  if (!validLocal && !supaKey) {
+    if (btn) { btn.disabled = false; btn.textContent = btnLabel; }
+    showAccessError('Invalid or already used code. Check for typos or join the waitlist.');
+    return;
+  }
+
+  // Step 4: check tier mismatch on supabase key
+  if (supaKey && supaKey.tier !== tier) {
+    if (btn) { btn.disabled = false; btn.textContent = btnLabel; }
+    showAccessError('This code is for the '+(supaKey.tier==='plus'?'Plus':'Pro')+' plan, not '+tier+'.');
+    return;
+  }
+
+  // Step 5: sync to Supabase if user is logged in
+  if (supabase && supaUser) {
+    var dailyLimit = tier === 'plus' ? 25 : 100;
+    await supabase.from('users').update({ tier: tier, daily_limit: dailyLimit }).eq('id', supaUser.id);
+    if (supaKey) {
+      await supabase.from('access_keys').update({ used: true, used_by: supaUser.id }).eq('id', supaKey.id);
+    }
+  }
+
+  // Step 6: mark used locally
+  if (validLocal) _laMarkCodeUsed(code);
   _laUnlock(tier);
   localStorage.setItem('ps_tier', tier);
   if (currentUser) {
