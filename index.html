@@ -1589,6 +1589,151 @@ body::before, body::after { pointer-events: none !important; }
 /* Results back row */
 .results-back-row { margin-bottom: 22px; }
 
+/* ── PIPELINE: 3-COLUMN GRID ── */
+.kb-wrap {
+  overflow-x: visible;
+  padding: 0 0 32px;
+}
+.kb-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+  padding: 0;
+}
+.kb-col {
+  width: auto; flex: none;
+  background: var(--bg2);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 16px;
+  display: flex; flex-direction: column;
+  max-height: none; min-height: 240px;
+}
+.kb-col-head {
+  padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  flex-shrink: 0;
+}
+.kb-col-label {
+  font-family: Syne, sans-serif;
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.5px; color: var(--text2);
+  display: flex; align-items: center; gap: 8px;
+}
+.kb-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.kb-col-count {
+  font-size: 11px; font-weight: 700;
+  padding: 2px 8px; border-radius: 10px;
+  background: var(--bg4); color: var(--text4);
+}
+.kb-col-body {
+  flex: 1; overflow-y: auto;
+  padding: 12px 12px 16px;
+  display: flex; flex-direction: column; gap: 10px;
+  scrollbar-width: thin; scrollbar-color: var(--border2) transparent;
+}
+.kb-col-body::-webkit-scrollbar { width: 3px; }
+.kb-col-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ── PIPELINE CARD ── */
+.kb-card {
+  background: var(--bg3);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 14px 16px;
+  transition: border-color 0.15s, background 0.15s;
+  cursor: default;
+}
+.kb-card:hover { border-color: rgba(0,255,136,0.1); }
+.kb-card.hot { border-color: rgba(255,120,50,0.18); background: rgba(255,120,50,0.03); }
+.kb-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.kb-card-main { flex: 1; min-width: 0; }
+.kb-card-name {
+  font-size: 14px; font-weight: 700; color: var(--text);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  margin-bottom: 3px;
+}
+.kb-card-type {
+  font-size: 11px; color: var(--text4);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  margin-bottom: 4px;
+}
+.kb-card-phone {
+  font-size: 12px; color: var(--text3);
+  font-weight: 500; letter-spacing: 0.2px;
+}
+.kb-card-score {
+  font-family: Syne, sans-serif;
+  font-size: 18px; font-weight: 800; flex-shrink: 0;
+}
+.kb-card-score.high { color: var(--accent); }
+.kb-card-score.mid  { color: var(--amber); }
+.kb-card-score.low  { color: var(--text4); }
+.kb-card-actions {
+  display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+}
+.kb-btn {
+  font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+  padding: 7px 12px; min-height: 34px; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.08); background: var(--bg4);
+  color: var(--text3); cursor: pointer;
+  transition: all 0.1s; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 5px;
+  -webkit-tap-highlight-color: transparent; text-decoration: none;
+}
+.kb-btn:hover { color: var(--text2); border-color: var(--border2); }
+.kb-btn.kb-call {
+  background: rgba(0,255,136,0.08);
+  color: var(--accent);
+  border-color: rgba(0,255,136,0.15);
+  font-weight: 700;
+}
+.kb-btn.kb-call:hover { background: rgba(0,255,136,0.14); }
+.kb-btn.kb-move {
+  background: var(--accent); color: #08080D;
+  border-color: transparent; font-weight: 800; flex: 1;
+}
+.kb-btn.kb-move:hover { opacity: 0.88; box-shadow: 0 0 10px rgba(0,255,136,0.2); }
+.kb-btn.kb-del {
+  color: rgba(255,80,80,0.4); border-color: transparent;
+  background: transparent; padding: 6px 8px; min-height: 34px; min-width: 34px;
+  justify-content: center;
+}
+.kb-btn.kb-del:hover { color: #FF8080; background: rgba(255,80,80,0.06); }
+.kb-empty {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 32px 16px; gap: 8px;
+  opacity: 0.5; text-align: center;
+}
+.kb-empty-icon { font-size: 22px; opacity: 0.35; }
+.kb-empty-msg { font-size: 12px; color: var(--text4); line-height: 1.6; }
+
+/* Pipeline stats bar */
+.kb-stats { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+.kb-stat { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; flex: 1; min-width: 80px; }
+.kb-stat-num { font-family: Syne, sans-serif; font-size: 22px; font-weight: 800; line-height: 1; }
+.kb-stat-label { font-size: 10px; color: var(--text4); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-top: 3px; }
+
+/* Mobile: single column stack */
+@media(max-width:700px){
+  .kb-board { grid-template-columns: 1fr; gap: 12px; }
+  .kb-col { border-radius: 14px; }
+  .kb-col-body { max-height: none; }
+  .kb-card { padding: 14px 14px; }
+  .kb-btn { min-height: 40px; font-size: 13px; padding: 8px 14px; }
+  .kb-btn.kb-move { min-height: 42px; }
+}
+@media(min-width:701px) and (max-width:900px){
+  .kb-board { grid-template-columns: 1fr 1fr; }
+}
+
 </style>
 </head>
 <body style="background:#08080D;">
@@ -3522,13 +3667,14 @@ function checkDuplicate(name) {
 let currentHistoryFilter = 'all';
 let currentSearchQuery = '';
 
+// 3 display columns — intermediate statuses bucket into "Contacted"
 var KB_COLS = [
-  { id:'new',       label:'New',        color:'var(--text4)',  next:'contacted', prev:null },
-  { id:'contacted', label:'Contacted',  color:'var(--accent)', next:'followup',  prev:'new' },
-  { id:'followup',  label:'Follow-Up',  color:'var(--amber)',  next:'engaged',   prev:'contacted' },
-  { id:'engaged',   label:'Interested', color:'var(--teal)',   next:'converted', prev:'followup' },
-  { id:'converted', label:'Closed',     color:'var(--purple)', next:null,        prev:'engaged' }
+  { id:'new',       label:'New',       color:'rgba(255,255,255,0.35)', next:'contacted', prev:null },
+  { id:'contacted', label:'Contacted', color:'var(--accent)',          next:'converted', prev:'new' },
+  { id:'converted', label:'Closed',    color:'var(--purple)',          next:null,        prev:'contacted' }
 ];
+// Legacy statuses that map into "contacted" bucket
+var KB_LEGACY_BUCKET = { followup:'contacted', engaged:'contacted', qualified:'contacted' };
 var KB_ACTIONS = ['','Call back','Follow up','Send info','Close deal'];
 
 function isHotLead(h) {
@@ -3653,6 +3799,7 @@ function renderKanban() {
   KB_COLS.forEach(function(c) { groups[c.id] = []; });
   history.forEach(function(h) {
     var s = h.status || 'new';
+    if (KB_LEGACY_BUCKET[s]) s = KB_LEGACY_BUCKET[s]; // bucket followup/engaged → contacted
     if (!groups[s]) s = 'new';
     groups[s].push(h);
   });
@@ -3668,9 +3815,9 @@ function renderKanban() {
 
   var sub = document.getElementById('historySub');
   if (sub) {
-    var total = history.length, closed = groups.converted.length;
+    var total = history.length, closed = (groups.converted||[]).length;
     var rate = total ? Math.round(closed/total*100) : 0;
-    sub.textContent = total + ' prospect' + (total!==1?'s':'') + ' · ' + closed + ' closed · ' + rate + '% conversion';
+    sub.textContent = total + ' prospect' + (total!==1?'s':'') + ' · ' + closed + ' closed · ' + rate + '% win rate';
   }
 
   mount.innerHTML = '<div class="kb-wrap"><div class="kb-board">' +
@@ -3680,7 +3827,7 @@ function renderKanban() {
         '<span class="kb-col-label"><span class="kb-dot" style="background:'+col.color+';"></span>'+col.label+'</span>' +
         '<span class="kb-col-count">'+cards.length+'</span></div>' +
         '<div class="kb-col-body">' +
-        (cards.length===0 ? '<div class="kb-empty"><div class="kb-empty-icon">◻</div><div class="kb-empty-msg">No prospects yet<br><span style="font-size:10px;color:var(--text4);">go find some</span></div></div>' :
+        (cards.length===0 ? '<div class="kb-empty"><div class="kb-empty-icon">◯</div><div class="kb-empty-msg">No prospects here yet<br><span style="font-size:11px;color:var(--text4);">Start by adding from results</span></div></div>' :
           cards.map(function(h) { return kbCard(h,col); }).join('')) +
         '</div></div>';
     }).join('') +
@@ -3690,21 +3837,44 @@ function renderKanban() {
   if (typeof renderStreak === 'function') renderStreak();
 }
 
+function fmtPhonePipe(p){
+  if(!p) return '';
+  var d=p.replace(/\D/g,'');
+  if(d.length===10) return '('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6);
+  if(d.length===11&&d[0]==='1') return '('+d.slice(1,4)+') '+d.slice(4,7)+'-'+d.slice(7);
+  return p;
+}
+
 function kbCard(h, col) {
   var score = h.score||0, sCls = score>=8?'high':score>=5?'mid':'low';
   var name = (h.name||'Unknown').replace(/</g,'&lt;').replace(/'/g,'&#39;');
-  var phone = h.phone||'', note = (h.notes||'').replace(/</g,'&lt;').replace(/"/g,'&quot;');
-  var hot = isHotLead(h), nextAction = h.nextAction||'';
-  var isPaid = (currentTier === 'plus' || currentTier === 'pro');
+  var phone = h.phone||'';
+  var phoneDisplay = fmtPhonePipe(phone);
+  var phoneDigits = phone.replace(/\D/g,'');
+  var hot = isHotLead(h);
+  var nextCol = col.next ? KB_COLS.find(function(c){return c.id===col.next;}) : null;
+  var nextLabel = nextCol ? nextCol.label : '';
 
-  var callBtn = phone ? '<a href="tel:'+phone.replace(/\D/g,'')+'" class="kb-btn kb-call" onclick="event.stopPropagation()">📞 Call</a>' : '';
-  var fwdBtn = col.next ? '<button class="kb-btn kb-move" onclick="kbMove(\''+h.id+'\',\''+col.next+'\')">'+KB_COLS.filter(function(c){return c.id===col.next;})[0].label+' →</button>' : '';
-  var delBtn = '<button class="kb-btn kb-del" onclick="kbDel(\''+h.id+'\',\''+name+'\')">✕</button>';
+  var callBtn = phone ?
+    '<a href="tel:'+phoneDigits+'" class="kb-btn kb-call" onclick="event.stopPropagation()">' +
+      '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>' +
+      'Call' +
+    '</a>' : '';
+  var fwdBtn = col.next ?
+    '<button class="kb-btn kb-move" onclick="kbMove(\''+h.id+'\',\''+col.next+'\')">'+nextLabel+' →</button>' : '';
+  var delBtn = '<button class="kb-btn kb-del" onclick="kbDel(\''+h.id+'\',\''+name+'\')">&#x2715;</button>';
 
   return '<div class="kb-card'+(hot?' hot':'')+'" data-id="'+h.id+'">' +
-    '<div class="kb-card-top"><div class="kb-card-name">'+name+'</div>'+(score?'<span class="kb-card-score '+sCls+'">'+score+'</span>':'')+'</div>' +
-    (h.type?'<div class="kb-card-type">'+h.type+'</div>':'') +
-    '<div class="kb-card-actions">'+callBtn+fwdBtn+delBtn+'</div></div>';
+    '<div class="kb-card-header">' +
+      '<div class="kb-card-main">' +
+        '<div class="kb-card-name">'+name+'</div>' +
+        (h.type ? '<div class="kb-card-type">'+h.type+'</div>' : '') +
+        (phoneDisplay ? '<div class="kb-card-phone">'+phoneDisplay+'</div>' : '') +
+      '</div>' +
+      (score ? '<span class="kb-card-score '+sCls+'">'+score+'</span>' : '') +
+    '</div>' +
+    '<div class="kb-card-actions">'+callBtn+fwdBtn+delBtn+'</div>' +
+  '</div>';
 }
 
 // ── STATS ────────────────────────────────────────────────────────────────────
