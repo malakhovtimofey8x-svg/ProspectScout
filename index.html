@@ -67,17 +67,26 @@ body::before { content:''; position:fixed; top:0;right:0;bottom:0;left:0; backgr
 .orb2 { width:600px; height:600px; bottom:-150px; left:-200px; background:rgba(0,229,160,0.04); }
 .container { max-width:860px; margin:0 auto; padding:0 28px; position:relative; z-index:1; }
 
-/* HEADER */
-header { padding:16px 0; padding-top:max(16px, env(safe-area-inset-top)); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; background:rgba(6,6,12,0.92); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); }
-.nav { display:flex; align-items:center; gap:8px; }
-.logo { font-family:Syne,sans-serif; font-size:18px; font-weight:800; letter-spacing:-0.5px; display:flex; align-items:center; gap:8px; cursor:pointer; margin-right:auto; flex-shrink:0; }
-.logo-icon { width:32px; height:32px; background:var(--accent); border-radius:8px; display:flex; align-items:center; justify-content:center; animation:pulse 3s ease-in-out infinite; }
+/* HEADER — persistent app nav */
+header { position:sticky; top:0; z-index:200; background:rgba(6,6,12,0.95); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); border-bottom:1px solid rgba(255,255,255,0.06); }
+.app-nav { max-width:1100px; margin:0 auto; padding:0 24px; height:56px; display:flex; align-items:center; gap:0; padding-top:max(0px,env(safe-area-inset-top)); }
 @keyframes pulse { 0%,100%{box-shadow:0 0 16px rgba(190,255,0,0.25)} 50%{box-shadow:0 0 24px rgba(190,255,0,0.4)} }
+.app-nav-logo { font-family:Syne,sans-serif; font-size:17px; font-weight:800; letter-spacing:-0.5px; display:flex; align-items:center; gap:8px; cursor:pointer; flex-shrink:0; color:var(--text); margin-right:24px; }
+.logo-icon { width:28px; height:28px; background:var(--accent); border-radius:7px; display:flex; align-items:center; justify-content:center; animation:pulse 3s ease-in-out infinite; flex-shrink:0; }
+.logo { font-family:Syne,sans-serif; font-size:17px; font-weight:800; letter-spacing:-0.5px; display:flex; align-items:center; gap:8px; cursor:pointer; flex-shrink:0; }
+.app-nav-links { display:flex; align-items:center; gap:2px; flex:1; }
+.app-nav-btn { display:flex; align-items:center; gap:6px; font-family:'Inter',sans-serif; font-size:13px; font-weight:500; padding:6px 12px; height:34px; border-radius:7px; border:none; background:transparent; color:var(--text3); cursor:pointer; transition:all 0.12s; white-space:nowrap; -webkit-tap-highlight-color:transparent; position:relative; }
+.app-nav-btn:hover { background:var(--bg2); color:var(--text2); }
+.app-nav-btn.active { background:var(--bg3); color:var(--text); font-weight:600; }
+.app-nav-btn svg { flex-shrink:0; }
+.app-nav-count { min-width:16px; height:16px; border-radius:8px; background:var(--accent); color:#08080D; font-size:9px; font-weight:700; padding:0 4px; display:inline-flex; align-items:center; justify-content:center; }
+.app-nav-right { display:flex; align-items:center; gap:8px; margin-left:auto; }
 .nav-right { display:flex; align-items:center; gap:8px; }
-.nav-btn { font-family:'Inter',sans-serif; font-size:14px; font-weight:500; padding:8px 16px; min-height:44px; border-radius:var(--r-sm); cursor:pointer; transition:all 0.15s; border:1px solid var(--border2); background:transparent; color:var(--text2); display:inline-flex; align-items:center; justify-content:center; }
+.hamburger { display:none; }
+.nav-btn { font-family:'Inter',sans-serif; font-size:13px; font-weight:500; padding:6px 14px; min-height:34px; border-radius:7px; cursor:pointer; transition:all 0.12s; border:1px solid var(--border2); background:transparent; color:var(--text2); display:inline-flex; align-items:center; justify-content:center; }
 .nav-btn:hover { background:var(--bg3); color:var(--text); }
 .nav-btn.primary { background:var(--accent); color:#08080D; border-color:transparent; font-weight:600; }
-.nav-btn.primary:hover { box-shadow:0 0 16px rgba(190,255,0,0.25); }
+.nav-btn.primary:hover { box-shadow:0 0 14px rgba(190,255,0,0.25); }
 .user-pill { display:flex; align-items:center; gap:8px; padding:5px 12px 5px 5px; border:1px solid var(--border2); border-radius:20px; background:var(--bg2); cursor:pointer; transition:all 0.15s; }
 .user-pill:hover { border-color:var(--border2); }
 .user-avatar { width:24px; height:24px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#08080D; }
@@ -87,9 +96,18 @@ header { padding:16px 0; padding-top:max(16px, env(safe-area-inset-top)); border
 .tier-plus { background:var(--accent-dim); color:var(--accent); border:1px solid rgba(190,255,0,0.2); }
 .tier-pro { background:var(--purple-dim); color:var(--purple); border:1px solid rgba(167,139,250,0.2); }
 
-/* PAGES */
-.page { display:none; }
-.page.active { display:block; }
+/* SCREENS */
+.page { display:none; min-height:calc(100vh - 56px); }
+.page.active { display:block; animation:screenIn 0.18s ease; }
+@keyframes screenIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:none} }
+/* Generate screen wrapper */
+.generate-screen { max-width:640px; margin:0 auto; padding:32px 24px 120px; }
+/* Results state — full width within generate screen */
+#results { padding-top:0; }
+/* Pipeline screen */
+.pipeline-screen { max-width:1000px; margin:0 auto; padding:28px 24px 100px; }
+/* History screen */
+.history-screen { max-width:640px; margin:0 auto; padding:28px 24px 100px; }
 
 /* MODAL */
 .modal-overlay { display:none; position:fixed; top:0;right:0;bottom:0;left:0; background:rgba(0,0,0,0.7); z-index:500; align-items:center; justify-content:center; backdrop-filter:blur(4px); padding:20px; overscroll-behavior:contain; }
@@ -792,7 +810,9 @@ footer { border-top:1px solid var(--border); padding:28px 0; margin-top:60px; te
 
   /* Header tap targets */
   .nav-btn { min-height:48px; padding:10px 16px; font-size:13px; }
-  .hamburger { display:flex; min-width:48px; min-height:48px; }
+  .hamburger { display:flex; min-width:44px; min-height:44px; }
+  .app-nav-links { gap:0; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+  .app-nav-links::-webkit-scrollbar { display:none; }
   .nav-right { display:none !important; }
 
   /* Stat cards */
@@ -1365,6 +1385,151 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   html { -webkit-overflow-scrolling:touch; }
   .kb-wrap, .kb-col-body { -webkit-overflow-scrolling:touch; }
   .score-filter-wrap { -webkit-overflow-scrolling:touch; }
+/* ═══════════════════════════════════════════════
+   NEW UI ARCHITECTURE — Generate → Results → Pipeline
+   ═══════════════════════════════════════════════ */
+
+/* ── GENERATE SCREEN ── */
+.generate-screen { max-width:640px; margin:0 auto; padding:40px 24px 120px; }
+.generate-header { display:flex; align-items:center; justify-content:flex-end; margin-bottom:32px; min-height:28px; }
+.usage-pill { font-size:12px; color:var(--text4); font-weight:500; background:var(--bg2); border:1px solid var(--border); padding:4px 12px; border-radius:20px; white-space:nowrap; }
+.generate-section { margin-top:36px; }
+.generate-section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.generate-section-label { font-family:'Inter',sans-serif; font-size:11px; font-weight:600; color:var(--text4); letter-spacing:0.8px; text-transform:uppercase; }
+.generate-section-link { font-size:12px; color:var(--accent); background:none; border:none; cursor:pointer; font-weight:500; padding:0; }
+.generate-section-link:hover { opacity:0.8; }
+
+/* ── INPUT CARD (redesigned) ── */
+.scout-card { background:var(--bg2); border:1px solid rgba(190,255,0,0.12); border-radius:20px; padding:28px; position:relative; box-shadow:0 0 40px rgba(190,255,0,0.04), 0 4px 24px rgba(0,0,0,0.24); }
+.scout-card::before { content:''; position:absolute; top:-1px; left:20%; right:20%; height:1px; background:linear-gradient(90deg,transparent,var(--accent),transparent); opacity:0.5; }
+.scout-card-title { font-family:Syne,sans-serif; font-size:20px; font-weight:800; letter-spacing:-0.4px; margin-bottom:6px; }
+.scout-card-sub { font-size:13px; color:var(--text3); line-height:1.6; margin-bottom:24px; }
+
+/* ── RESULTS STATE (transient, within generate screen) ── */
+.results-back-row { display:flex; align-items:center; gap:8px; margin-bottom:20px; }
+.results-back-btn { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:500; color:var(--text3); background:none; border:none; cursor:pointer; padding:0; transition:color 0.12s; -webkit-tap-highlight-color:transparent; }
+.results-back-btn:hover { color:var(--text); }
+.results-back-btn svg { flex-shrink:0; }
+.results-meta { display:flex; align-items:center; gap:8px; margin-left:auto; }
+
+/* ── PIPELINE SCREEN ── */
+.pipeline-screen { max-width:1000px; margin:0 auto; padding:28px 24px 100px; }
+.pipeline-screen-header { margin-bottom:24px; }
+.pipeline-screen-title { font-family:Syne,sans-serif; font-size:22px; font-weight:800; letter-spacing:-0.4px; }
+.pipeline-screen-sub { font-size:13px; color:var(--text3); margin-top:4px; }
+
+/* ── PIPELINE STATS BAR ── */
+.pipeline-statsbar { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-bottom:28px; }
+.pipeline-stat-cell { background:var(--bg2); padding:16px 20px; display:flex; flex-direction:column; gap:4px; transition:background 0.15s; }
+.pipeline-stat-cell:hover { background:var(--bg3); }
+.pipeline-stat-num { font-family:Syne,sans-serif; font-size:22px; font-weight:800; line-height:1; }
+.pipeline-stat-label { font-size:11px; color:var(--text3); font-weight:500; letter-spacing:0.3px; }
+
+/* ── HISTORY SCREEN ── */
+.history-screen { max-width:640px; margin:0 auto; padding:28px 24px 100px; }
+.screen-header { margin-bottom:28px; }
+.screen-title { font-family:Syne,sans-serif; font-size:22px; font-weight:800; letter-spacing:-0.4px; }
+.screen-sub { font-size:13px; color:var(--text3); margin-top:4px; }
+
+/* ── RESULT CARDS (lightweight scanning mode) ── */
+.biz-card { background:var(--bg2); border:1px solid rgba(255,255,255,0.05); border-radius:14px; padding:16px 18px; margin-bottom:8px; position:relative; transition:border-color 0.15s,background 0.15s; cursor:default; width:100%; box-sizing:border-box; }
+.biz-card:hover { border-color:rgba(190,255,0,0.12); background:var(--bg3); }
+.biz-card.active { border-color:rgba(190,255,0,0.2); background:var(--bg3); }
+
+/* ── PIPELINE CARDS (heavy, CRM-mode) ── */
+.kb-card { background:var(--bg3); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:14px 16px; transition:border-color 0.15s; cursor:default; }
+.kb-card:hover { border-color:rgba(255,255,255,0.12); }
+.kb-card.hot { border-color:rgba(255,120,50,0.22); background:rgba(255,120,50,0.03); }
+
+/* ── SECTION DIVIDERS ── */
+.section-divider { height:1px; background:var(--border); margin:32px 0; }
+
+/* ── NAV ACTIVE STATES ── */
+#navBtnGenerate.active,#navBtnPipeline.active,#navBtnHistory.active { background:var(--bg3); color:var(--text); font-weight:600; }
+
+/* ── MOBILE OVERRIDES FOR NEW ARCHITECTURE ── */
+@media(max-width:600px){
+  .app-nav { padding:0 16px; padding-top:max(0px,env(safe-area-inset-top)); }
+  .app-nav-logo span { display:none; }
+  .app-nav-links { gap:0; }
+  .app-nav-btn { font-size:12px; padding:5px 10px; height:32px; }
+  .app-nav-btn span:not(.app-nav-count) { display:none; }
+  .app-nav-btn svg { width:16px; height:16px; }
+  .generate-screen { padding:20px 18px 100px; }
+  .pipeline-screen { padding:16px 14px 100px; }
+  .history-screen { padding:16px 18px 100px; }
+  .pipeline-statsbar { grid-template-columns:repeat(2,1fr); border-radius:12px; }
+  .pipeline-stat-cell { padding:12px 14px; }
+  .pipeline-stat-num { font-size:18px; }
+  .scout-card { padding:20px 18px; border-radius:18px; }
+  .generate-section { margin-top:28px; }
+  .screen-header,.pipeline-screen-header { margin-bottom:18px; }
+  .screen-title,.pipeline-screen-title { font-size:20px; }
+}
+
+/* ── RESULTS BACK BUTTON ── */
+.results-back-btn { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:500; color:var(--text3); background:none; border:none; cursor:pointer; padding:0; transition:color 0.12s; -webkit-tap-highlight-color:transparent; min-height:32px; }
+.results-back-btn:hover { color:var(--text2); }
+.results-back-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+.results-meta { display:flex; align-items:center; gap:8px; }
+/* hide old reset btn (replaced by results-back-btn) */
+.reset-btn { display:none !important; }
+/* stats row gets less weight */
+.stats-row { margin-bottom:12px; }
+/* pipeline screen container fix */
+#page-history .pipeline-screen { padding-top:28px; }
+/* history screen fix */
+#page-searchhistory .history-screen { padding-top:28px; }
+/* search history list gets full width */
+#page-searchhistory .search-history-list,#page-searchhistory #searchHistoryList { max-width:100%; }
+/* pipeline stats bar — replaces old dash-header in pipeline */
+.pipeline-screen-header { border-bottom:1px solid var(--border); padding-bottom:20px; margin-bottom:24px; display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+.pipeline-screen-title { font-family:Syne,sans-serif; font-size:22px; font-weight:800; letter-spacing:-0.5px; }
+.pipeline-screen-sub { font-size:13px; color:var(--text3); }
+/* generate screen text simplify */
+.scout-card-inner-hero { text-align:center; padding:4px 0 20px; }
+.scout-card-inner-hero h2 { font-family:Syne,sans-serif; font-size:20px; font-weight:800; letter-spacing:-0.4px; margin-bottom:6px; }
+.scout-card-inner-hero p { font-size:13px; color:var(--text3); line-height:1.6; max-width:300px; margin:0 auto; }
+
+/* ── FORM REFINEMENTS ── */
+.form-label { display:block; font-size:12px; font-weight:600; color:var(--text3); margin-bottom:8px; letter-spacing:0.3px; }
+.scout-card .form-label { color:var(--text2); font-weight:600; font-size:13px; }
+.scout-card .location-input,.scout-card .text-input { border-color:rgba(255,255,255,0.1); }
+.scout-card .location-input:focus,.scout-card .text-input:focus { border-color:rgba(190,255,0,0.3); }
+/* Lean generate section snap cards */
+.snap-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.snap-card { background:var(--bg3); border:1px solid var(--border); border-radius:12px; padding:14px 12px; text-align:center; cursor:pointer; transition:border-color 0.15s,background 0.15s; }
+.snap-card:hover { border-color:var(--border2); background:var(--bg4); }
+.snap-num { font-family:Syne,sans-serif; font-size:22px; font-weight:800; line-height:1; }
+.snap-label { font-size:10px; color:var(--text4); font-weight:500; margin-top:4px; letter-spacing:0.3px; text-transform:uppercase; }
+/* Recent items lean */
+.recent-item { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 14px; background:var(--bg2); border:1px solid var(--border); border-radius:10px; transition:border-color 0.15s; }
+.recent-item:hover { border-color:var(--border2); }
+.recent-location { font-size:13px; font-weight:600; color:var(--text); }
+.recent-meta { font-size:11px; color:var(--text4); margin-top:2px; }
+.recent-redo { font-size:11px; font-weight:600; color:var(--accent); background:var(--accent-dim); border:1px solid rgba(190,255,0,0.15); border-radius:6px; padding:5px 10px; cursor:pointer; white-space:nowrap; min-height:30px; transition:background 0.12s; flex-shrink:0; display:inline-flex; align-items:center; gap:4px; -webkit-tap-highlight-color:transparent; }
+.recent-redo:hover { background:rgba(190,255,0,0.15); }
+/* Pipeline screen kb layout fix */
+.pipeline-screen .kb-wrap { padding:0 0 24px; }
+.pipeline-screen .kb-board { gap:14px; }
+/* Results section refinements */
+.results-header { margin-bottom:14px; }
+.results-title { font-family:Syne,sans-serif; font-size:17px; font-weight:800; letter-spacing:-0.3px; }
+.score-filter-wrap { margin-bottom:16px; }
+/* Loading state inside generate screen */
+.loading-state { padding:40px 0 20px; text-align:center; }
+/* Pattern insight bar */
+#patternInsightBar { border-radius:10px; overflow:hidden; }
+/* Usage pill on mobile - smaller */
+@media(max-width:600px) {
+  .usage-pill { font-size:11px; padding:3px 10px; }
+  .generate-header { margin-bottom:20px; }
+  .snap-grid { grid-template-columns:repeat(2,1fr); gap:8px; }
+  .snap-card { padding:12px 10px; border-radius:10px; }
+  .snap-num { font-size:20px; }
+  .generate-section { margin-top:24px; }
+}
+
 }</style>
 </head>
 <body style="background:#08080D;">
@@ -1400,26 +1565,38 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
   <div id="mobileMenuContent"></div>
 </div>
 
-<header>
-  <div class="container">
-    <nav class="nav">
-      <div class="logo" onclick="handleLogoClick()">
-        <div class="logo-icon">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" fill="#08080D"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.22 3.22l1.41 1.41M11.37 11.37l1.41 1.41M11.37 4.63l1.41-1.41M3.22 12.78l1.41-1.41" stroke="#08080D" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </div>
-        ProspectScout
+<header id="appHeader">
+  <div class="app-nav">
+    <div class="app-nav-logo" onclick="handleLogoClick()">
+      <div class="logo-icon">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" fill="#08080D"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.22 3.22l1.41 1.41M11.37 11.37l1.41 1.41M11.37 4.63l1.41-1.41M3.22 12.78l1.41-1.41" stroke="#08080D" stroke-width="1.5" stroke-linecap="round"/></svg>
       </div>
-      <div class="nav-right" id="navRight"></div>
-      <button class="pipe-nav-btn" id="pipeNavBtn" onclick="openHistoryPage()" style="display:none;" aria-label="Pipeline">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg>
-        <span class="pipe-nav-label">Pipeline</span>
-        <span class="pipe-nav-count" id="pipeNavCount" style="display:none;">0</span>
+      <span>ProspectScout</span>
+    </div>
+    <div class="app-nav-links" id="appNavLinks" style="display:none;">
+      <button class="app-nav-btn" id="navBtnGenerate" onclick="enterDashboard()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Generate
       </button>
+      <button class="app-nav-btn" id="navBtnPipeline" onclick="openHistoryPage()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg>
+        Pipeline
+        <span class="app-nav-count" id="pipeNavCount" style="display:none;"></span>
+      </button>
+      <button class="app-nav-btn" id="navBtnHistory" onclick="openSearchHistory()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3h6l2 3h10a2 2 0 012 2v11a2 2 0 01-2 2H3a2 2 0 01-2-2V5a2 2 0 012-2z"/></svg>
+        History
+      </button>
+    </div>
+    <div class="app-nav-right">
+      <div class="nav-right" id="navRight"></div>
       <button class="hamburger" id="hamburgerBtn" onclick="toggleMobileMenu()" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
-    </nav>
+    </div>
   </div>
+  <!-- keep legacy pipe-nav-btn for JS compat -->
+  <button id="pipeNavBtn" style="display:none;" onclick="openHistoryPage()"></button>
 </header>
 
 <!-- HOME -->
@@ -1667,19 +1844,16 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 
 <!-- DASHBOARD -->
 <div class="page" id="page-dashboard">
-  <div class="container" class="page-inner">
+  <div class="generate-screen">
 
-    <div class="dash-header">
-      <div>
-        <div class="dash-greeting">Hey, <em id="dashName">there</em> 👋</div>
-        <div class="dash-sub" id="dashSub">Your intelligence layer for finding the right prospects.</div>
-      </div>
-      <div class="dash-tier-badge">
-        <span class="tier-chip" id="dashTierChip">Free</span>
-        <button class="upgrade-nudge" onclick="showPage('pricing')" id="dashUpgradeBtn">Upgrade plan →</button>
-        <span id="dashSpotsHint" style="font-size:10px;color:var(--teal);font-weight:600;display:none;"></span>
-      </div>
-      <div id="usage-display" style="font-size:12px;color:var(--text3);font-weight:500;"></div>
+    <div class="generate-header">
+      <div id="usage-display" class="usage-pill"></div>
+    </div>
+    <!-- legacy elements kept for JS compat, hidden -->
+    <div style="display:none;">
+      <div id="dashName"></div><div id="dashSub"></div>
+      <span id="dashTierChip"></span><button id="dashUpgradeBtn"></button>
+      <span id="dashSpotsHint"></span>
     </div>
 
     <!-- CAMPAIGN CONTEXT BANNER -->
@@ -1737,10 +1911,9 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 
     <!-- SCOUT FORM -->
     <div class="scout-card reveal" id="inputSection">
-      <!-- Empty state hero -->
-      <div style="text-align:center;padding:4px 0 20px;">
-        <div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.5px;color:var(--text);margin-bottom:8px;line-height:1.2;">Find exactly who needs<br>what you sell.</div>
-        <div style="font-size:13px;color:var(--text3);line-height:1.6;max-width:320px;margin:0 auto;">Describe your offer. We identify businesses already showing signals they need it — with reasoning for every result.</div>
+      <div class="scout-card-inner-hero">
+        <h2>Find who needs what you sell.</h2>
+        <p>Describe your offer. We identify businesses already showing signals they need it — scored and ranked.</p>
       </div>
 
       <!-- PRIMARY: What you sell (required) -->
@@ -1798,16 +1971,22 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
     <div id="results">
       <div id="resultsLoadingBar" style="display:none;"><div id="resultsLoadingProg"></div></div>
       <div id="resultsLoadingText" style="display:none;"></div>
-      <button class="reset-btn" onclick="resetSearch()">← New search</button>
-      <div class="stats-row" id="statsRow"></div>
-      <div class="results-header">
-        <div class="results-title" id="resultsTitle">High-intent opportunities matched to your offer</div>
-          <div id="resultsOfferTag" style="font-size:11px;color:var(--text4);margin-top:2px;letter-spacing:0.3px;">Based on real-world business signals</div>
-        <div style="display:flex;align-items:center;gap:8px;">
-
+      <!-- Results state top bar -->
+      <div class="results-back-row">
+        <button class="results-back-btn" onclick="resetSearch()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          New search
+        </button>
+        <div class="results-meta">
           <span class="results-count" id="resultsCount"></span>
           <span id="resultsOfferLabel" style="font-size:12px;color:var(--text3);display:none;"></span>
         </div>
+      </div>
+      <div class="stats-row" id="statsRow"></div>
+      <div class="results-header">
+        <div class="results-title" id="resultsTitle">Results</div>
+          <div id="resultsOfferTag" style="font-size:11px;color:var(--text4);margin-top:2px;letter-spacing:0.3px;">Based on real-world business signals</div>
+        <div style="display:flex;align-items:center;gap:8px;"></div>
       </div>
       <div class="score-filter-wrap" id="scoreFilterWrap" style="display:none;">
         <span class="score-filter-label">Min score:</span>
@@ -1823,49 +2002,32 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
       <div id="bizList"></div>
     </div>
 
-    <!-- DASHBOARD SECTIONS (shown when no search active) -->
+    <!-- DASHBOARD SECTIONS -->
     <div id="dashSections">
-
-      <!-- Streak (hidden element, kept for JS compat) -->
+      <!-- hidden compat elements -->
       <div id="dashStreak" style="display:none;"></div>
       <div id="dashCalendar" style="display:none;"></div>
+      <div id="dashCalendarStreak" style="display:none;"></div>
+      <div id="dashTips" style="display:none!important;"><div id="tipsGrid"></div></div>
+      <div id="dashTopProspects" style="display:none;"><div id="topProspectsList"></div></div>
 
-      <!-- 1. Pipeline Snapshot -->
-      <div id="dashSnapshot" class="dash-section">
-        <div class="dash-section-title">Pipeline snapshot <a onclick="openHistoryPage()">View all →</a></div>
+      <!-- Pipeline Snapshot -->
+      <div id="dashSnapshot" class="generate-section">
+        <div class="generate-section-header">
+          <span class="generate-section-label">Pipeline</span>
+          <button class="generate-section-link" onclick="openHistoryPage()">View all →</button>
+        </div>
         <div class="snap-grid" id="snapGrid"></div>
       </div>
 
-      <!-- 2. Call Activity Calendar entry point -->
-      <div class="dash-section" style="display:none!important;margin-top:12px;">
-        <button onclick="openCalendarPage()" style="display:flex;align-items:center;gap:12px;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 18px;cursor:pointer;transition:border-color 0.2s;text-align:left;" onmouseover="this.style.borderColor='rgba(190,255,0,0.2)'" onmouseout="this.style.borderColor='var(--border)'">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" style="flex-shrink:0;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          <div style="flex:1;">
-            <div style="font-size:13px;font-weight:600;color:var(--text);">Call Activity Calendar</div>
-            <div id="dashCalendarStreak" style="font-size:11px;color:var(--text3);margin-top:2px;">Track your calling streak and monthly breakdown</div>
-          </div>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text4)" stroke-width="2.5" style="flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
-
-      <!-- 3. Recent Searches -->
-      <div id="dashRecent" class="dash-section" style="display:none;">
-        <div class="dash-section-title">Recent searches <a onclick="openSearchHistory()">See all →</a></div>
+      <!-- Recent Searches -->
+      <div id="dashRecent" class="generate-section" style="display:none;">
+        <div class="generate-section-header">
+          <span class="generate-section-label">Recent searches</span>
+          <button class="generate-section-link" onclick="openSearchHistory()">See all →</button>
+        </div>
         <div class="recent-list" id="recentList"></div>
       </div>
-
-      <!-- 4. Top Prospects from Last Search -->
-      <div id="dashTopProspects" class="dash-section" style="display:none;">
-        <div class="dash-section-title">Last search results <a onclick="openSearchHistory()">See all →</a></div>
-        <div class="top-prospects-list" id="topProspectsList"></div>
-      </div>
-
-      <!-- 5. Quick Start Tips -->
-      <div id="dashTips" class="dash-section" style="display:none!important;">
-        <div class="dash-section-title">Quick start</div>
-        <div class="tips-grid" id="tipsGrid"></div>
-      </div>
-
     </div>
 
   </div>
@@ -1873,19 +2035,20 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 
 <!-- PIPELINE PAGE -->
 <div class="page" id="page-history">
-  <div class="container" style="padding-top:48px; padding-bottom:0;">
-    <div class="dash-header">
+  <div class="pipeline-screen">
+    <div class="pipeline-screen-header">
       <div>
-        <div class="dash-greeting">My <em>Pipeline</em></div>
-        <div class="dash-sub" id="historySub">Track every prospect from first call to closed deal.</div>
+        <div class="pipeline-screen-title">Pipeline</div>
+        <div class="pipeline-screen-sub" id="historySub">Track every prospect from first call to closed deal.</div>
       </div>
-      <button class="nav-btn" onclick="showPage('dashboard')" style="font-size:13px;">← Scout more</button>
     </div>
+    <!-- legacy compat hidden -->
+    <div style="display:none;"><div class="dash-header"><div class="dash-greeting">My <em>Pipeline</em></div></div></div>
+    <div id="kbStats" class="kb-stats" style="margin-bottom:20px;"></div>
+    <div id="kbStreak" style="display:none!important;"></div>
+    <div id="kbHotAlert" style="display:none!important;"></div>
+    <div id="kbMount"></div>
   </div>
-  <div id="kbStreak" style="display:none!important;"></div>
-  <div id="kbHotAlert" style="display:none!important;"></div>
-  <div id="kbStats" class="kb-stats" style="padding:0 28px;margin-top:16px;margin-bottom:16px;"></div>
-  <div id="kbMount"></div>
 </div>
 
 
@@ -1896,27 +2059,24 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 
 <!-- SEARCH HISTORY PAGE -->
 <div class="page" id="page-searchhistory">
-  <div class="container" class="page-inner">
-    <div class="dash-header">
-      <div>
-        <div class="dash-greeting">Search <em>History</em></div>
-        <div class="dash-sub" id="searchHistorySub">All your past searches</div>
-      </div>
-      <button class="nav-btn" onclick="showPage('dashboard')" style="font-size:13px;">← Back</button>
+  <div class="history-screen">
+    <div class="screen-header">
+      <div class="screen-title">Search History</div>
+      <div class="screen-sub" id="searchHistorySub">All your past searches</div>
     </div>
+    <div style="display:none;"><div class="dash-header"><div class="dash-greeting">Search <em>History</em></div></div></div>
     <div id="searchHistoryList" class="search-history-list"></div>
   </div>
 </div>
 
 <!-- STREAK CALENDAR PAGE -->
 <div class="page" id="page-calendar">
-  <div class="container" class="page-inner">
-    <div class="dash-header">
+  <div class="history-screen">
+    <div class="screen-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;">
       <div>
-        <div class="dash-greeting">Call <em>Activity</em></div>
-        <div class="dash-sub" id="calendarSub">Your calling streak and history</div>
+        <div class="screen-title">Call Activity</div>
+        <div class="screen-sub" id="calendarSub">Your calling streak and history</div>
       </div>
-      <button class="nav-btn" onclick="showPage('dashboard')" style="font-size:13px;">← Back</button>
     </div>
     <div id="calendarPageContent" style="width:100%;"></div>
   </div>
@@ -1924,11 +2084,11 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 
 <!-- CAMPAIGN PLANNER PAGE -->
 <div class="page" id="page-campaigns">
-  <div class="container" class="page-inner">
-    <div class="dash-header">
+  <div class="history-screen" style="max-width:900px;">
+    <div class="screen-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;">
       <div>
-        <div class="dash-greeting">My <em>Campaigns</em></div>
-        <div class="dash-sub" id="campaignsSub">Plan and track your outreach campaigns</div>
+        <div class="screen-title">Campaigns</div>
+        <div class="screen-sub" id="campaignsSub">Plan and track your outreach campaigns</div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <button class="nav-btn" onclick="showPage('dashboard')" style="font-size:13px;">← Back</button>
@@ -2020,13 +2180,10 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 
 <!-- ANALYTICS PAGE -->
 <div class="page" id="page-analytics">
-  <div class="container" class="page-inner">
-    <div class="dash-header">
-      <div>
-        <div class="dash-greeting">My <em>Analytics</em></div>
-        <div class="dash-sub">Performance insights from your calling activity</div>
-      </div>
-      <button class="nav-btn" onclick="showPage('dashboard')" style="font-size:13px;">← Back</button>
+  <div class="history-screen">
+    <div class="screen-header">
+      <div class="screen-title">Analytics</div>
+      <div class="screen-sub">Performance insights from your calling activity</div>
     </div>
     <div id="analyticsContent"></div>
   </div>
@@ -2034,13 +2191,10 @@ input[type="number"]:not(.goal-input), input[type="date"], textarea, select { fo
 
 <!-- ADMIN PANEL — secret, access by tapping logo 5x -->
 <div class="page" id="page-admin">
-  <div class="container" class="page-inner">
-    <div class="dash-header">
-      <div>
-        <div class="dash-greeting" style="color:var(--amber);">⚡ Admin Panel</div>
-        <div class="dash-sub">Internal tools — keep this URL private.</div>
-      </div>
-      <button class="nav-btn" onclick="showPage('dashboard')">← Back</button>
+  <div class="history-screen">
+    <div class="screen-header">
+      <div class="screen-title" style="color:var(--amber);">⚡ Admin Panel</div>
+      <div class="screen-sub">Internal tools — keep this URL private.</div>
     </div>
     <div class="admin-grid">
       <div class="admin-card">
@@ -2344,6 +2498,9 @@ function updateNav() {
       '<button class="nav-btn primary" onclick="openModal(&quot;signup&quot;)">Get started</button>';
   }
   updateNavPipeline();
+  // Sync nav links visibility
+  var navLinks = document.getElementById('appNavLinks');
+  if (navLinks) navLinks.style.display = currentUser ? 'flex' : 'none';
 }
 
 function toggleProfileMenu(e) {
@@ -2365,7 +2522,26 @@ document.addEventListener('keydown', function(e) {
 });
 
 // PAGES
-function showPage(name) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); var pg=document.getElementById('page-'+name); if(pg) pg.classList.add('active'); window.scrollTo(0,0); if(name==='pricing') renderPricingGrid('pricingGrid'); updateNavPipeline(); if(typeof updateMobNav==='function') updateMobNav(); }
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  var pg=document.getElementById('page-'+name);
+  if(pg) pg.classList.add('active');
+  window.scrollTo(0,0);
+  if(name==='pricing') renderPricingGrid('pricingGrid');
+  updateNavPipeline();
+  if(typeof updateMobNav==='function') updateMobNav();
+  // Update active nav buttons
+  ['navBtnGenerate','navBtnPipeline','navBtnHistory'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.classList.remove('active');
+  });
+  var activeMap={dashboard:'navBtnGenerate',history:'navBtnPipeline',searchhistory:'navBtnHistory'};
+  var activeId=activeMap[name];
+  if(activeId){var el=document.getElementById(activeId);if(el)el.classList.add('active');}
+  // Show/hide app nav links (only when logged in)
+  var navLinks=document.getElementById('appNavLinks');
+  if(navLinks) navLinks.style.display=currentUser?'flex':'none';
+}
 function goHome()        { currentUser ? showPage('dashboard') : showPage('home'); }
 let _logoTaps = 0, _logoTimer = null;
 function handleLogoClick() {
@@ -2379,7 +2555,15 @@ function handleLogoClick() {
   }
   _logoTimer = setTimeout(function(){ _logoTaps=0; goHome(); }, 400);
 }
-function enterDashboard(){ _syncCurrentTier(); updateNav(); updateDashboard(); showPage('dashboard'); checkForResume(); renderDashSections(); renderGoalTracker(); updateOverdueBadge(); if(typeof updateMobNav==='function') updateMobNav(); setTimeout(checkOnboarding, 400); }
+function enterDashboard(){
+  _syncCurrentTier(); updateNav(); updateDashboard();
+  var navLinks=document.getElementById('appNavLinks');
+  if(navLinks) navLinks.style.display='flex';
+  showPage('dashboard');
+  checkForResume(); renderDashSections(); renderGoalTracker(); updateOverdueBadge();
+  if(typeof updateMobNav==='function') updateMobNav();
+  setTimeout(checkOnboarding, 400);
+}
 
 // DASHBOARD STATE
 function updateEmptyHint() { /* disabled — search form is always visible */ }
@@ -7923,11 +8107,17 @@ document.addEventListener("DOMContentLoaded", async function () {
 function updateMobNav() {
   var gen = document.getElementById('mobNavGenerate');
   var pip = document.getElementById('mobNavPipeline');
-  if (!gen || !pip) return;
   var activePage = document.querySelector('.page.active');
   var pageId = activePage ? activePage.id : '';
-  gen.classList.toggle('active', pageId === 'page-dashboard');
-  pip.classList.toggle('active', pageId === 'page-history');
+  if (gen) gen.classList.toggle('active', pageId === 'page-dashboard');
+  if (pip) pip.classList.toggle('active', pageId === 'page-history');
+  // sync top nav buttons too
+  var navMap = {'page-dashboard':'navBtnGenerate','page-history':'navBtnPipeline','page-searchhistory':'navBtnHistory'};
+  ['navBtnGenerate','navBtnPipeline','navBtnHistory'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.classList.remove('active');
+  });
+  var activeNavId = navMap[pageId];
+  if (activeNavId) { var el = document.getElementById(activeNavId); if(el) el.classList.add('active'); }
 }
 var _origShowPage = typeof showPage === 'function' ? showPage : null;
 </script>
