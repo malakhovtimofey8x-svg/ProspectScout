@@ -2803,7 +2803,7 @@ async function saveSearchRecord(location, product, target, count) {
         target: (target || '').trim(),
         count: count || 0
       }]);
-      if (error) console.error('saveSearchRecord error:', error);
+      if (error) { console.error('FULL SEARCH HISTORY ERROR:', JSON.stringify(error, null, 2)); console.error('Payload:', JSON.stringify({user_id: user.id, query: product.trim(), location: (location||'').trim(), target: (target||'').trim(), count: count||0})); } else { console.log('Search history saved successfully'); }
     }
   } catch(e) { console.error('saveSearchRecord error:', e); }
 }
@@ -3203,25 +3203,24 @@ async function _syncPipelineToSupabase(items) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
     // Upsert all items
-    const rows = items.filter(function(h){ return h.name && h.name.trim(); }).map(function(h) {
+    // Only upsert items that have a Supabase ID — new local items are inserted via addToPipeline
+    const rows = items.filter(function(h){
+      return h.name && h.name.trim() && typeof h.id === 'string' && h.id.startsWith('supa_');
+    }).map(function(h) {
       return {
-        id: (typeof h.id === 'string' && h.id.startsWith('supa_')) ? h.id.replace('supa_', '') : undefined,
+        id: h.id.replace('supa_', ''),
         user_id: user.id,
         name: h.name || '',
-        score: h.score || null,
+        score: h.score ? Number(h.score) : null,
         phone: h.phone || null,
         website: h.website || null,
         stage: h.status || 'new',
-        type: h.type || null,
-        address: h.address || null,
-        opener: h.opener || null,
-        reason: h.reason || null,
-        opportunity: h.opportunity || null,
-        saved_at: h.savedAt ? new Date(h.savedAt).toISOString() : new Date().toISOString()
+        type: h.type || null
       };
-    }).filter(function(r) { return r.name; });
+    });
     if (rows.length > 0) {
-      await supabase.from('pipeline_items').upsert(rows, { onConflict: 'id', ignoreDuplicates: false });
+      const { error: upsertErr } = await supabase.from('pipeline_items').upsert(rows, { onConflict: 'id' });
+      if (upsertErr) console.error('Sync upsert error:', JSON.stringify(upsertErr, null, 2));
     }
   } catch(e) {
     console.error('Supabase sync error:', e);
@@ -5534,10 +5533,11 @@ async function addToPipeline(i) {
           .insert([_payload])
           .select('id');
         if (error) {
-          console.error('FULL ERROR:', JSON.stringify(error, null, 2));
+          console.error('FULL INSERT ERROR:', JSON.stringify(error, null, 2));
+          console.error('Payload was:', JSON.stringify(_payload));
         } else if (inserted && inserted.length > 0 && inserted[0].id) {
           savedId = 'supa_' + inserted[0].id;
-          console.log('Saved to Supabase:', savedId);
+          console.log('Saved to pipeline successfully:', savedId);
         }
       }
     } catch (e) {
