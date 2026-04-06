@@ -1398,6 +1398,147 @@ h1 em { font-style: normal; color: var(--accent); }
   #dashSections { margin-top: 28px; }
 }
 
+/* ── ENHANCED RESULT CARDS ── */
+
+/* Wider card container */
+#bizList { max-width: 720px; margin: 0 auto; }
+
+/* Collapsed layout: left info + right actions */
+.bc-collapsed {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.bc-collapsed-left { display: flex; align-items: flex-start; gap: 14px; flex: 1; min-width: 0; }
+.bc-collapsed-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* Phone line */
+.bc-phone-row {
+  font-size: 12px;
+  color: var(--text3);
+  font-weight: 500;
+  margin: 3px 0 4px;
+  letter-spacing: 0.2px;
+}
+
+/* Type tag */
+.bc-type-tag {
+  font-size: 11px;
+  color: var(--text4);
+}
+
+/* Chevron */
+.bc-chevron {
+  color: var(--text4);
+  transition: transform 0.25s ease, color 0.15s;
+  line-height: 0;
+  padding: 2px;
+}
+.biz-card.bc-open .bc-chevron { transform: rotate(180deg); color: var(--accent); }
+
+/* Quick action buttons (collapsed) */
+.bc-quick-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.bc-q-call {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 700;
+  padding: 7px 12px; min-height: 34px;
+  background: var(--accent); color: #08080D;
+  border: none; border-radius: 8px;
+  cursor: pointer; text-decoration: none;
+  transition: box-shadow 0.12s, opacity 0.12s;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+.bc-q-call:hover { box-shadow: 0 2px 12px rgba(0,255,136,0.3); }
+.bc-q-call:active { opacity: 0.85; }
+.bc-q-save {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 600;
+  padding: 7px 12px; min-height: 34px;
+  background: var(--bg4); color: var(--text2);
+  border: 1px solid var(--border2); border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  font-family: 'Inter', sans-serif;
+}
+.bc-q-save:hover { border-color: rgba(0,255,136,0.25); color: var(--text); }
+.bc-q-save:disabled { opacity: 0.5; cursor: default; }
+
+/* Expanded bottom actions */
+.bc-exp-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.bc-exp-call-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  flex: 1;
+  font-size: 14px; font-weight: 700;
+  padding: 12px 16px; min-height: 46px;
+  background: var(--accent); color: #08080D;
+  border: none; border-radius: 12px;
+  cursor: pointer; text-decoration: none;
+  justify-content: center;
+  transition: box-shadow 0.15s, opacity 0.12s;
+  font-family: Syne, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+.bc-exp-call-btn:hover { box-shadow: 0 4px 20px rgba(0,255,136,0.28); }
+.bc-exp-save-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  flex: 1;
+  font-size: 14px; font-weight: 600;
+  padding: 12px 16px; min-height: 46px;
+  background: var(--bg3); color: var(--text2);
+  border: 1px solid var(--border2); border-radius: 12px;
+  cursor: pointer;
+  justify-content: center;
+  transition: border-color 0.12s, background 0.12s;
+  font-family: 'Inter', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+.bc-exp-save-btn:hover { border-color: rgba(0,255,136,0.25); color: var(--text); }
+.bc-exp-save-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* Signal short — now on its own line, subtle */
+.bc-signal-short {
+  font-size: 12px;
+  color: var(--text4);
+  line-height: 1.4;
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+/* Mobile: stack quick actions below chevron, full-width buttons */
+@media(max-width:600px){
+  #bizList { max-width: 100%; }
+  .bc-collapsed-right { gap: 8px; }
+  .bc-q-call, .bc-q-save { font-size: 12px; padding: 8px 10px; min-height: 38px; }
+  .bc-quick-actions { gap: 5px; }
+  .bc-exp-actions { flex-direction: column; gap: 8px; }
+  .bc-exp-call-btn, .bc-exp-save-btn { min-height: 50px; font-size: 15px; }
+  .bc-phone-row { font-size: 12px; }
+  .bc-signal-short { display: none; } /* too cramped on mobile, shows in expanded */
+}
+
 </style>
 </head>
 <body style="background:#08080D;">
@@ -5157,7 +5298,7 @@ function buildBizCardHTML(b, i) {
   var scoreCls = score >= 8 ? 'score-high' : score >= 5 ? 'score-mid' : 'score-low';
   var sig = b.signal || (Array.isArray(b.buying_signals) && b.buying_signals[0]) || b.reason || '';
   var sigWords = sig.trim().split(/\s+/);
-  var sigShort = sigWords.slice(0,10).join(' ') + (sigWords.length > 10 ? '\u2026' : '');
+  var sigShort = sigWords.slice(0,9).join(' ') + (sigWords.length > 9 ? '\u2026' : '');
   var oppLabel = b.opportunity === 'High' ? 'High fit' : b.opportunity === 'Medium' ? 'Medium fit' : '';
   function esc(s){ return (s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   var opener = esc(b.opener || b.messageIdea || '');
@@ -5165,6 +5306,18 @@ function buildBizCardHTML(b, i) {
   var signal  = esc(sig);
   var talkTrack = esc(b.talk_track || b.angle || '');
 
+  // Format phone: (XXX) XXX-XXXX
+  function fmtPhone(p) {
+    if (!p) return '';
+    var d = p.replace(/\D/g,'');
+    if (d.length === 10) return '(' + d.slice(0,3) + ') ' + d.slice(3,6) + '-' + d.slice(6);
+    if (d.length === 11 && d[0] === '1') return '(' + d.slice(1,4) + ') ' + d.slice(4,7) + '-' + d.slice(7);
+    return p;
+  }
+  var phoneDisplay = fmtPhone(b.phone);
+  var phoneDigits  = (b.phone || '').replace(/\D/g,'');
+
+  // ── COLLAPSED STATE ──
   var collapsed =
     '<div class="bc-collapsed">' +
       '<div class="bc-collapsed-left">' +
@@ -5172,27 +5325,35 @@ function buildBizCardHTML(b, i) {
         '<div class="bc-info">' +
           '<div class="bc-name">' + esc(b.name) + '</div>' +
           '<div class="bc-meta">' +
-            (b.type ? '<span>' + esc(b.type) + '</span>' : '') +
+            (b.type ? '<span class="bc-type-tag">' + esc(b.type) + '</span>' : '') +
             (oppLabel ? '<span class="bc-opp-dot ' + (b.opportunity === 'High' ? 'high' : 'mid') + '">' + oppLabel + '</span>' : '') +
           '</div>' +
+          (phoneDisplay ? '<div class="bc-phone-row">' + phoneDisplay + '</div>' : '') +
           (sigShort ? '<div class="bc-signal-short">' + sigShort + '</div>' : '') +
         '</div>' +
       '</div>' +
-      '<div class="bc-chevron">' +
-        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>' +
+      '<div class="bc-collapsed-right">' +
+        '<div class="bc-chevron">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>' +
+        '</div>' +
+        '<div class="bc-quick-actions" onclick="event.stopPropagation()">' +
+          (b.phone ?
+            '<a href="tel:' + phoneDigits + '" class="bc-q-call" title="Call ' + esc(b.name) + '">' +
+              '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>' +
+              'Call' +
+            '</a>'
+          : '') +
+          '<button class="bc-q-save" id="pipe-btn-' + i + '" onclick="addToPipeline(' + i + ')" title="Save to Pipeline">' +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>' +
+            'Save' +
+          '</button>' +
+        '</div>' +
       '</div>' +
     '</div>';
 
+  // ── EXPANDED STATE ──
   var expanded =
     '<div class="bc-expanded">' +
-      '<div class="bc-actions" onclick="event.stopPropagation()">' +
-        '<button class="save-btn" id="pipe-btn-' + i + '" onclick="addToPipeline(' + i + ')">+ Add to Pipeline</button>' +
-        (b.phone ?
-          '<a href="tel:' + b.phone.replace(/\D/g,'') + '" class="call-main">\uD83D\uDCDE Call now</a>'
-        :
-          '<button class="call-main" onclick="copyOpener(' + i + ')">Copy opener</button>'
-        ) +
-      '</div>' +
       (signal ?
         '<div class="bc-exp-section">' +
           '<div class="bc-exp-label">Signal detected</div>' +
@@ -5218,6 +5379,23 @@ function buildBizCardHTML(b, i) {
           (b.best_time ? '<span>\u23F0 ' + esc(b.best_time) + '</span>' : '') +
           (b.decision_maker ? '<span>\uD83D\uDC64 ' + esc(b.decision_maker) + '</span>' : '') +
         '</div>' : '') +
+      '<div class="bc-exp-actions" onclick="event.stopPropagation()">' +
+        (b.phone ?
+          '<a href="tel:' + phoneDigits + '" class="bc-exp-call-btn">' +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>' +
+            'Call Now' +
+          '</a>'
+        :
+          '<button class="bc-exp-call-btn" onclick="copyOpener(' + i + ')">' +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>' +
+            'Copy opener' +
+          '</button>'
+        ) +
+        '<button class="bc-exp-save-btn" id="pipe-btn-exp-' + i + '" onclick="addToPipeline(' + i + ')">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>' +
+          'Save to Pipeline' +
+        '</button>' +
+      '</div>' +
     '</div>';
 
   return (
@@ -5333,13 +5511,17 @@ async function addToPipeline(i) {
   window._pipelineCache[currentUser.email] = history;
   try { localStorage.setItem(_pipeKey(currentUser.email), JSON.stringify(history)); } catch(e) {}
 
-  if (btn) {
-    btn.dataset.added = '1';
-    btn.textContent = 'Saved ✓';
-    btn.title = 'Saved to pipeline';
-    btn.disabled = true;
-    btn.style.opacity = '0.5';
-  }
+  // Update all save buttons for this card (collapsed + expanded)
+  ['pipe-btn-' + i, 'pipe-btn-exp-' + i].forEach(function(btnId) {
+    var b2 = document.getElementById(btnId);
+    if (b2) {
+      b2.dataset.added = '1';
+      b2.textContent = 'Saved ✓';
+      b2.title = 'Saved to pipeline';
+      b2.disabled = true;
+      b2.style.opacity = '0.5';
+    }
+  });
   showToast('<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:5px;"><polyline points="20 6 9 17 4 12"/></svg> Added to pipeline');
 }
 
