@@ -1997,7 +1997,7 @@ body::before, body::after { pointer-events: none !important; }
       </div>
 
       <p class="scout-helper-text">Based on real-world business signals. <span class="scout-helper-example">Try: SEO for dentists in Miami</span></p>
-      <button type="button" class="cta-btn" id="analyzeBtn" onclick="analyze()" style="margin-top:12px;opacity:0.5;cursor:not-allowed;" disabled>
+      <button type="button" class="cta-btn" id="analyzeBtn" data-action="scout" onclick="analyze()" style="margin-top:12px;opacity:0.5;cursor:not-allowed;" disabled>
         Scout for Prospects <span class="arrow">→</span>
       </button>
       <div id="errorMsg"></div>
@@ -8337,6 +8337,29 @@ var _origShowPage = typeof showPage === 'function' ? showPage : null;
 
   resize();
   draw();
+})();
+</script>
+<script>
+// Scout button: stable event delegation — survives any future DOM changes
+function handleScout() {
+  if (typeof analyze === 'function') analyze();
+}
+document.addEventListener('click', function(e) {
+  var btn = e.target.closest('[data-action="scout"]');
+  if (!btn) return;
+  if (btn.disabled) return;
+  e.preventDefault();
+  handleScout();
+});
+// Pointer-events safety: ensure no background layer blocks clicks
+(function() {
+  var safety = document.createElement('style');
+  safety.textContent = [
+    'body::before,body::after{pointer-events:none!important}',
+    '.gradient-bg,.gradient-orb,#dataStreams,#matrixCanvas{pointer-events:none!important}',
+    '.page,.generate-screen,.scout-card,.cta-btn{position:relative;z-index:1}'
+  ].join('');
+  document.head.appendChild(safety);
 })();
 </script>
 </body>
