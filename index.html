@@ -241,7 +241,7 @@ header {
 @keyframes screenIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
 
 .screen { max-width: 580px; margin: 0 auto; padding: 24px 18px 32px; }
-.generate-screen,
+.generate-screen { max-width: 720px; margin: 0 auto; padding: 32px 24px 48px; }
 .history-screen  { max-width: 580px; margin: 0 auto; padding: 24px 18px 32px; }
 .pipeline-screen { max-width: 960px; margin: 0 auto; padding: 24px 18px 32px; }
 .container { max-width: 960px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
@@ -382,11 +382,14 @@ header {
 .scout-card {
   background: rgba(15,15,26,0.8);
   border: 1px solid rgba(0,255,136,0.12);
-  border-radius: 20px;
-  padding: 24px 22px;
+  border-radius: 22px;
+  padding: 32px 28px;
   position: relative;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  max-width: 640px;
+  margin: 0 auto;
+  width: 100%;
 }
 .scout-card::before {
   content: '';
@@ -624,7 +627,7 @@ header {
 .objection-a { font-size: 13px; color: var(--text2); }
 
 /* ── DASHBOARD SECTIONS ── */
-.generate-section { margin-top: 28px; }
+.generate-section { margin-top: 20px; }
 .generate-section-header {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 12px;
@@ -1051,7 +1054,8 @@ h1 em { font-style: normal; color: var(--accent); }
 /* ── DESKTOP OVERRIDES ── */
 @media(min-width: 601px) {
   #mobileBottomNav { display: none !important; }
-  .generate-screen, .history-screen { padding: 32px 24px 60px; }
+  .generate-screen { padding: 40px 32px 60px; }
+  .history-screen { padding: 32px 24px 60px; }
   .pipeline-screen { padding: 28px 24px 60px; }
   .app-nav-logo span { display: inline; }
   .biz-card { padding: 18px 20px; }
@@ -1079,7 +1083,7 @@ h1 em { font-style: normal; color: var(--accent); }
   .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
   .generate-screen, .history-screen { padding: 20px 16px 32px; }
   .pipeline-screen { padding: 16px 14px 32px; }
-  .scout-card { padding: 20px 18px; border-radius: 18px; }
+  .scout-card { padding: 22px 18px 24px; border-radius: 18px; max-width: 100%; }
   .fields-row { grid-template-columns: 1fr; gap: 10px; }
   .biz-card { display: flex; flex-direction: column; padding: 18px 16px; border-radius: 18px; }
   .bc-left { flex-direction: row; align-items: flex-start; gap: 14px; margin-bottom: 14px; width: 100%; }
@@ -1340,6 +1344,58 @@ h1 em { font-style: normal; color: var(--accent); }
 .price-btn-plus:hover, .price-btn-pro:hover {
   box-shadow: 0 6px 24px rgba(0,255,136,0.35);
   transform: translateY(-1px);
+}
+
+/* ── GENERATE SCREEN BALANCE ── */
+.dash-sections-wrap {
+  max-width: 640px;
+  margin: 0 auto;
+  width: 100%;
+}
+/* Snap grid — less dominant */
+.snap-grid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 8px;
+}
+.snap-card {
+  background: var(--bg3);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 10px;
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.snap-card:hover { border-color: rgba(0,255,136,0.12); }
+.snap-num { font-family: Syne, sans-serif; font-size: 20px; font-weight: 800; line-height: 1; }
+.snap-label { font-size: 9px; color: var(--text4); font-weight: 600; margin-top: 4px; letter-spacing: 0.3px; text-transform: uppercase; }
+/* Helper text */
+.scout-helper-text {
+  font-size: 12px;
+  color: var(--text4);
+  margin: 10px 0 4px;
+  line-height: 1.5;
+}
+.scout-helper-example {
+  color: var(--text3);
+  font-style: italic;
+}
+/* Spacer between card and sections */
+#dashSections { margin-top: 36px; }
+/* Generate section label de-emphasised */
+.generate-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text4);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+@media(max-width:600px){
+  .dash-sections-wrap { max-width: 100%; }
+  .snap-card { padding: 10px 6px; border-radius: 8px; }
+  .snap-num { font-size: 18px; }
+  #dashSections { margin-top: 28px; }
 }
 
 </style>
@@ -1749,12 +1805,11 @@ h1 em { font-style: normal; color: var(--accent); }
         </div>
       </div>
 
-      <p style="font-size:12px;color:var(--text4);margin:10px 0 4px;line-height:1.5;">Based on real-world business signals.</p>
+      <p class="scout-helper-text">Based on real-world business signals. <span class="scout-helper-example">Try: SEO for dentists in Miami</span></p>
       <button class="cta-btn" id="analyzeBtn" onclick="analyze()" style="margin-top:12px;opacity:0.5;cursor:not-allowed;" disabled>
         Scout for Prospects <span class="arrow">→</span>
       </button>
       <div id="errorMsg"></div>
-    </div>
     </div>
 
 
@@ -1820,7 +1875,7 @@ h1 em { font-style: normal; color: var(--accent); }
     </div>
 
     <!-- DASHBOARD SECTIONS -->
-    <div id="dashSections">
+    <div id="dashSections" class="dash-sections-wrap">
       <!-- hidden compat elements -->
       <div id="dashStreak" style="display:none;"></div>
       <div id="dashCalendar" style="display:none;"></div>
