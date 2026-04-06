@@ -5519,23 +5519,26 @@ async function addToPipeline(i) {
     try {
       const { data: { user } } = await window._supabase.auth.getUser();
       if (user) {
-        const { data: inserted, error } = await window._supabase.from('pipeline_items').insert([{
+        const _payload = {
           user_id: user.id,
           name: b.name || 'Unknown',
           type: b.type || null,
-          address: b.address || null,
           phone: b.phone || null,
           website: b.website || null,
-          googlemaps: b.googlemaps || null,
-          score: b.score || null,
-          opportunity: b.opportunity || null,
-          opener: b.opener || null,
-          reason: b.reason || null,
-          stage: 'new',
-          saved_at: new Date().toISOString()
-        }]).select('id').single();
-        if (error) { console.error('Supabase insert error:', error); }
-        else if (inserted && inserted.id) { savedId = 'supa_' + inserted.id; console.log('Saved to Supabase:', savedId); }
+          score: b.score ? Number(b.score) : null,
+          stage: 'new'
+        };
+        console.log('Saving to pipeline:', JSON.stringify(_payload));
+        const { data: inserted, error } = await window._supabase
+          .from('pipeline_items')
+          .insert([_payload])
+          .select('id');
+        if (error) {
+          console.error('FULL ERROR:', JSON.stringify(error, null, 2));
+        } else if (inserted && inserted.length > 0 && inserted[0].id) {
+          savedId = 'supa_' + inserted[0].id;
+          console.log('Saved to Supabase:', savedId);
+        }
       }
     } catch (e) {
       console.error('Supabase pipeline save error:', e);
