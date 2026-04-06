@@ -1539,6 +1539,56 @@ h1 em { font-style: normal; color: var(--accent); }
   .bc-signal-short { display: none; } /* too cramped on mobile, shows in expanded */
 }
 
+/* ── CLICK SAFETY: ensure no layers block interactions ── */
+body::before, body::after { pointer-events: none !important; }
+.gradient-bg, .gradient-orb, #dataStreams, #matrixCanvas { pointer-events: none !important; }
+.page, .generate-screen, .scout-card, .cta-btn { position: relative; z-index: 1; }
+
+/* ── LAYOUT SPACING ── */
+/* More breathing room between scout card and sections below */
+#dashSections { margin-top: 48px; }
+
+/* Results section spacing */
+#results { padding-top: 8px; }
+#bizList { margin-top: 20px; }
+
+/* Score filter and stats row */
+.stats-row { margin-bottom: 16px; }
+#scoreFilterWrap { margin-bottom: 18px; }
+
+/* Pipeline screen breathing room */
+.pipeline-screen { padding: 32px 24px 100px; }
+.kb-wrap { padding-top: 4px; }
+
+/* Card padding increase */
+.biz-card { padding: 18px 20px; }
+.biz-card.bc-open { padding-bottom: 20px; }
+
+/* Generate screen form labels */
+.scout-card .form-label { margin-bottom: 8px; margin-top: 16px; }
+.scout-card .form-label:first-of-type { margin-top: 0; }
+
+/* Space between field rows */
+.fields-row { margin-top: 14px; gap: 14px; }
+
+/* CTA button top margin */
+.cta-btn { margin-top: 18px !important; }
+
+/* Expanded card section spacing */
+.bc-exp-section { margin-bottom: 16px; }
+
+/* Recent searches list items */
+.recent-list { gap: 10px; }
+
+/* Snap grid spacing */
+.snap-grid { gap: 10px; }
+
+/* Pipeline stats spacing */
+.kb-stats { gap: 12px; margin-bottom: 24px; }
+
+/* Results back row */
+.results-back-row { margin-bottom: 22px; }
+
 </style>
 </head>
 <body style="background:#08080D;">
@@ -1947,7 +1997,7 @@ h1 em { font-style: normal; color: var(--accent); }
       </div>
 
       <p class="scout-helper-text">Based on real-world business signals. <span class="scout-helper-example">Try: SEO for dentists in Miami</span></p>
-      <button class="cta-btn" id="analyzeBtn" onclick="analyze()" style="margin-top:12px;opacity:0.5;cursor:not-allowed;" disabled>
+      <button type="button" class="cta-btn" id="analyzeBtn" onclick="analyze()" style="margin-top:12px;opacity:0.5;cursor:not-allowed;" disabled>
         Scout for Prospects <span class="arrow">→</span>
       </button>
       <div id="errorMsg"></div>
