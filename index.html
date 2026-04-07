@@ -1742,41 +1742,732 @@ body::before, body::after { pointer-events: none !important; }
 
 /* ── MOBILE PERFORMANCE: disable expensive compositing ── */
 @media(max-width: 600px) {
-  /* backdrop-filter causes 4-8x compositing overhead on mobile GPUs */
   header {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    background: rgba(8,8,15,0.96) !important;
+    background: rgba(8,8,15,0.97) !important;
   }
   .scout-card {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    background: rgba(15,15,26,0.95) !important;
+    background: rgba(15,15,26,0.96) !important;
   }
   .biz-card {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    background: rgba(15,15,26,0.92) !important;
+    background: rgba(15,15,26,0.94) !important;
   }
   .modal-overlay {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    background: rgba(0,0,0,0.85) !important;
+    background: rgba(0,0,0,0.88) !important;
   }
   .onboarding-overlay {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     background: rgba(0,0,0,0.92) !important;
   }
-  /* Reduce gradient orb blur on mobile */
+  #mobileBottomNav {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(8,8,15,0.97) !important;
+  }
   .gradient-orb {
     filter: blur(40px);
-    opacity: 0.7;
-  }
-  /* Disable orb animation on mobile to save GPU */
-  .gradient-orb {
+    opacity: 0.5;
     animation: none !important;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   iOS MOBILE UX — NATIVE-FEEL OPTIMIZATION
+   Target: iPhone SE → iPhone 15 Pro Max (320px → 430px)
+   ═══════════════════════════════════════════════════════════ */
+
+@media(max-width: 600px) {
+
+  /* ── FOUNDATION: iOS scroll & touch behavior ── */
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
+  }
+  body {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    overscroll-behavior-y: none;
+    overflow-x: hidden;
+    /* Room for bottom nav + safe area */
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 20px)) !important;
+  }
+
+  /* ── STICKY HEADER: native iOS feel ── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    padding-top: env(safe-area-inset-top, 0px) !important;
+    /* Thin bottom separator */
+    border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+  }
+  .app-nav {
+    height: 48px !important;
+    padding: 0 14px !important;
+    gap: 0 !important;
+  }
+  .app-nav-logo {
+    font-size: 15px !important;
+    gap: 6px !important;
+  }
+  .logo-icon {
+    width: 24px !important;
+    height: 24px !important;
+    border-radius: 6px !important;
+  }
+  .logo-icon svg {
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  /* ── NAV BUTTONS: 44px minimum touch target ── */
+  .app-nav-btn {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    padding: 8px 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 10px !important;
+  }
+  .app-nav-btn svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  .app-nav-count {
+    min-width: 18px !important;
+    height: 18px !important;
+    font-size: 10px !important;
+  }
+  .app-nav-right { margin-left: 8px !important; gap: 6px !important; }
+
+  /* ── USER PILL: easier to tap ── */
+  .user-pill {
+    padding: 3px 10px 3px 3px !important;
+    min-height: 36px !important;
+  }
+  .user-avatar { width: 28px !important; height: 28px !important; }
+
+  /* ── HAMBURGER: already 44px, just ensure ── */
+  .hamburger {
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+
+  /* ── BOTTOM NAV: native iOS tab bar ── */
+  #mobileBottomNav {
+    padding: 6px 20px !important;
+    padding-bottom: max(14px, env(safe-area-inset-bottom, 14px)) !important;
+    border-top: 1px solid rgba(255,255,255,0.08) !important;
+    gap: 0 !important;
+  }
+  .mob-nav-btn {
+    min-height: 50px !important;
+    font-size: 10px !important;
+    gap: 3px !important;
+    padding: 6px 8px !important;
+    border-radius: 10px !important;
+  }
+  .mob-nav-btn svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+  .mob-nav-btn:active {
+    background: rgba(255,255,255,0.06) !important;
+    transform: scale(0.95);
+  }
+
+  /* ── SCREENS: consistent edge padding ── */
+  .generate-screen {
+    padding: 18px 16px 32px !important;
+    max-width: 100% !important;
+  }
+  .history-screen,
+  .pipeline-screen {
+    padding: 16px 14px 32px !important;
+    max-width: 100% !important;
+  }
+  .screen {
+    padding: 18px 16px 32px !important;
+    max-width: 100% !important;
+  }
+  .container {
+    padding: 0 16px !important;
+  }
+
+  /* ── SCOUT CARD (search form): roomy and thumb-friendly ── */
+  .scout-card {
+    padding: 24px 18px 28px !important;
+    border-radius: 20px !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    border: 1px solid rgba(0,255,136,0.15) !important;
+  }
+  .scout-card-inner-hero {
+    padding: 0 0 16px !important;
+  }
+  .scout-card-inner-hero h2 {
+    font-size: 19px !important;
+    letter-spacing: -0.3px !important;
+  }
+  .scout-card-inner-hero p {
+    font-size: 13px !important;
+    max-width: 100% !important;
+    line-height: 1.55 !important;
+  }
+
+  /* ── FORM INPUTS: full width, stacked, large touch targets ── */
+  .form-label {
+    font-size: 12px !important;
+    margin-bottom: 6px !important;
+    margin-top: 14px !important;
+  }
+  .form-label:first-of-type { margin-top: 0 !important; }
+
+  .location-input,
+  .text-input,
+  .modal-input,
+  textarea.location-input {
+    font-size: 16px !important; /* Prevents iOS zoom on focus */
+    padding: 14px 16px !important;
+    border-radius: 14px !important;
+    min-height: 48px !important;
+    width: 100% !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+  }
+  textarea.location-input,
+  #productInput {
+    min-height: 80px !important;
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+    padding: 14px 16px !important;
+  }
+
+  /* Force single-column fields */
+  .fields-row {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  /* ── CTA BUTTON: big, prominent, easy one-thumb tap ── */
+  .cta-btn {
+    min-height: 56px !important;
+    font-size: 17px !important;
+    border-radius: 16px !important;
+    margin-top: 20px !important;
+    padding: 16px 24px !important;
+    /* Active press feedback */
+    transition: transform 0.1s, box-shadow 0.15s !important;
+  }
+  .cta-btn:active {
+    transform: scale(0.97) !important;
+    box-shadow: 0 2px 8px rgba(0,255,136,0.15) !important;
+  }
+
+  /* ── DASHBOARD SECTIONS ── */
+  .dash-sections-wrap {
+    max-width: 100% !important;
+  }
+  #dashSections {
+    margin-top: 24px !important;
+  }
+
+  /* Snap grid: 2-col on mobile */
+  .snap-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+  .snap-card {
+    padding: 14px 10px !important;
+    border-radius: 12px !important;
+    min-height: 44px !important;
+  }
+  .snap-card:active {
+    background: var(--bg4) !important;
+    transform: scale(0.97);
+  }
+  .snap-num { font-size: 20px !important; }
+  .snap-label { font-size: 9px !important; }
+
+  /* Recent searches */
+  .recent-list { gap: 8px !important; }
+  .recent-item {
+    padding: 12px 14px !important;
+    border-radius: 12px !important;
+    min-height: 52px !important;
+  }
+  .recent-redo {
+    min-height: 36px !important;
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    border-radius: 8px !important;
+  }
+  .recent-redo:active {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+
+  /* ── USAGE BAR ── */
+  .usage-pill {
+    font-size: 11px !important;
+    padding: 4px 10px !important;
+  }
+
+  /* ── RESULT CARDS: full-width, roomy, clear hierarchy ── */
+  #bizList {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+  .biz-card {
+    margin-bottom: 10px !important;
+    padding: 16px !important;
+    border-radius: 16px !important;
+    contain: layout style !important;
+  }
+  .biz-card:active:not(.bc-open) {
+    background: rgba(22,22,36,0.95) !important;
+  }
+
+  /* Collapsed card layout */
+  .bc-collapsed {
+    gap: 10px !important;
+  }
+  .bc-collapsed-left {
+    gap: 12px !important;
+  }
+  .bc-score {
+    font-size: 38px !important;
+    width: 48px !important;
+    min-width: 48px !important;
+  }
+  .bc-name {
+    font-size: 16px !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    line-height: 1.25 !important;
+  }
+  .bc-meta { margin: 4px 0 4px !important; }
+  .bc-opp-dot {
+    font-size: 10px !important;
+    padding: 3px 8px !important;
+    min-height: 22px !important;
+  }
+  .bc-phone-row {
+    font-size: 13px !important;
+    margin: 4px 0 !important;
+  }
+
+  /* Chevron: bigger touch target */
+  .bc-chevron {
+    padding: 6px !important;
+    margin-top: 0 !important;
+  }
+  .bc-chevron svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  /* Quick action buttons on collapsed card */
+  .bc-quick-actions {
+    display: flex !important;
+    gap: 6px !important;
+    margin-top: 8px !important;
+  }
+  .bc-q-call,
+  .bc-q-save {
+    min-height: 36px !important;
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    border-radius: 8px !important;
+  }
+  .bc-q-call:active,
+  .bc-q-save:active {
+    opacity: 0.7 !important;
+    transform: scale(0.95) !important;
+  }
+
+  /* Expanded card: generous spacing */
+  .bc-expanded {
+    margin-top: 14px !important;
+  }
+  .bc-exp-section {
+    margin-bottom: 14px !important;
+  }
+  .bc-exp-label {
+    font-size: 10px !important;
+    margin-bottom: 6px !important;
+  }
+  .bc-exp-body {
+    font-size: 14px !important;
+    padding: 12px 14px !important;
+    line-height: 1.65 !important;
+    border-radius: 12px !important;
+  }
+  .bc-exp-opener {
+    border-radius: 12px !important;
+    padding: 14px !important;
+  }
+
+  /* Expanded card action buttons: full-width stack */
+  .bc-exp-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    margin-top: 14px !important;
+  }
+  .bc-exp-call-btn,
+  .bc-exp-save-btn {
+    min-height: 48px !important;
+    border-radius: 12px !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+  }
+  .bc-exp-call-btn:active,
+  .bc-exp-save-btn:active {
+    opacity: 0.8 !important;
+    transform: scale(0.98) !important;
+  }
+
+  /* Footer meta */
+  .bc-exp-footer {
+    gap: 10px !important;
+    padding-top: 12px !important;
+    font-size: 12px !important;
+  }
+
+  /* Score filter row */
+  .score-filter-wrap {
+    margin-bottom: 14px !important;
+    padding: 8px 10px !important;
+    border-radius: 12px !important;
+  }
+  .score-filter-btn {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    font-size: 13px !important;
+    padding: 8px 14px !important;
+    border-radius: 10px !important;
+  }
+  .score-filter-btn:active {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+
+  /* Results header */
+  .results-back-row { margin-bottom: 16px !important; }
+  .results-back-btn {
+    min-height: 44px !important;
+    padding: 8px 4px !important;
+    font-size: 14px !important;
+  }
+  .results-back-btn:active { opacity: 0.6; }
+  .results-title { font-size: 18px !important; }
+
+  /* ── PIPELINE (KANBAN): stacked vertical sections ── */
+  .pipeline-screen-header {
+    padding-bottom: 14px !important;
+    margin-bottom: 16px !important;
+  }
+  .pipeline-screen-title { font-size: 20px !important; }
+  .pipeline-screen-sub { font-size: 13px !important; }
+
+  .kb-stats {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+    margin-bottom: 16px !important;
+  }
+  .kb-stat {
+    padding: 12px 10px !important;
+    border-radius: 12px !important;
+    text-align: center !important;
+    min-width: 0 !important;
+  }
+  .kb-stat-num { font-size: 20px !important; }
+  .kb-stat-label { font-size: 9px !important; }
+
+  /* Kanban: full-width vertical stack */
+  .kb-wrap {
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    padding: 0 !important;
+  }
+  .kb-board {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+    width: 100% !important;
+  }
+  .kb-col {
+    width: 100% !important;
+    flex: none !important;
+    border-radius: 16px !important;
+    max-height: none !important;
+    min-height: auto !important;
+  }
+  .kb-col-head {
+    padding: 14px 16px !important;
+  }
+  .kb-col-label {
+    font-size: 13px !important;
+    font-weight: 800 !important;
+  }
+  .kb-col-body {
+    padding: 10px 10px 14px !important;
+    gap: 8px !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+  }
+
+  /* Pipeline cards: generous touch targets */
+  .kb-card {
+    padding: 14px 16px !important;
+    border-radius: 14px !important;
+  }
+  .kb-card-header {
+    margin-bottom: 10px !important;
+  }
+  .kb-card-name {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+  }
+  .kb-card-type { font-size: 12px !important; }
+  .kb-card-phone { font-size: 13px !important; }
+  .kb-card-score { font-size: 20px !important; }
+
+  /* Pipeline action buttons: 44px+ touch targets */
+  .kb-card-actions {
+    gap: 8px !important;
+    margin-top: 10px !important;
+    flex-wrap: nowrap !important;
+  }
+  .kb-btn {
+    min-height: 44px !important;
+    font-size: 14px !important;
+    padding: 10px 14px !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+  }
+  .kb-btn:active {
+    opacity: 0.75 !important;
+    transform: scale(0.97) !important;
+  }
+  .kb-btn.kb-call {
+    min-height: 44px !important;
+    font-weight: 700 !important;
+  }
+  .kb-btn.kb-move {
+    min-height: 48px !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+  }
+  .kb-btn.kb-del {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    font-size: 16px !important;
+  }
+  .kb-empty {
+    padding: 28px 16px !important;
+  }
+
+  /* ── MODALS: better iOS positioning ── */
+  .modal-overlay {
+    align-items: flex-start !important;
+    padding: 12px !important;
+    padding-top: max(60px, calc(env(safe-area-inset-top, 0px) + 12px)) !important;
+    overscroll-behavior: contain !important;
+  }
+  .modal {
+    border-radius: 24px !important;
+    padding: 28px 20px 24px !important;
+    max-height: 82vh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .modal-close {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+    top: 12px !important;
+    right: 12px !important;
+    border-radius: 12px !important;
+  }
+  .modal-title { font-size: 22px !important; }
+  .modal-sub { font-size: 14px !important; line-height: 1.55 !important; }
+  .modal-field { margin-bottom: 14px !important; }
+  .modal-field label {
+    font-size: 13px !important;
+    margin-bottom: 6px !important;
+  }
+  .modal-btn {
+    min-height: 52px !important;
+    font-size: 16px !important;
+    border-radius: 14px !important;
+  }
+  .modal-btn:active {
+    opacity: 0.85;
+    transform: scale(0.98);
+  }
+  .modal-switch {
+    margin-top: 18px !important;
+    font-size: 14px !important;
+  }
+
+  /* Onboarding */
+  .onboarding-overlay {
+    align-items: flex-start !important;
+    padding-top: max(60px, calc(env(safe-area-inset-top, 0px) + 12px)) !important;
+  }
+  .onboarding-modal {
+    border-radius: 24px !important;
+    padding: 24px 20px 22px !important;
+    max-height: 82vh !important;
+  }
+  .onboarding-title { font-size: 20px !important; }
+  .onboarding-btn-primary,
+  .onboarding-btn-skip {
+    min-height: 50px !important;
+    border-radius: 12px !important;
+    font-size: 15px !important;
+  }
+
+  /* ── HERO PAGE: mobile-optimized ── */
+  .hero {
+    padding: 32px 0 24px !important;
+  }
+  h1 {
+    font-size: 28px !important;
+    letter-spacing: -1px !important;
+    line-height: 1.1 !important;
+  }
+  .hero-sub {
+    font-size: 15px !important;
+    margin-bottom: 24px !important;
+    line-height: 1.6 !important;
+  }
+  .hero-btns {
+    flex-direction: column !important;
+    gap: 10px !important;
+    padding: 0 4px !important;
+  }
+  .hero-btns .btn-primary,
+  .hero-btns .btn-ghost {
+    width: 100% !important;
+    min-height: 52px !important;
+    font-size: 16px !important;
+    border-radius: 14px !important;
+  }
+
+  /* ── PRICING: single column on mobile ── */
+  .pricing-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+  .price-card {
+    border-radius: 20px !important;
+    padding: 24px 20px !important;
+  }
+  .price-btn {
+    min-height: 50px !important;
+    border-radius: 12px !important;
+    font-size: 15px !important;
+  }
+  .price-btn:active { opacity: 0.85; transform: scale(0.98); }
+
+  /* ── TIP CARDS ── */
+  .tip-card {
+    min-height: 44px !important;
+    border-radius: 14px !important;
+  }
+  .tip-card:active {
+    opacity: 0.8;
+    transform: scale(0.98);
+  }
+
+  /* ── LOADING STATE ── */
+  .loading-state { padding: 32px 0 20px !important; }
+  .loading-ring { width: 36px !important; height: 36px !important; }
+  .loading-text { font-size: 14px !important; }
+
+  /* ── DROPDOWN PROFILE MENU ── */
+  .profile-dropdown {
+    min-width: 200px !important;
+    border-radius: 16px !important;
+    right: -8px !important;
+  }
+  .dropdown-item {
+    min-height: 44px !important;
+    padding: 10px 14px !important;
+    font-size: 14px !important;
+  }
+  .dropdown-item:active {
+    background: var(--bg4) !important;
+  }
+
+  /* ── TOAST: position above bottom nav ── */
+  .toast-container,
+  .toast {
+    bottom: calc(80px + env(safe-area-inset-bottom, 20px)) !important;
+  }
+
+  /* ── HOW IT WORKS + FEATURES: stack on mobile ── */
+  .how-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+  }
+  .features-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+  }
+
+  /* ── GLOBAL: prevent horizontal scroll ── */
+  .page {
+    overflow-x: hidden !important;
+  }
+
+  /* ── GLOBAL: active states for all interactive elements ── */
+  button:active,
+  a:active,
+  [onclick]:active {
+    opacity: 0.85;
+  }
+}
+
+/* ── iPhone SE / small screens (≤374px) ── */
+@media(max-width: 374px) {
+  .bc-score { font-size: 32px !important; width: 42px !important; min-width: 42px !important; }
+  .bc-name { font-size: 15px !important; }
+  .cta-btn { font-size: 16px !important; min-height: 52px !important; }
+  h1 { font-size: 24px !important; }
+  .scout-card { padding: 20px 14px 24px !important; }
+  .mob-nav-btn { font-size: 9px !important; min-height: 48px !important; }
+  .kb-btn { font-size: 13px !important; padding: 8px 10px !important; }
+  .app-nav { padding: 0 10px !important; }
+  .snap-num { font-size: 18px !important; }
+  .modal { padding: 24px 16px 20px !important; }
+  .kb-stat { padding: 10px 6px !important; }
+  .kb-stat-num { font-size: 18px !important; }
 }
 
 /* ── REDUCED MOTION: respect user preferences ── */
@@ -1913,7 +2604,7 @@ body::before, body::after { pointer-events: none !important; }
         <h2 style="font-family:Syne,sans-serif;font-size:clamp(22px,4vw,32px);font-weight:800;letter-spacing:-0.5px;">Three steps. No guesswork.</h2>
       </div>
 
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);">
+      <div class="how-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);">
 
         <div style="background:var(--bg2);padding:32px 28px;position:relative;">
           <div style="font-family:Syne,sans-serif;font-size:42px;font-weight:800;color:var(--accent);opacity:0.15;line-height:1;margin-bottom:16px;">01</div>
@@ -2017,7 +2708,7 @@ body::before, body::after { pointer-events: none !important; }
         <h2 style="font-family:Syne,sans-serif;font-size:clamp(22px,4vw,32px);font-weight:800;letter-spacing:-0.5px;">Find businesses already showing demand.</h2>
       </div>
 
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
+      <div class="features-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
 
         <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-xl);padding:28px 24px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(190,255,0,0.2)'" onmouseout="this.style.borderColor='var(--border)'">
           <div style="font-size:28px;margin-bottom:16px;">🎯</div>
@@ -8648,6 +9339,101 @@ document.addEventListener('click', function(e) {
     '.page,.generate-screen,.scout-card,.cta-btn{position:relative;z-index:1}'
   ].join('');
   document.head.appendChild(safety);
+})();
+</script>
+
+<!-- iOS MOBILE UX FIXES -->
+<script>
+(function() {
+  var isMobile = /iPhone|iPad|iPod/.test(navigator.userAgent) || (window.innerWidth <= 600);
+  if (!isMobile) return;
+
+  // 1. Fix iOS keyboard pushing content — scroll input into view after focus
+  document.addEventListener('focusin', function(e) {
+    var el = e.target;
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+      // Wait for iOS keyboard to fully open
+      setTimeout(function() {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 350);
+    }
+  }, { passive: true });
+
+  // 2. Prevent iOS double-tap zoom on buttons (without blocking scroll)
+  var lastTouchEnd = 0;
+  document.addEventListener('touchend', function(e) {
+    var now = Date.now();
+    if (now - lastTouchEnd <= 300) {
+      var tag = e.target.tagName;
+      if (tag === 'BUTTON' || tag === 'A' || e.target.closest('button, a, [onclick]')) {
+        e.preventDefault();
+      }
+    }
+    lastTouchEnd = now;
+  }, { passive: false });
+
+  // 3. Fix iOS 100vh issue — set proper viewport height
+  function setVH() {
+    var vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', vh + 'px');
+  }
+  setVH();
+  window.addEventListener('resize', setVH, { passive: true });
+
+  // 4. Passive scroll listeners for better scroll performance
+  document.addEventListener('touchstart', function(){}, { passive: true });
+  document.addEventListener('touchmove', function(){}, { passive: true });
+
+  // 5. Auto-hide bottom nav on scroll down, show on scroll up (like Safari)
+  var bottomNav = document.getElementById('mobileBottomNav');
+  var lastScrollY = 0;
+  var scrollTicking = false;
+  
+  function handleNavScroll() {
+    var currentY = window.scrollY;
+    if (bottomNav) {
+      if (currentY > lastScrollY && currentY > 100) {
+        // Scrolling down — hide nav
+        bottomNav.style.transform = 'translateY(100%)';
+        bottomNav.style.transition = 'transform 0.25s ease';
+      } else {
+        // Scrolling up — show nav
+        bottomNav.style.transform = 'translateY(0)';
+        bottomNav.style.transition = 'transform 0.2s ease';
+      }
+    }
+    lastScrollY = currentY;
+    scrollTicking = false;
+  }
+  
+  window.addEventListener('scroll', function() {
+    if (!scrollTicking) {
+      requestAnimationFrame(handleNavScroll);
+      scrollTicking = true;
+    }
+  }, { passive: true });
+
+  // 6. Fix: ensure body doesn't scroll when modal is open
+  var origOverflow = '';
+  var _origShowModal = window.openModal;
+  if (typeof _origShowModal === 'function') {
+    window.openModal = function() {
+      origOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      _origShowModal.apply(this, arguments);
+    };
+  }
+  var _origCloseModal = window.closeModal;
+  if (typeof _origCloseModal === 'function') {
+    window.closeModal = function() {
+      document.body.style.overflow = origOverflow;
+      document.body.style.position = '';
+      document.body.style.width = '';
+      _origCloseModal.apply(this, arguments);
+    };
+  }
 })();
 </script>
 </body>
