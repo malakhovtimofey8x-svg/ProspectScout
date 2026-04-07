@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>ProspectScout | AI-Powered B2B Lead Generation & Sales Prospecting</title>
 <meta name="description" content="ProspectScout uses AI to identify high-intent B2B leads from real buying signals — hiring activity, reviews, and growth indicators. Find businesses ready to buy, faster." />
@@ -2685,7 +2685,7 @@ body::before, body::after { pointer-events: none !important; }
 <div class="screen-lock-banner" id="screenLockBanner">📵 Keep screen on while searching</div>
 
 <!-- BETA NAME MODAL -->
-<div class="modal-overlay" id="authModal">
+<div class="modal-overlay" id="authModal" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -3496,6 +3496,14 @@ function openModal(view) {
   if (m.style.display === 'flex') return; // already open
   m.style.display = 'flex';
   m.classList.add('open');
+  // Respect requested view mode (signup vs login)
+  if (view === 'signup' && typeof toggleAuthMode === 'function') {
+    var btn = document.getElementById('authSubmitBtn');
+    if (btn && btn.textContent.indexOf('Create') === -1) toggleAuthMode();
+  } else if (view === 'login' && typeof toggleAuthMode === 'function') {
+    var btn2 = document.getElementById('authSubmitBtn');
+    if (btn2 && btn2.textContent.indexOf('Sign in') === -1) toggleAuthMode();
+  }
   setTimeout(function(){ var inp = document.getElementById('authEmail'); if(inp) inp.focus(); }, 200);
 }
 function closeModal() {
@@ -9283,20 +9291,32 @@ document.addEventListener('DOMContentLoaded', function() {
   <input name="email" type="email" />
 </form>
 <script>
-document.addEventListener("DOMContentLoaded", async function () {
+(function initSupabase(attempt) {
+  attempt = attempt || 0;
   if (!window.supabase || !window.supabase.createClient) {
-    console.warn('Supabase not loaded');
+    if (attempt < 20) {
+      // Retry every 250ms for up to 5 seconds while CDN loads
+      setTimeout(function() { initSupabase(attempt + 1); }, 250);
+      return;
+    }
+    console.error('Supabase SDK failed to load after 5s — check network/CDN');
     return;
   }
   var SUPA_URL = "https://lyjxwwlywvnykgoirhwv.supabase.co";
-  var SUPA_KEY = "sb_publishable_Ct_M9J4JGR0OKihNpkSqrA_1Xh7IV-L";
+  // ⚠️ REPLACE with your real anon key from: Supabase Dashboard → Settings → API → anon public
+  // It should be a long JWT starting with "eyJ..."
+  var SUPA_KEY = "YOUR_SUPABASE_ANON_KEY_HERE";
 
-  const supabase = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+  var supabase;
+  try {
+    supabase = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+  } catch(e) {
+    console.error('Supabase createClient failed:', e);
+    return;
+  }
   window._supabase = supabase;
 
   // ── PERF: Cache auth user to eliminate redundant getUser() round-trips ──
-  // Every function was calling supabase.auth.getUser() (network call).
-  // Now they use getCachedUser() which returns cached value, refreshed on auth state change.
   var _cachedAuthUser = null;
   var _cachedAuthPromise = null;
   window._getCachedAuthUser = async function() {
@@ -9310,9 +9330,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     return _cachedAuthPromise;
   };
 
-  const modal = document.getElementById("authModal");
-  const hideModal = () => { if (modal) { modal.style.display = "none"; modal.classList.remove("open"); } };
-  const showModal = () => { if (modal) { modal.style.display = "flex"; modal.classList.add("open"); } };
+  var modal = document.getElementById("authModal");
+  var hideModal = function() { if (modal) { modal.style.display = "none"; modal.classList.remove("open"); } };
+  var showModal = function() { if (modal) { modal.style.display = "flex"; modal.classList.add("open"); } };
 
   hideModal();
 
@@ -9344,76 +9364,105 @@ document.addEventListener("DOMContentLoaded", async function () {
     var password = (document.getElementById("authPassword") || {}).value || "";
     var errEl = document.getElementById("authError");
     var btn = document.getElementById("authSubmitBtn");
+
+    // Clear previous errors
+    if (errEl) errEl.style.display = "none";
+
     if (!email || !password) {
       if (errEl) { errEl.textContent = "Please enter your email and password."; errEl.style.display = "block"; }
       return;
     }
+    // Basic email format check
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      if (errEl) { errEl.textContent = "Please enter a valid email address."; errEl.style.display = "block"; }
+      return;
+    }
+    // Password minimum length (Supabase default is 6)
+    if (_authMode === "signup" && password.length < 6) {
+      if (errEl) { errEl.textContent = "Password must be at least 6 characters."; errEl.style.display = "block"; }
+      return;
+    }
+
     if (btn) { btn.disabled = true; btn.textContent = "Please wait..."; }
     try {
       var result;
       if (_authMode === "signup") {
         var displayName = (document.getElementById("authDisplayName") || {}).value || "";
-        result = await supabase.auth.signUp({ email, password, options: { data: { display_name: displayName } } });
+        result = await supabase.auth.signUp({ email: email, password: password, options: { data: { display_name: displayName }, emailRedirectTo: window.location.origin } });
         if (result.error) throw result.error;
+        // Handle email confirmation required vs auto-confirm
+        if (result.data && result.data.user && !result.data.session) {
+          // Email confirmation required
+          if (result.data.user && displayName) {
+            await supabase.from("users").upsert({ id: result.data.user.id, email: email, display_name: displayName, tier: "free" });
+          }
+          var sub = document.getElementById("authModalSub");
+          if (sub) sub.textContent = "Check your email to confirm your account, then sign in.";
+          if (btn) { btn.textContent = "Sign in →"; btn.disabled = false; }
+          _authMode = "login"; // Switch to login mode for when they come back
+          return;
+        }
+        // Auto-confirm is on — user has a session immediately
         if (result.data && result.data.user && displayName) {
           await supabase.from("users").upsert({ id: result.data.user.id, email: email, display_name: displayName, tier: "free" });
         }
-        if (errEl) errEl.style.display = "none";
-        var sub = document.getElementById("authModalSub");
-        if (sub) sub.textContent = "Check your email to confirm your account, then sign in.";
-        if (btn) btn.style.display = "none";
-        return;
       } else {
-        result = await supabase.auth.signInWithPassword({ email, password });
+        result = await supabase.auth.signInWithPassword({ email: email, password: password });
         if (result.error) throw result.error;
-        
       }
     } catch (err) {
-      
-      if (errEl) { errEl.textContent = err.message; errEl.style.display = "block"; }
+      var msg = err.message || "Authentication failed. Please try again.";
+      // Friendlier error messages
+      if (msg.includes("Invalid login")) msg = "Invalid email or password. Please try again.";
+      if (msg.includes("Email not confirmed")) msg = "Please confirm your email before signing in. Check your inbox.";
+      if (msg.includes("User already registered")) msg = "This email is already registered. Try signing in instead.";
+      if (errEl) { errEl.textContent = msg; errEl.style.display = "block"; }
     } finally {
       if (btn) { btn.disabled = false; btn.textContent = _authMode === "signup" ? "Create account →" : "Sign in →"; btn.style.display = ""; }
     }
   };
 
-  const { data: sessionData } = await supabase.auth.getSession();
-  if (sessionData.session) {
-    
-    hideModal();
-    if (typeof startBetaWithUser === "function") startBetaWithUser(sessionData.session.user);
-  } else {
-    
-    // Don't auto-show — user will sign in when they try to generate
-  }
+  // ── Session restore on page load ──
+  supabase.auth.getSession().then(function(res) {
+    var sessionData = res.data;
+    if (sessionData && sessionData.session) {
+      hideModal();
+      if (typeof startBetaWithUser === "function") startBetaWithUser(sessionData.session.user);
+    }
+  }).catch(function(err) {
+    console.error("Session restore failed:", err);
+  });
 
-  let supaCurrentUser = null;
+  var supaCurrentUser = null;
 
-  supabase.auth.onAuthStateChange(async (event, session) => {
+  supabase.auth.onAuthStateChange(async function(event, session) {
     // Update auth cache on state change
     _cachedAuthUser = session ? session.user : null;
     if (session) {
-      
       hideModal();
-      const userId = session.user.id;
-      const userEmail = session.user.email;
-      const { data: existingUser, error } = await supabase.from("users").select("*").eq("id", userId).single();
-      if (error && error.code === "PGRST116") {
-        
-        await supabase.from("users").insert([{ id: userId, email: userEmail, tier: "free", used_today: 0, daily_limit: 10 }]);
-        const { data: newUser } = await supabase.from("users").select("*").eq("id", userId).single();
-        supaCurrentUser = newUser || { id: userId, email: userEmail, tier: "free", used_today: 0, daily_limit: 10 };
-      } else if (!error && existingUser) {
-        supaCurrentUser = existingUser;
-      } else {
+      var userId = session.user.id;
+      var userEmail = session.user.email;
+      try {
+        var resp = await supabase.from("users").select("*").eq("id", userId).single();
+        if (resp.error && resp.error.code === "PGRST116") {
+          await supabase.from("users").insert([{ id: userId, email: userEmail, tier: "free", used_today: 0, daily_limit: 10 }]);
+          var newResp = await supabase.from("users").select("*").eq("id", userId).single();
+          supaCurrentUser = (newResp.data) || { id: userId, email: userEmail, tier: "free", used_today: 0, daily_limit: 10 };
+        } else if (!resp.error && resp.data) {
+          supaCurrentUser = resp.data;
+        } else {
+          supaCurrentUser = { id: userId, email: userEmail, tier: "free", used_today: 0, daily_limit: 10 };
+        }
+      } catch(e) {
         supaCurrentUser = { id: userId, email: userEmail, tier: "free", used_today: 0, daily_limit: 10 };
       }
-      const tierLimits = { free: 10, plus: 25, pro: 100 };
-      const correctLimit = tierLimits[supaCurrentUser.tier] || 10;
+      var tierLimits = { free: 10, plus: 25, pro: 100 };
+      var correctLimit = tierLimits[supaCurrentUser.tier] || 10;
       if (supaCurrentUser.daily_limit !== correctLimit) {
         supaCurrentUser.daily_limit = correctLimit;
         await supabase.from("users").update({ daily_limit: correctLimit }).eq("id", supaCurrentUser.id);
       }
-      const usageEl = document.getElementById("usage-display");
+      var usageEl = document.getElementById("usage-display");
       if (usageEl && supaCurrentUser) usageEl.textContent = supaCurrentUser.used_today + " / " + supaCurrentUser.daily_limit + " used today";
       if (supaCurrentUser && supaCurrentUser.display_name) {
         session.user.user_metadata = session.user.user_metadata || {};
@@ -9421,15 +9470,11 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
       if (typeof startBetaWithUser === "function") startBetaWithUser(session.user);
     } else {
-      
       supaCurrentUser = null;
-      // Don't auto-show modal on sign-out
     }
   });
-
-
-
-});
+})();
+</script>
 
 // ── MOBILE BOTTOM NAV ──────────────────────────────────────────────────────
 function updateMobNav() {
