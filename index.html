@@ -9252,6 +9252,38 @@ document.addEventListener('DOMContentLoaded', function() {
   if (!currentUser) {
     showPage('home');
   }
+
+  // ── FALLBACK SESSION RECOVERY ─────────────────────────────────────────────
+  // The onAuthStateChange boot depends on SIGNED_IN events, but Supabase v2
+  // fires duplicates that the hasHandledAuth guard discards. If the first
+  // attempt fails (syncUserRecord error), both events are already consumed and
+  // no further event will re-trigger boot. This fallback detects that state:
+  // Supabase holds a valid session, but currentUser was never set.
+  setTimeout(function() {
+    if (currentUser) return;           // already booted — nothing to do
+    if (!window._supabase) return;     // Supabase never initialised
+    window._supabase.auth.getSession().then(function(res) {
+      if (!res.data || !res.data.session) return;  // genuinely not logged in
+      if (currentUser) return;          // booted while getSession() was in-flight
+      console.warn("[auth] Fallback boot — session exists but currentUser is null. Recovering.");
+      var user = res.data.session.user;
+      // Pull tier + name from metadata — avoids a second syncUserRecord call
+      // that may have been what failed in the first place.
+      var tier = (user.user_metadata && user.user_metadata.tier) || 'free';
+      var name = (user.user_metadata && (user.user_metadata.display_name || user.user_metadata.full_name))
+                 || (user.email ? user.email.split('@')[0] : 'User');
+      user._dbTier = tier;
+      if (typeof startBetaWithUser === 'function') {
+        startBetaWithUser(user);
+      }
+      // Attempt DB sync in background so tier is correct on next page load
+      if (window._supabase) {
+        window._supabase.from('users')
+          .upsert({ id: user.id, email: user.email, tier: tier }, { onConflict: 'id' })
+          .then(function(r) { if (r.error) console.warn('[auth] Fallback upsert:', r.error.message); });
+      }
+    }).catch(function(e) { console.warn("[auth] Fallback getSession failed:", e); });
+  }, 2000);
 });
 
 // ── PARALLEL STREAMING ENRICHMENT (fast mode) ────────────────────────────────
@@ -9564,6 +9596,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // ── LOGIN ──────────────────────────────────────────────────────────────
         var result = await supabase.auth.signInWithPassword({ email: email, password: password });
         if (result.error) throw result.error;
+        console.log("[DEBUG-AUTH] signInWithPassword SUCCESS. session:", !!result.data.session, "user:", result.data.session && result.data.session.user && result.data.session.user.email);
         // onAuthStateChange fires SIGNED_IN and handles everything from here
         return;
       }
@@ -9702,10 +9735,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check specifically for SIGNED_IN duplicates first, then the general guard.
     if (event === 'SIGNED_IN' && session && !hasHandledAuth) {
       // First SIGNED_IN with a real session — fall through to boot sequence
+      console.log("[DEBUG-AUTH] Guard PASS: first SIGNED_IN, hasHandledAuth was false → proceeding to boot");
     } else if (hasHandledAuth) {
       // TOKEN_REFRESHED / subsequent SIGNED_IN — session already booted, skip.
-      console.log("[auth] Session refreshed — skipping re-boot (event:", event + ")");
+      console.log("[DEBUG-AUTH] Guard BLOCKED: event=" + event + ", hasHandledAuth=true → skipping (events consumed)");
       return;
+    } else {
+      console.log("[DEBUG-AUTH] Guard PASS: event=" + event + " (not SIGNED_IN), hasHandledAuth=false → proceeding to boot");
     }
 
     // ── INITIAL_SESSION or first SIGNED_IN — full boot sequence ──────────
@@ -9720,18 +9756,26 @@ document.addEventListener('DOMContentLoaded', function() {
     try {
       supaCurrentUser = await syncUserRecord(session.user);
     } catch(syncErr) {
-      console.error("[auth] syncUserRecord failed:", syncErr.message);
-      // Reset guard so the user can retry sign-in after the error.
-      hasHandledAuth = false;
-      // Re-show the modal (it may still be open; showModal is idempotent) so the
-      // error message is actually visible instead of appearing in a hidden element.
-      showModal();
-      var authErrEl = document.getElementById("authError");
-      if (authErrEl) {
-        authErrEl.textContent = "Something went wrong loading your account. Please try again.";
-        authErrEl.style.display = "block";
+      console.error("[auth] syncUserRecord failed — retrying once:", syncErr.message);
+      // CRITICAL: Both duplicate SIGNED_IN events have already been consumed and
+      // discarded by the hasHandledAuth guard during the await window above.
+      // If we bail now, no auth event will ever re-trigger the boot sequence.
+      // Retry once to cover transient failures (RLS propagation, network blip).
+      try {
+        await new Promise(function(r){ setTimeout(r, 500); }); // brief backoff
+        supaCurrentUser = await syncUserRecord(session.user);
+        console.log("[auth] syncUserRecord retry succeeded");
+      } catch(retryErr) {
+        console.error("[auth] syncUserRecord retry also failed:", retryErr.message);
+        hasHandledAuth = false;
+        showModal();
+        var authErrEl = document.getElementById("authError");
+        if (authErrEl) {
+          authErrEl.textContent = "Something went wrong loading your account. Please try again.";
+          authErrEl.style.display = "block";
+        }
+        return; // do not proceed to dashboard with unknown state
       }
-      return; // do not proceed to dashboard with unknown state
     }
 
     // DB sync succeeded — safe to close the modal now.
@@ -9746,7 +9790,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Boot the app — attach DB tier so startBetaWithUser needs no extra query
     if (typeof startBetaWithUser === "function") {
       session.user._dbTier = supaCurrentUser ? (supaCurrentUser.tier || "free") : "free";
+      console.log("[DEBUG-AUTH] BEFORE redirect: calling startBetaWithUser →", session.user.email, "tier:", session.user._dbTier);
       startBetaWithUser(session.user);
+      console.log("[DEBUG-AUTH] AFTER redirect: currentUser is now", currentUser ? currentUser.email : "NULL", "| active page:", document.querySelector('.page.active') ? document.querySelector('.page.active').id : "none");
     }
 
     // Clean up any pending signup button state
