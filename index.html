@@ -4301,8 +4301,8 @@ async function submitAccessCode(tier) {
 
   // Step 5: sync to Supabase if user is logged in
   if (supabase && supaUser) {
-    var dailyLimit = tier === 'plus' ? 25 : 100;
-    var { data: ud, error: ue } = await supabase.from('users').update({ tier: tier, daily_limit: dailyLimit }).eq('id', supaUser.id);
+    var { data: ud, error: ue } = await supabase.from('users').update({ tier: tier }).eq('id', supaUser.id);
+    if (ue) console.error('[auth] tier update error (access code):', ue);
     
     if (supaKey) {
       var { data: kd, error: ke } = await supabase.from('access_keys').update({ used: true, used_by: supaUser.id }).eq('id', supaKey.id);
@@ -5126,8 +5126,7 @@ async function adminUpdateSupaUser(id, email) {
   const sel = document.getElementById('supatier_' + id);
   if (!sel) return;
   const tier = sel.value;
-  const dailyLimit = tier === 'free' ? 10 : tier === 'plus' ? 25 : 100;
-  const { error } = await supabase.from('users').update({ tier: tier, daily_limit: dailyLimit }).eq('id', id);
+  const { error } = await supabase.from('users').update({ tier: tier }).eq('id', id);
   if (error) { showToast('Update failed: ' + error.message, 'error'); return; }
   showToast('Updated ' + email + ' → ' + tier, 'success');
   await adminLoadSupaUsers();
@@ -9570,59 +9569,106 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   };
 
-  // ── Session restore on page load ──
-  supabase.auth.getSession().then(function(res) {
-    var sessionData = res.data;
-    if (sessionData && sessionData.session) {
-      hideModal();
-      if (typeof startBetaWithUser === "function") startBetaWithUser(sessionData.session.user);
+  // ── syncUserRecord ──────────────────────────────────────────────────────────
+  //
+  // Single source of truth for user-table sync.
+  // Called by onAuthStateChange for every session event.
+  // Returns the public.users row (fetched or freshly created).
+  // Throws on unrecoverable error so the caller can surface it.
+  //
+  async function syncUserRecord(authUser) {
+    var userId    = authUser.id;
+    var userEmail = authUser.email;
+
+    // ── Step 1: fetch existing row ───────────────────────────────
+    var { data: userData, error: fetchErr } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", userId)
+      .single();
+
+    if (!fetchErr && userData) {
+      console.log("[auth] User found in DB:", userEmail);
+      return userData;
     }
-  }).catch(function(err) {
-    console.error("Session restore failed:", err);
-  });
+
+    // ── Step 2: row missing (PGRST116) → create it ───────────────
+    if (fetchErr && fetchErr.code === "PGRST116") {
+      console.warn("[auth] User not in DB — creating row for:", userEmail);
+
+      var { data: newUser, error: insertErr } = await supabase
+        .from("users")
+        .insert([{ id: userId, email: userEmail, tier: "free" }])
+        .select("*")
+        .single();
+
+      if (insertErr) {
+        // Duplicate-key race (two tabs logging in simultaneously) — retry fetch
+        if (insertErr.code === "23505") {
+          console.warn("[auth] Duplicate insert race — re-fetching row");
+          var { data: retryData, error: retryErr } = await supabase
+            .from("users").select("*").eq("id", userId).single();
+          if (!retryErr && retryData) return retryData;
+          console.error("[auth] Re-fetch after duplicate failed:", retryErr);
+        } else {
+          console.error("[auth] Failed to create user row:", insertErr);
+        }
+        throw new Error("Could not create user record: " + (insertErr.message || insertErr.code));
+      }
+
+      console.log("[auth] User created in DB:", userEmail);
+      return newUser;
+    }
+
+    // ── Step 3: unexpected DB error (network, RLS, 500…) ─────────
+    console.error("[auth] Unexpected error fetching user row:", fetchErr);
+    throw new Error("Could not load user record: " + (fetchErr ? fetchErr.message : "unknown error"));
+  }
+
+  // ── Session restore on page load ────────────────────────────────────────────
+  //
+  // onAuthStateChange fires INITIAL_SESSION synchronously on the existing
+  // session, so we do NOT call getSession() separately — that would race.
+  // We just let onAuthStateChange handle everything consistently.
 
   var supaCurrentUser = null;
 
   supabase.auth.onAuthStateChange(async function(event, session) {
-    // Update auth cache on state change
+    // Keep the auth cache in sync
     _cachedAuthUser = session ? session.user : null;
-    if (session) {
-      hideModal();
-      var userId = session.user.id;
-      var userEmail = session.user.email;
-      try {
-        var resp = await supabase.from("users").select("*").eq("id", userId).single();
-        if (resp.error && resp.error.code === "PGRST116") {
-          await supabase.from("users").insert([{ id: userId, email: userEmail, tier: "free", used_today: 0, daily_limit: 10 }]);
-          var newResp = await supabase.from("users").select("*").eq("id", userId).single();
-          supaCurrentUser = (newResp.data) || { id: userId, email: userEmail, tier: "free", used_today: 0, daily_limit: 10 };
-        } else if (!resp.error && resp.data) {
-          supaCurrentUser = resp.data;
-        } else {
-          supaCurrentUser = { id: userId, email: userEmail, tier: "free", used_today: 0, daily_limit: 10 };
-        }
-      } catch(e) {
-        supaCurrentUser = { id: userId, email: userEmail, tier: "free", used_today: 0, daily_limit: 10 };
-      }
-      var tierLimits = { free: 10, plus: 25, pro: 100 };
-      var correctLimit = tierLimits[supaCurrentUser.tier] || 10;
-      if (supaCurrentUser.daily_limit !== correctLimit) {
-        supaCurrentUser.daily_limit = correctLimit;
-        await supabase.from("users").update({ daily_limit: correctLimit }).eq("id", supaCurrentUser.id);
-      }
-      var usageEl = document.getElementById("usage-display");
-      if (usageEl && supaCurrentUser) usageEl.textContent = supaCurrentUser.used_today + " / " + supaCurrentUser.daily_limit + " used today";
-      if (supaCurrentUser && supaCurrentUser.display_name) {
-        session.user.user_metadata = session.user.user_metadata || {};
-        session.user.user_metadata.display_name = supaCurrentUser.display_name;
-      }
-      if (typeof startBetaWithUser === "function") {
-        // Attach the DB tier so startBetaWithUser can use it without another round-trip
-        session.user._dbTier = supaCurrentUser ? supaCurrentUser.tier : 'free';
-        startBetaWithUser(session.user);
-      }
-    } else {
+
+    if (!session) {
       supaCurrentUser = null;
+      return;
+    }
+
+    // Authenticated ────────────────────────────────────────────────
+    console.log("[auth] User authenticated:", session.user.email, "| event:", event);
+    hideModal();
+
+    try {
+      supaCurrentUser = await syncUserRecord(session.user);
+    } catch(syncErr) {
+      // syncUserRecord already logged the detail — surface to user
+      console.error("[auth] syncUserRecord failed:", syncErr.message);
+      var authErrEl = document.getElementById("authError");
+      if (authErrEl) {
+        authErrEl.textContent = "Something went wrong loading your account. Please try again.";
+        authErrEl.style.display = "block";
+      }
+      return; // do not proceed to dashboard — state is unknown
+    }
+
+    // Merge display_name from DB into session metadata (used by startBetaWithUser)
+    if (supaCurrentUser.display_name) {
+      session.user.user_metadata        = session.user.user_metadata || {};
+      session.user.user_metadata.display_name = supaCurrentUser.display_name;
+    }
+
+    // Hand off to app — attach DB tier so startBetaWithUser needs no extra query
+    if (typeof startBetaWithUser === "function") {
+      session.user._dbTier = supaCurrentUser.tier || "free";
+      startBetaWithUser(session.user);
     }
   });
 })();
