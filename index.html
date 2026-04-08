@@ -9507,30 +9507,68 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (btn) { btn.disabled = true; btn.textContent = "Please wait..."; }
     try {
-      var result;
       if (_authMode === "signup") {
+        // ── SIGNUP ────────────────────────────────────────────────────────────
         var displayName = (document.getElementById("authDisplayName") || {}).value || "";
-        result = await supabase.auth.signUp({ email: email, password: password, options: { data: { display_name: displayName }, emailRedirectTo: window.location.origin } });
+        console.log("[signup] Attempting signup for:", email);
+
+        var result = await supabase.auth.signUp({
+          email: email,
+          password: password,
+          options: { data: { display_name: displayName }, emailRedirectTo: window.location.origin }
+        });
         if (result.error) throw result.error;
-        // Handle email confirmation required vs auto-confirm
-        if (result.data && result.data.user && !result.data.session) {
-          // Email confirmation required
-          if (result.data.user && displayName) {
-            await supabase.from("users").upsert({ id: result.data.user.id, email: email, display_name: displayName, tier: "free" });
+
+        console.log("[signup] Signup success. Session exists:", !!result.data.session);
+
+        // ── PATH A: Email confirmation required (auto-confirm is OFF) ──────────
+        if (!result.data.session) {
+          // Pre-create the users row so it exists when they confirm and log in.
+          // syncUserRecord() will self-heal if this fails, so we log but don't throw.
+          if (result.data.user) {
+            var { error: preErr } = await supabase.from("users")
+              .upsert({ id: result.data.user.id, email: email, display_name: displayName || null, tier: "free" },
+                      { onConflict: "id" });
+            if (preErr) console.warn("[signup] Pre-create users row failed (will self-heal on login):", preErr.message);
           }
           var sub = document.getElementById("authModalSub");
           if (sub) sub.textContent = "Check your email to confirm your account, then sign in.";
           if (btn) { btn.textContent = "Sign in →"; btn.disabled = false; }
-          _authMode = "login"; // Switch to login mode for when they come back
-          return;
+          _authMode = "login";
+          return; // ← explicit early return; finally will NOT re-enable (btn already reset above)
         }
-        // Auto-confirm is on — user has a session immediately
-        if (result.data && result.data.user && displayName) {
-          await supabase.from("users").upsert({ id: result.data.user.id, email: email, display_name: displayName, tier: "free" });
+
+        // ── PATH B: Auto-confirm ON — session is live immediately ─────────────
+        // The Supabase SDK has already stored the session token.
+        // onAuthStateChange will fire SIGNED_IN and call startBetaWithUser.
+        // We must NOT reset the button here — keep it disabled + show "Setting up..."
+        // so the UI doesn't flicker between states while onAuthStateChange runs.
+        console.log("[signup] User after signup:", result.data.user.email);
+
+        // Ensure the users row exists with display_name before onAuthStateChange
+        // fires its SELECT — avoids the race where display_name is missing on first load.
+        if (result.data.user) {
+          var { error: upsertErr } = await supabase.from("users")
+            .upsert({ id: result.data.user.id, email: email, display_name: displayName || null, tier: "free" },
+                    { onConflict: "id" });
+          if (upsertErr) console.warn("[signup] users upsert failed:", upsertErr.message);
         }
+
+        // Hold the button in a "Setting up account..." state.
+        // onAuthStateChange → startBetaWithUser → enterDashboard will close the modal
+        // and load the dashboard. The finally block runs after this await but before
+        // onAuthStateChange, so we suppress its reset below.
+        if (btn) btn.textContent = "Setting up your account...";
+        // Signal to finally that onAuthStateChange owns cleanup from here
+        btn._signupPending = true;
+        return; // ← explicit return; finally sees _signupPending and skips reset
+
       } else {
-        result = await supabase.auth.signInWithPassword({ email: email, password: password });
+        // ── LOGIN ──────────────────────────────────────────────────────────────
+        var result = await supabase.auth.signInWithPassword({ email: email, password: password });
         if (result.error) throw result.error;
+        // onAuthStateChange fires SIGNED_IN and handles everything from here
+        return;
       }
     } catch (err) {
       // LOG full error for developers — never expose raw messages to users
@@ -9565,7 +9603,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
       if (errEl) { errEl.textContent = userMsg; errEl.style.display = "block"; }
     } finally {
-      if (btn) { btn.disabled = false; btn.textContent = _authMode === "signup" ? "Create account →" : "Sign in →"; btn.style.display = ""; }
+      // If signup is pending (auto-confirm path), onAuthStateChange owns the button —
+      // do not reset here or the user will see a re-enabled button before the dashboard loads.
+      if (btn && btn._signupPending) {
+        btn._signupPending = false; // clear flag; don't touch disabled/text
+      } else if (btn) {
+        btn.disabled = false;
+        btn.textContent = _authMode === "signup" ? "Create account →" : "Sign in →";
+        btn.style.display = "";
+      }
     }
   };
 
@@ -9669,6 +9715,15 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof startBetaWithUser === "function") {
       session.user._dbTier = supaCurrentUser.tier || "free";
       startBetaWithUser(session.user);
+    }
+
+    // If the signup button is still in "pending" state, reset it now that the
+    // session is confirmed and the dashboard is loading.
+    var pendingBtn = document.getElementById("authSubmitBtn");
+    if (pendingBtn && pendingBtn._signupPending) {
+      pendingBtn._signupPending = false;
+      pendingBtn.disabled = false;
+      pendingBtn.textContent = "Create account →";
     }
   });
 })();
