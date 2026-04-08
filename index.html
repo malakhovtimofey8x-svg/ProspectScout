@@ -3709,16 +3709,19 @@ function startBetaWithUser(supaUser) {
 function doLogin()  { openModal('login');  }
 function doSignup() { openModal('signup'); }
 function doLogout() {
+  // supabase.auth.signOut() triggers onAuthStateChange(SIGNED_OUT) which clears
+  // currentUser, _sessionBooted, and all auth caches. We show home immediately
+  // so the UI responds without waiting for the async sign-out to complete.
   currentUser = null;
   currentTier = 'free';
-  if (window._supabase) { window._supabase.auth.signOut(); }
   updateNav();
   showPage('home');
+  if (window._supabase) { window._supabase.auth.signOut().catch(function(e){ console.warn('[auth] signOut error:', e); }); }
 }
 
 function restoreSession() {
-  // Session is restored by Supabase auth.getSession() in initSupabase — nothing to do here
-  _syncCurrentTier();
+  // No-op: session is fully managed by supabase.auth.onAuthStateChange (INITIAL_SESSION event).
+  // Do not add localStorage reads or manual state here — Supabase is the only session source.
 }
 
 // NAV
@@ -9240,21 +9243,19 @@ document.addEventListener('visibilitychange', function() {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-  restoreSession();
   updateNav();
   toggleAnalyzeBtn();
-  // Note: currentUser is null here — Supabase session resolves async via onAuthStateChange.
-  // Dashboard load is triggered by startBetaWithUser() once the session is confirmed.
-  if (false) { // placeholder — never runs; kept for structural symmetry
-    showPage('dashboard');
-    updateDashboard();
-    renderDashSections();
-    renderGoalTracker();
-    if (isDemoEligible()) { scheduleDemoRun(); }
-    else { setTimeout(checkOnboarding, 600); }
-  } else {
-    showPage('home');
-  }
+  // Do NOT call showPage() here.
+  // onAuthStateChange fires INITIAL_SESSION (async) and calls enterDashboard() if a
+  // session exists. We defer the home-page fallback until that event has had a chance
+  // to run — using a short idle timeout so we don't block on slow networks.
+  window._authBootTimer = setTimeout(function() {
+    // If onAuthStateChange already set currentUser, it has already called enterDashboard().
+    // Only land on home if we are genuinely unauthenticated after the async event.
+    if (!currentUser) {
+      showPage('home');
+    }
+  }, 600); // 600 ms gives INITIAL_SESSION time to complete even on slow 3G
 });
 
 // ── PARALLEL STREAMING ENRICHMENT (fast mode) ────────────────────────────────
@@ -9678,47 +9679,73 @@ document.addEventListener('DOMContentLoaded', function() {
   // We just let onAuthStateChange handle everything consistently.
 
   var supaCurrentUser = null;
+  // One-time flag: ensures the full boot sequence (syncUserRecord + enterDashboard)
+  // only runs once per page load, not on every token refresh (TOKEN_REFRESHED / SIGNED_IN).
+  var _sessionBooted = false;
 
   supabase.auth.onAuthStateChange(async function(event, session) {
-    // Keep the auth cache in sync
-    _cachedAuthUser = session ? session.user : null;
+    console.log("[auth] Auth event:", event, "| session:", !!session);
 
-    if (!session) {
+    // ── SIGNED_OUT ───────────────────────────────────────────────
+    if (event === "SIGNED_OUT" || !session) {
       supaCurrentUser = null;
+      _cachedAuthUser = null;
+      _sessionBooted  = false;
+      if (typeof currentUser !== "undefined") currentUser = null;
+      if (typeof _syncCurrentTier === "function") _syncCurrentTier();
+      if (typeof updateNav === "function") updateNav();
+      console.log("[auth] User signed out");
       return;
     }
 
-    // Authenticated ────────────────────────────────────────────────
+    // Keep the auth user cache in sync for all events
+    _cachedAuthUser = session.user;
+
+    // ── TOKEN_REFRESHED / subsequent SIGNED_IN — session already booted ──
+    // Only update the cache; do NOT re-render the dashboard.
+    if (_sessionBooted) {
+      console.log("[auth] Session refreshed — skipping re-boot");
+      return;
+    }
+
+    // ── INITIAL_SESSION or first SIGNED_IN — full boot sequence ──────────
     console.log("[auth] User authenticated:", session.user.email, "| event:", event);
+
+    // Cancel the DOMContentLoaded home-page fallback — we have a session
+    if (window._authBootTimer) {
+      clearTimeout(window._authBootTimer);
+      window._authBootTimer = null;
+    }
+
     hideModal();
 
+    // Sync user record — fetch row from users table, self-heal if missing
     try {
       supaCurrentUser = await syncUserRecord(session.user);
     } catch(syncErr) {
-      // syncUserRecord already logged the detail — surface to user
       console.error("[auth] syncUserRecord failed:", syncErr.message);
       var authErrEl = document.getElementById("authError");
       if (authErrEl) {
         authErrEl.textContent = "Something went wrong loading your account. Please try again.";
         authErrEl.style.display = "block";
       }
-      return; // do not proceed to dashboard — state is unknown
+      return; // do not proceed to dashboard with unknown state
     }
 
-    // Merge display_name from DB into session metadata (used by startBetaWithUser)
-    if (supaCurrentUser.display_name) {
-      session.user.user_metadata        = session.user.user_metadata || {};
+    // Merge display_name into session metadata before startBetaWithUser reads it
+    if (supaCurrentUser && supaCurrentUser.display_name) {
+      session.user.user_metadata = session.user.user_metadata || {};
       session.user.user_metadata.display_name = supaCurrentUser.display_name;
     }
 
-    // Hand off to app — attach DB tier so startBetaWithUser needs no extra query
+    // Boot the app — attach DB tier so startBetaWithUser needs no extra query
+    _sessionBooted = true;
     if (typeof startBetaWithUser === "function") {
-      session.user._dbTier = supaCurrentUser.tier || "free";
+      session.user._dbTier = supaCurrentUser ? (supaCurrentUser.tier || "free") : "free";
       startBetaWithUser(session.user);
     }
 
-    // If the signup button is still in "pending" state, reset it now that the
-    // session is confirmed and the dashboard is loading.
+    // Clean up any pending signup button state
     var pendingBtn = document.getElementById("authSubmitBtn");
     if (pendingBtn && pendingBtn._signupPending) {
       pendingBtn._signupPending = false;
