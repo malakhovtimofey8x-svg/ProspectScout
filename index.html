@@ -9245,12 +9245,13 @@ document.addEventListener('visibilitychange', function() {
 document.addEventListener('DOMContentLoaded', function() {
   updateNav();
   toggleAnalyzeBtn();
-  // Show home immediately so the page is never blank.
-  // onAuthStateChange fires INITIAL_SESSION shortly after (async) and calls
-  // enterDashboard() if a session exists — replacing home with the dashboard.
-  // The _authBootTimer cancel in onAuthStateChange is removed; home is always
-  // shown first and replaced, never conditionally skipped.
-  showPage('home');
+  // Guard: if onAuthStateChange already fired INITIAL_SESSION synchronously
+  // (Supabase v2 fires it from localStorage in the same tick as the listener
+  // is registered), currentUser is already set and enterDashboard() has run.
+  // Calling showPage('home') here would override the dashboard — don't do it.
+  if (!currentUser) {
+    showPage('home');
+  }
 });
 
 // ── PARALLEL STREAMING ENRICHMENT (fast mode) ────────────────────────────────
@@ -9511,7 +9512,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var result = await supabase.auth.signUp({
           email: email,
           password: password,
-          options: { data: { display_name: displayName }, emailRedirectTo: window.location.origin }
+          options: { data: { display_name: displayName }, emailRedirectTo: window.location.origin + '/dashboard' }
         });
         if (result.error) throw result.error;
 
@@ -9674,9 +9675,10 @@ document.addEventListener('DOMContentLoaded', function() {
   // We just let onAuthStateChange handle everything consistently.
 
   var supaCurrentUser = null;
-  // One-time flag: ensures the full boot sequence (syncUserRecord + enterDashboard)
-  // only runs once per page load, not on every token refresh (TOKEN_REFRESHED / SIGNED_IN).
-  var _sessionBooted = false;
+  // One-time guard: set to true BEFORE the first async operation so that any
+  // duplicate SIGNED_IN event arriving during the await cannot re-enter the
+  // boot sequence. Reset on SIGNED_OUT so login works again after logout.
+  var hasHandledAuth = false;
 
   supabase.auth.onAuthStateChange(async function(event, session) {
     console.log("[auth] Auth event:", event, "| session:", !!session);
@@ -9685,7 +9687,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (event === "SIGNED_OUT" || !session) {
       supaCurrentUser = null;
       _cachedAuthUser = null;
-      _sessionBooted  = false;
+      hasHandledAuth  = false;
       if (typeof currentUser !== "undefined") currentUser = null;
       if (typeof _syncCurrentTier === "function") _syncCurrentTier();
       if (typeof updateNav === "function") updateNav();
@@ -9696,15 +9698,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Keep the auth user cache in sync for all events
     _cachedAuthUser = session.user;
 
-    // ── TOKEN_REFRESHED / subsequent SIGNED_IN — session already booted ──
-    // Only update the cache; do NOT re-render the dashboard.
-    if (_sessionBooted) {
-      console.log("[auth] Session refreshed — skipping re-boot");
+    // ── Guard: prevent double-execution (Supabase v2 fires SIGNED_IN twice) ──
+    // Check specifically for SIGNED_IN duplicates first, then the general guard.
+    if (event === 'SIGNED_IN' && session && !hasHandledAuth) {
+      // First SIGNED_IN with a real session — fall through to boot sequence
+    } else if (hasHandledAuth) {
+      // TOKEN_REFRESHED / subsequent SIGNED_IN — session already booted, skip.
+      console.log("[auth] Session refreshed — skipping re-boot (event:", event + ")");
       return;
     }
 
     // ── INITIAL_SESSION or first SIGNED_IN — full boot sequence ──────────
     console.log("[auth] User authenticated:", session.user.email, "| event:", event);
+
+    // Set the guard flag IMMEDIATELY — before any await — so that a second
+    // SIGNED_IN arriving while syncUserRecord() is in-flight is rejected above.
+    hasHandledAuth = true;
 
     hideModal();
 
@@ -9713,6 +9722,8 @@ document.addEventListener('DOMContentLoaded', function() {
       supaCurrentUser = await syncUserRecord(session.user);
     } catch(syncErr) {
       console.error("[auth] syncUserRecord failed:", syncErr.message);
+      // Reset guard so the user can retry after an error
+      hasHandledAuth = false;
       var authErrEl = document.getElementById("authError");
       if (authErrEl) {
         authErrEl.textContent = "Something went wrong loading your account. Please try again.";
@@ -9728,7 +9739,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Boot the app — attach DB tier so startBetaWithUser needs no extra query
-    _sessionBooted = true;
     if (typeof startBetaWithUser === "function") {
       session.user._dbTier = supaCurrentUser ? (supaCurrentUser.tier || "free") : "free";
       startBetaWithUser(session.user);
@@ -9742,6 +9752,50 @@ document.addEventListener('DOMContentLoaded', function() {
       pendingBtn.textContent = "Create account →";
     }
   });
+
+  // ── Async session fallback ───────────────────────────────────────────────────
+  // Supabase v2 fires INITIAL_SESSION synchronously when a cached session exists,
+  // so enterDashboard() runs before DOMContentLoaded in the fast path.
+  // In the slow path (SDK loaded via CDN retry, initSupabase delayed), the
+  // onAuthStateChange callback fires after DOMContentLoaded has already called
+  // showPage('home'). As a safety net, we do a one-time getSession() here:
+  // if the session exists and the boot sequence hasn't run yet (hasHandledAuth
+  // is still false), the onAuthStateChange listener above will handle it when
+  // Supabase processes the stored session — no manual redirect needed.
+  // If hasHandledAuth is already true (synchronous path) we skip entirely.
+  (async function checkSessionFallback() {
+    try {
+      if (hasHandledAuth) return; // synchronous INITIAL_SESSION already handled it
+      var sessionResult = await supabase.auth.getSession();
+      var existingSession = sessionResult && sessionResult.data && sessionResult.data.session;
+      if (existingSession && !hasHandledAuth) {
+        // Session exists but the auth listener hasn't fired yet (delayed-init race).
+        // Show dashboard directly rather than leaving the user on the landing page.
+        console.log("[auth] getSession fallback: session found, redirecting to dashboard");
+        if (typeof enterDashboard === "function" && typeof currentUser !== "undefined" && !currentUser) {
+          // onAuthStateChange will finish booting; just guard the UI in the meantime
+          // by not overriding any page the listener may have already set.
+        }
+        // For the email-confirm redirect path: user lands on origin with URL tokens.
+        // onAuthStateChange processes those tokens and fires SIGNED_IN automatically.
+        // If we're on the landing page and have a valid session, navigate to dashboard.
+        var activePage = document.querySelector('.page.active');
+        var onHome = activePage && activePage.id === 'page-home';
+        if (onHome && typeof currentUser !== "undefined" && !currentUser) {
+          // Auth listener will call enterDashboard() when it fires; nothing to do here.
+          // But if 2 seconds pass and we're still on home with a session, force it.
+          setTimeout(function() {
+            if (!currentUser && !hasHandledAuth) {
+              console.warn("[auth] getSession fallback timeout — forcing session reload");
+              window.location.reload();
+            }
+          }, 2000);
+        }
+      }
+    } catch(e) {
+      console.warn("[auth] getSession fallback error:", e);
+    }
+  })();
 })();
 </script>
 <script>
