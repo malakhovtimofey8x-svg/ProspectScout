@@ -9570,28 +9570,27 @@ document.addEventListener('DOMContentLoaded', function() {
         // ── PATH B: Auto-confirm ON — session is live immediately ─────────────
         console.log("[signup] User after signup:", result.data.user.email);
 
-        // Ensure the users row exists with display_name
-        if (result.data.user) {
-          var { error: upsertErr } = await supabase.from("users")
-            .upsert({ id: result.data.user.id, email: email, display_name: displayName || null, tier: "free" },
-                    { onConflict: "id" });
-          if (upsertErr) console.warn("[signup] users upsert failed:", upsertErr.message);
-        }
-
-        // ── DIRECT BOOT: don't delegate to onAuthStateChange ────────────────
-        if (btn) btn.textContent = "Setting up your account...";
         _cachedAuthUser = result.data.user;
         hasHandledAuth = true;
-
-        hideModal();
 
         var signupUser = result.data.user;
         signupUser._dbTier = "free";
         signupUser.user_metadata = signupUser.user_metadata || {};
         signupUser.user_metadata.display_name = displayName || null;
 
+        // Close modal + navigate NOW — don't await any DB call
+        hideModal();
         if (typeof startBetaWithUser === "function") {
           startBetaWithUser(signupUser);
+        }
+
+        // Background: ensure the users row exists (fire-and-forget)
+        if (result.data.user) {
+          supabase.from("users")
+            .upsert({ id: result.data.user.id, email: email, display_name: displayName || null, tier: "free" },
+                    { onConflict: "id" })
+            .then(function(r) { if (r.error) console.warn("[signup] Background upsert failed:", r.error.message); })
+            .catch(function(e) { console.warn("[signup] Background upsert error:", e); });
         }
         return;
 
@@ -9599,38 +9598,48 @@ document.addEventListener('DOMContentLoaded', function() {
         // ── LOGIN ──────────────────────────────────────────────────────────────
         var result = await supabase.auth.signInWithPassword({ email: email, password: password });
         if (result.error) throw result.error;
-        console.log("[DEBUG-AUTH] signInWithPassword SUCCESS. session:", !!result.data.session, "user:", result.data.session && result.data.session.user && result.data.session.user.email);
+        console.log("[DEBUG-AUTH] signInWithPassword SUCCESS. session:", !!result.data.session);
 
-        // ── DIRECT BOOT: don't rely on onAuthStateChange ────────────────────
-        // signInWithPassword already returns the full session. Booting directly
-        // avoids the race where both duplicate SIGNED_IN events get consumed by
-        // the hasHandledAuth guard while syncUserRecord is in-flight.
+        // ── DIRECT BOOT: navigate IMMEDIATELY, don't await any DB call ──────
+        // signInWithPassword returns the full session+user. We boot the dashboard
+        // from session metadata right now. syncUserRecord runs in the background
+        // so a hanging/paused DB never blocks the user.
         if (result.data.session && result.data.session.user) {
           var loginUser = result.data.session.user;
-          _cachedAuthUser = loginUser;          // keep cache in sync
-          hasHandledAuth = true;                // block onAuthStateChange from double-booting
+          _cachedAuthUser = loginUser;
+          hasHandledAuth = true;
 
-          if (btn) btn.textContent = "Signing in...";
+          // Extract tier + name from metadata (available without a DB call)
+          var metaTier = (loginUser.user_metadata && loginUser.user_metadata.tier) || "free";
+          var metaName = (loginUser.user_metadata && (loginUser.user_metadata.display_name || loginUser.user_metadata.full_name))
+                         || (loginUser.email ? loginUser.email.split("@")[0] : "User");
+          loginUser._dbTier = metaTier;
 
-          var dbUser = null;
-          try {
-            dbUser = await syncUserRecord(loginUser);
-          } catch(syncE) {
-            console.warn("[auth] syncUserRecord on login failed (non-fatal):", syncE.message);
-            // Boot anyway with metadata — DB row will self-heal on next load
-          }
-
+          // Close modal + navigate NOW
           hideModal();
-
-          loginUser._dbTier = dbUser ? (dbUser.tier || "free") : "free";
-          if (dbUser && dbUser.display_name) {
-            loginUser.user_metadata = loginUser.user_metadata || {};
-            loginUser.user_metadata.display_name = dbUser.display_name;
-          }
-
           if (typeof startBetaWithUser === "function") {
             startBetaWithUser(loginUser);
           }
+          console.log("[DEBUG-AUTH] Dashboard loaded. Syncing DB row in background...");
+
+          // Background DB sync — updates tier from DB if it differs from metadata.
+          // Fire-and-forget: a hanging query cannot block the user.
+          syncUserRecord(loginUser).then(function(dbUser) {
+            if (dbUser && dbUser.tier && dbUser.tier !== metaTier) {
+              console.log("[auth] DB tier differs from metadata — updating to:", dbUser.tier);
+              if (typeof currentUser !== "undefined" && currentUser) {
+                currentUser.tier = dbUser.tier;
+              }
+              if (typeof _syncCurrentTier === "function") _syncCurrentTier();
+              if (typeof updateNav === "function") updateNav();
+              if (typeof updateDashboard === "function") updateDashboard();
+            }
+            if (dbUser && dbUser.display_name && typeof currentUser !== "undefined" && currentUser) {
+              currentUser.name = dbUser.display_name;
+            }
+          }).catch(function(e) {
+            console.warn("[auth] Background syncUserRecord failed (non-fatal):", e.message);
+          });
         }
         return;
       }
@@ -9785,57 +9794,38 @@ document.addEventListener('DOMContentLoaded', function() {
     // SIGNED_IN arriving while syncUserRecord() is in-flight is rejected above.
     hasHandledAuth = true;
 
-    // Sync user record BEFORE closing the modal so any error can be shown
-    // to the user inside the still-visible modal, not on a blank landing page.
-    try {
-      supaCurrentUser = await syncUserRecord(session.user);
-    } catch(syncErr) {
-      console.error("[auth] syncUserRecord failed — retrying once:", syncErr.message);
-      // CRITICAL: Both duplicate SIGNED_IN events have already been consumed and
-      // discarded by the hasHandledAuth guard during the await window above.
-      // If we bail now, no auth event will ever re-trigger the boot sequence.
-      // Retry once to cover transient failures (RLS propagation, network blip).
-      try {
-        await new Promise(function(r){ setTimeout(r, 500); }); // brief backoff
-        supaCurrentUser = await syncUserRecord(session.user);
-        console.log("[auth] syncUserRecord retry succeeded");
-      } catch(retryErr) {
-        console.error("[auth] syncUserRecord retry also failed:", retryErr.message);
-        hasHandledAuth = false;
-        showModal();
-        var authErrEl = document.getElementById("authError");
-        if (authErrEl) {
-          authErrEl.textContent = "Something went wrong loading your account. Please try again.";
-          authErrEl.style.display = "block";
-        }
-        return; // do not proceed to dashboard with unknown state
-      }
-    }
+    // ── BOOT IMMEDIATELY from session metadata ─────────────────────────────
+    // Do NOT await syncUserRecord — it queries the DB which may hang on paused
+    // projects or slow RLS. Boot the dashboard from auth metadata right now,
+    // then sync the DB row in the background.
+    var metaTier = (session.user.user_metadata && session.user.user_metadata.tier) || "free";
+    session.user._dbTier = metaTier;
 
-    // DB sync succeeded — safe to close the modal now.
     hideModal();
 
-    // Merge display_name into session metadata before startBetaWithUser reads it
-    if (supaCurrentUser && supaCurrentUser.display_name) {
-      session.user.user_metadata = session.user.user_metadata || {};
-      session.user.user_metadata.display_name = supaCurrentUser.display_name;
-    }
-
-    // Boot the app — attach DB tier so startBetaWithUser needs no extra query
     if (typeof startBetaWithUser === "function") {
-      session.user._dbTier = supaCurrentUser ? (supaCurrentUser.tier || "free") : "free";
-      console.log("[DEBUG-AUTH] BEFORE redirect: calling startBetaWithUser →", session.user.email, "tier:", session.user._dbTier);
+      console.log("[DEBUG-AUTH] BEFORE redirect: calling startBetaWithUser →", session.user.email, "tier:", metaTier);
       startBetaWithUser(session.user);
       console.log("[DEBUG-AUTH] AFTER redirect: currentUser is now", currentUser ? currentUser.email : "NULL", "| active page:", document.querySelector('.page.active') ? document.querySelector('.page.active').id : "none");
     }
 
-    // Clean up any pending signup button state
-    var pendingBtn = document.getElementById("authSubmitBtn");
-    if (pendingBtn && pendingBtn._signupPending) {
-      pendingBtn._signupPending = false;
-      pendingBtn.disabled = false;
-      pendingBtn.textContent = "Create account →";
-    }
+    // Background DB sync — fire-and-forget
+    syncUserRecord(session.user).then(function(dbUser) {
+      supaCurrentUser = dbUser;
+      if (dbUser && dbUser.tier && dbUser.tier !== metaTier) {
+        console.log("[auth] DB tier differs — updating to:", dbUser.tier);
+        if (typeof currentUser !== "undefined" && currentUser) currentUser.tier = dbUser.tier;
+        if (typeof _syncCurrentTier === "function") _syncCurrentTier();
+        if (typeof updateNav === "function") updateNav();
+        if (typeof updateDashboard === "function") updateDashboard();
+      }
+      if (dbUser && dbUser.display_name && typeof currentUser !== "undefined" && currentUser) {
+        currentUser.name = dbUser.display_name;
+        if (typeof updateNav === "function") updateNav();
+      }
+    }).catch(function(e) {
+      console.warn("[auth] Background syncUserRecord failed (non-fatal):", e.message);
+    });
   });
 })();
 </script>
