@@ -9568,14 +9568,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // ── PATH B: Auto-confirm ON — session is live immediately ─────────────
-        // The Supabase SDK has already stored the session token.
-        // onAuthStateChange will fire SIGNED_IN and call startBetaWithUser.
-        // We must NOT reset the button here — keep it disabled + show "Setting up..."
-        // so the UI doesn't flicker between states while onAuthStateChange runs.
         console.log("[signup] User after signup:", result.data.user.email);
 
-        // Ensure the users row exists with display_name before onAuthStateChange
-        // fires its SELECT — avoids the race where display_name is missing on first load.
+        // Ensure the users row exists with display_name
         if (result.data.user) {
           var { error: upsertErr } = await supabase.from("users")
             .upsert({ id: result.data.user.id, email: email, display_name: displayName || null, tier: "free" },
@@ -9583,21 +9578,60 @@ document.addEventListener('DOMContentLoaded', function() {
           if (upsertErr) console.warn("[signup] users upsert failed:", upsertErr.message);
         }
 
-        // Hold the button in a "Setting up account..." state.
-        // onAuthStateChange → startBetaWithUser → enterDashboard will close the modal
-        // and load the dashboard. The finally block runs after this await but before
-        // onAuthStateChange, so we suppress its reset below.
+        // ── DIRECT BOOT: don't delegate to onAuthStateChange ────────────────
         if (btn) btn.textContent = "Setting up your account...";
-        // Signal to finally that onAuthStateChange owns cleanup from here
-        btn._signupPending = true;
-        return; // ← explicit return; finally sees _signupPending and skips reset
+        _cachedAuthUser = result.data.user;
+        hasHandledAuth = true;
+
+        hideModal();
+
+        var signupUser = result.data.user;
+        signupUser._dbTier = "free";
+        signupUser.user_metadata = signupUser.user_metadata || {};
+        signupUser.user_metadata.display_name = displayName || null;
+
+        if (typeof startBetaWithUser === "function") {
+          startBetaWithUser(signupUser);
+        }
+        return;
 
       } else {
         // ── LOGIN ──────────────────────────────────────────────────────────────
         var result = await supabase.auth.signInWithPassword({ email: email, password: password });
         if (result.error) throw result.error;
         console.log("[DEBUG-AUTH] signInWithPassword SUCCESS. session:", !!result.data.session, "user:", result.data.session && result.data.session.user && result.data.session.user.email);
-        // onAuthStateChange fires SIGNED_IN and handles everything from here
+
+        // ── DIRECT BOOT: don't rely on onAuthStateChange ────────────────────
+        // signInWithPassword already returns the full session. Booting directly
+        // avoids the race where both duplicate SIGNED_IN events get consumed by
+        // the hasHandledAuth guard while syncUserRecord is in-flight.
+        if (result.data.session && result.data.session.user) {
+          var loginUser = result.data.session.user;
+          _cachedAuthUser = loginUser;          // keep cache in sync
+          hasHandledAuth = true;                // block onAuthStateChange from double-booting
+
+          if (btn) btn.textContent = "Signing in...";
+
+          var dbUser = null;
+          try {
+            dbUser = await syncUserRecord(loginUser);
+          } catch(syncE) {
+            console.warn("[auth] syncUserRecord on login failed (non-fatal):", syncE.message);
+            // Boot anyway with metadata — DB row will self-heal on next load
+          }
+
+          hideModal();
+
+          loginUser._dbTier = dbUser ? (dbUser.tier || "free") : "free";
+          if (dbUser && dbUser.display_name) {
+            loginUser.user_metadata = loginUser.user_metadata || {};
+            loginUser.user_metadata.display_name = dbUser.display_name;
+          }
+
+          if (typeof startBetaWithUser === "function") {
+            startBetaWithUser(loginUser);
+          }
+        }
         return;
       }
     } catch (err) {
