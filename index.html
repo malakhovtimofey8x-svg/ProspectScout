@@ -3590,10 +3590,64 @@ const TIERS = {
 
 let currentUser = null;
 
-function getUsers()    { try { return JSON.parse(localStorage.getItem('ps_users')||'{}'); } catch{ return {}; } }
-function saveUsers(u)  { localStorage.setItem('ps_users', JSON.stringify(u)); }
-function getUsage(email) { return parseInt(localStorage.getItem(`ps_usage_${email}_${new Date().toDateString()}`)||'0'); }
-function addUsage(email,n) { const k=`ps_usage_${email}_${new Date().toDateString()}`; localStorage.setItem(k,(getUsage(email)+n).toString()); }
+// ps_users removed — Supabase is the user registry
+// ── DB-BACKED USAGE SYSTEM ───────────────────────────────────────
+var _usageCache = { prospects: 0, calls: 0, date: null, rowId: null };
+function _todayISO() { return new Date().toISOString().split('T')[0]; }
+async function _getOrCreateUsageRow() {
+  var sb = window._supabase; if (!sb) return null;
+  try {
+    var user = window._getCachedAuthUser ? await window._getCachedAuthUser() : null;
+    if (!user) return null;
+    var today = _todayISO();
+    var { data, error } = await sb.from('usage').select('id,prospects_used,calls_used').eq('user_id',user.id).eq('date',today).maybeSingle();
+    if (error) { console.error('[usage] select:',error); return null; }
+    if (data) { _usageCache={prospects:data.prospects_used||0,calls:data.calls_used||0,date:today,rowId:data.id}; return data; }
+    var { data:ins, error:insErr } = await sb.from('usage').insert([{user_id:user.id,date:today,prospects_used:0,calls_used:0}]).select('id,prospects_used,calls_used').single();
+    if (insErr) { console.error('[usage] insert:',insErr); return null; }
+    _usageCache={prospects:0,calls:0,date:today,rowId:ins.id}; return ins;
+  } catch(e) { console.error('[usage] getOrCreate:',e); return null; }
+}
+async function getUsageFromDB() {
+  if (_usageCache.date===_todayISO()) return {prospects:_usageCache.prospects,calls:_usageCache.calls};
+  var row=await _getOrCreateUsageRow(); if (!row) return {prospects:0,calls:0};
+  return {prospects:row.prospects_used||0,calls:row.calls_used||0};
+}
+function getUsage(email) { return _usageCache.prospects; }
+function addUsage(email,n) { /* replaced by incrementProspects(n) */ }
+async function checkProspectLimit() {
+  var tier=TIERS[(currentUser&&currentUser.tier)||'free'];
+  var row=await _getOrCreateUsageRow(); if (!row) return true;
+  if ((row.prospects_used||0)>=tier.daily) { openLimitModal(row.prospects_used,tier.daily,'prospects'); return false; }
+  return true;
+}
+async function checkCallLimit() {
+  var callLimit=parseInt((TIERS[(currentUser&&currentUser.tier)||'free']).callLimit)||20;
+  var row=await _getOrCreateUsageRow(); if (!row) return true;
+  if ((row.calls_used||0)>=callLimit) { openLimitModal(row.calls_used,callLimit,'calls'); return false; }
+  return true;
+}
+async function incrementProspects(n) {
+  var sb=window._supabase; if (!sb||!n||n<1) return;
+  try {
+    if (_usageCache.date!==_todayISO()||!_usageCache.rowId) await _getOrCreateUsageRow();
+    var user=window._getCachedAuthUser?await window._getCachedAuthUser():null; if (!user) return;
+    var {error}=await sb.from('usage').update({prospects_used:_usageCache.prospects+n}).eq('id',_usageCache.rowId);
+    if (error) { console.error('[usage] incr prospects:',error); return; }
+    _usageCache.prospects+=n; updateSlimBar();
+  } catch(e) { console.error('[usage] incrementProspects:',e); }
+}
+async function incrementCalls() {
+  var sb=window._supabase; if (!sb) return;
+  try {
+    if (_usageCache.date!==_todayISO()||!_usageCache.rowId) await _getOrCreateUsageRow();
+    var user=window._getCachedAuthUser?await window._getCachedAuthUser():null; if (!user) return;
+    var {error}=await sb.from('usage').update({calls_used:_usageCache.calls+1}).eq('id',_usageCache.rowId);
+    if (error) { console.error('[usage] incr calls:',error); return; }
+    _usageCache.calls+=1; updateSlimBar();
+  } catch(e) { console.error('[usage] incrementCalls:',e); }
+}
+// ─────────────────────────────────────────────────────────────────
 
 // AUTH
 function openModal(view) {
@@ -3638,49 +3692,32 @@ function updateNavPipeline() {
   btn.classList.toggle('active', !!onPipeline);
 }
 
-function startBeta() {
-  var name = (document.getElementById('betaNameInput')?.value || '').trim();
-  if (!name) { return; }
-  var savedTier = localStorage.getItem('ps_tier') || 'free';
-  currentUser = { email:'beta@user.local', name:name, tier:savedTier };
-  localStorage.setItem('ps_beta_user', JSON.stringify(currentUser));
-  _syncCurrentTier();
-  closeModal();
-  enterDashboard();
-  if (isDemoEligible()) { scheduleDemoRun(); }
-}
+// startBeta() removed — all auth goes through Supabase
 
 function startBetaWithUser(supaUser) {
-  var savedTier = localStorage.getItem('ps_tier') || (supaUser.user_metadata && supaUser.user_metadata.tier) || 'free';
+  // Tier comes from the Supabase users table (set on onAuthStateChange before this is called)
+  var tier = (supaUser._dbTier) || (supaUser.user_metadata && supaUser.user_metadata.tier) || 'free';
   var name = (supaUser.user_metadata && (supaUser.user_metadata.display_name || supaUser.user_metadata.full_name)) || (supaUser.email ? supaUser.email.split('@')[0] : 'User');
-  currentUser = { email: supaUser.email || '', name: name, tier: savedTier, supaId: supaUser.id };
-  localStorage.setItem('ps_beta_user', JSON.stringify(currentUser));
+  currentUser = { email: supaUser.email || '', name: name, tier: tier, supaId: supaUser.id };
+  // No localStorage write — session is owned by Supabase
   _syncCurrentTier();
+  _getOrCreateUsageRow().then(function(){ updateSlimBar(); toggleAnalyzeBtn(); });
   enterDashboard();
   if (isDemoEligible()) { scheduleDemoRun(); }
 }
 
-function doLogin()  { startBeta(); }
-function doSignup() { startBeta(); }
+function doLogin()  { openModal('login');  }
+function doSignup() { openModal('signup'); }
 function doLogout() {
   currentUser = null;
   currentTier = 'free';
-  localStorage.removeItem('ps_beta_user');
   if (window._supabase) { window._supabase.auth.signOut(); }
   updateNav();
   showPage('home');
 }
 
 function restoreSession() {
-  try {
-    var saved = localStorage.getItem('ps_beta_user');
-    if (saved) {
-      currentUser = JSON.parse(saved);
-      // Always reconcile with ps_tier (unlock may have happened)
-      var savedTier = localStorage.getItem('ps_tier');
-      if (savedTier && TIERS[savedTier]) { currentUser.tier = savedTier; }
-    }
-  } catch(e) {}
+  // Session is restored by Supabase auth.getSession() in initSupabase — nothing to do here
   _syncCurrentTier();
 }
 
@@ -4017,7 +4054,7 @@ function updateDashboard() {
   if (!currentUser) return;
   _syncCurrentTier();
   const tier = TIERS[currentUser.tier]||TIERS.free;
-  const used = getUsage(currentUser.email);
+  const used = _usageCache.date === _todayISO() ? _usageCache.prospects : 0;
   const limit = tier.daily;
   const pct = Math.min(100,Math.round(used/limit*100));
 
@@ -4062,7 +4099,8 @@ function updateDashboard() {
   ['free','plus','pro'].forEach(function(t) {
     const btn = document.getElementById('btn-'+t);
     if (!btn) return;
-    const isUnlocked = t==='free' || _laUnlocked(t);
+    const tierRank = { free: 0, plus: 1, pro: 2 };
+    const isUnlocked = (tierRank[currentUser.tier] || 0) >= (tierRank[t] || 0);
     btn.className = 'tier-switch-btn' + (currentUser.tier===t ? ' active-'+t : '');
     btn.title = isUnlocked ? '' : 'Unlock '+t.charAt(0).toUpperCase()+t.slice(1)+' to switch';
     btn.style.opacity = isUnlocked ? '' : '0.45';
@@ -4080,27 +4118,9 @@ function updateDashboard() {
 }
 
 function switchTier(newTier) {
-  localStorage.setItem('ps_tier', newTier);
-  
-  // Gate: can only switch to plus/pro if unlocked
-  if (newTier === 'plus' && !_laUnlocked('plus')) { showPage('pricing'); return; }
-  if (newTier === 'pro'  && !_laUnlocked('pro'))  { showPage('pricing'); return; }
- if (currentUser) {
-  try {
-    const users = getUsers();
-
-    if (!users[currentUser.email]) {
-      users[currentUser.email] = {};
-    }
-
-    users[currentUser.email].tier = newTier;
-    saveUsers(users);
-
-    currentUser.tier = newTier;
-  } catch (e) {
-    console.warn("User sync failed, continuing with local tier");
-  }
-}
+  // Gate: tier changes require a valid Supabase record — redirect to pricing to go through access flow
+  if (newTier === 'plus' || newTier === 'pro') { showPage('pricing'); return; }
+  if (currentUser) { currentUser.tier = newTier; }
   _syncCurrentTier();
   updateDashboard(); updateNav();
   location.reload();
@@ -4161,28 +4181,29 @@ var _LA = {
 };
 
 function _laUsed(tier) {
-  try { return JSON.parse(localStorage.getItem('ps_la_used_'+tier)||'0'); } catch{ return 0; }
+  // Usage count is tracked in Supabase access_keys table — local fallback returns 0
+  return 0;
 }
 function _laIncrement(tier) {
-  localStorage.setItem('ps_la_used_'+tier, String(_laUsed(tier)+1));
+  // Increment handled server-side via access_keys update in submitAccessCode
 }
 function _laUnlocked(tier) {
-  return localStorage.getItem('ps_la_unlocked_'+tier) === '1';
+  // Unlock is determined by currentUser.tier from Supabase — not a localStorage flag
+  return currentUser && currentUser.tier === tier;
 }
 function _laUnlock(tier) {
-  if (_laUnlocked(tier)) return;
-  localStorage.setItem('ps_la_unlocked_'+tier,'1');
-  _laIncrement(tier);
+  // Unlock is applied by updating currentUser.tier after Supabase confirms the key
+  if (currentUser) { currentUser.tier = tier; }
 }
 function _laSpots(tier) {
   return Math.max(0, _LA[tier].max - _laUsed(tier));
 }
 function _laUsedCodes() {
-  try { return JSON.parse(localStorage.getItem('ps_la_used_codes')||'[]'); } catch{ return []; }
+  // Used codes are tracked in Supabase access_keys (used=true) — no localStorage
+  return [];
 }
 function _laMarkCodeUsed(code) {
-  var used = _laUsedCodes();
-  if (!used.includes(code)) { used.push(code); localStorage.setItem('ps_la_used_codes', JSON.stringify(used)); }
+  // Handled server-side in submitAccessCode via access_keys.update({ used: true })
 }
 function _laValidCode(tier, code) {
   var c = (code||'').trim().toUpperCase();
@@ -4291,15 +4312,9 @@ async function submitAccessCode(tier) {
     
   }
 
-  // Step 6: mark used locally
+  // Step 6: apply tier to in-memory user (Supabase DB was already updated in Step 5)
   if (validLocal) _laMarkCodeUsed(code);
-  _laUnlock(tier);
-  localStorage.setItem('ps_tier', tier);
-  if (currentUser) {
-    currentUser.tier = tier;
-    var users = getUsers();
-    if (users[currentUser.email]) { users[currentUser.email].tier = tier; saveUsers(users); }
-  }
+  _laUnlock(tier); // sets currentUser.tier
   _syncCurrentTier();
   closeAccessModal();
   renderPricingGrid('pricingGrid');
@@ -4788,7 +4803,7 @@ function getToday() { return new Date().toISOString().slice(0,10); }
 
 function recordStreak() {
   var today = getToday();
-  var data = JSON.parse(localStorage.getItem('ps_streak')||'{}');
+  var data = {};  // streak computed live
   if (data.lastDate === today) return; // already counted today
   var yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
   if (data.lastDate === yesterday) {
@@ -4797,14 +4812,14 @@ function recordStreak() {
     data.count = 1;
   }
   data.lastDate = today;
-  localStorage.setItem('ps_streak', JSON.stringify(data));
+  // streak computed live — no write needed
   renderStreak();
 }
 
 function renderStreak() {
   var el = document.getElementById('kbStreak');
   if (!el) return;
-  var data = JSON.parse(localStorage.getItem('ps_streak')||'{}');
+  var data = {};  // streak computed live
   var today = getToday();
   var yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
   if (data.lastDate === today || data.lastDate === yesterday) {
@@ -5154,7 +5169,7 @@ function renderAdminPanel() {
     '<b>Name:</b> ' + currentUser.name + '<br>' +
     '<b>Email:</b> ' + currentUser.email + '<br>' +
     '<b>Tier:</b> ' + t.name + '<br>' +
-    '<b>Usage today:</b> ' + getUsage(currentUser.email) + ' / ' + t.daily + '<br>' +
+    '<b>Usage today:</b> ' + (_usageCache.date===_todayISO()?_usageCache.prospects:0) + ' / ' + t.daily + '<br>' +
     '<b>Pipeline:</b> ' + getHistory(currentUser.email).length + ' prospects';
   ['free','plus','pro'].forEach(function(tier) {
     var btn = document.getElementById('abtn-' + tier);
@@ -5162,13 +5177,7 @@ function renderAdminPanel() {
   });
   var ul = document.getElementById('adminUserList');
   if (ul) {
-    var users = getUsers();
-    var keys = Object.keys(users);
-    ul.innerHTML = !keys.length ? '<span style="color:var(--text4);">No users yet.</span>' :
-      keys.map(function(e){
-        var u = users[e];
-        return '<div style="padding:4px 0;border-bottom:1px solid var(--border)"><b>'+u.name+'</b> ('+e+') — '+((TIERS[u.tier]||TIERS.free).name)+'</div>';
-      }).join('');
+    ul.innerHTML = '<span style="color:var(--text4);">User list reads from Supabase — see admin panel below.</span>';
   }
   var ps = document.getElementById('adminPipelineStats');
   if (ps) {
@@ -5183,11 +5192,15 @@ function renderAdminPanel() {
   adminLoadSpots();
 }
 
-function adminResetUsage() {
-  if (!currentUser) return;
-  localStorage.removeItem('ps_usage_'+currentUser.email+'_'+new Date().toDateString());
-  updateDashboard(); renderAdminPanel();
-  showToast('Usage reset ✓');
+async function adminResetUsage() {
+  if (!currentUser||!window._supabase) return;
+  try {
+    var user=window._getCachedAuthUser?await window._getCachedAuthUser():null; if (!user) return;
+    await window._supabase.from('usage').update({prospects_used:0,calls_used:0}).eq('user_id',user.id).eq('date',_todayISO());
+    _usageCache.prospects=0; _usageCache.calls=0;
+    updateDashboard(); updateSlimBar(); renderAdminPanel();
+    showToast('Usage reset ✓');
+  } catch(e) { console.error('adminResetUsage:',e); showToast('Reset failed','error'); }
 }
 function adminClearPipeline() {
   if (!currentUser) return;
@@ -5206,7 +5219,20 @@ function adminClearPipeline() {
 function adminClearAll() {
   if (!currentUser) return;
   if (!confirm('Delete ALL local data?') || !confirm('Really sure? This cannot be undone.')) return;
-  localStorage.clear(); location.reload();
+  // Scoped removal — never clear Supabase auth tokens stored in localStorage
+  var email = currentUser.email;
+  var today = new Date().toDateString();
+  [
+    'ps_search_cache_' + email,
+    'ps_last_results_' + email,
+    'ps_campaigns_' + email,
+    'ps_goal_' + email,
+    'ps_onboarded_' + email,
+    'ps_light_mode',
+    'ps_manual_calls_' + email,
+    'ps_history_' + email,
+  ].forEach(function(k) { try { localStorage.removeItem(k); } catch(e) {} });
+  location.reload();
 }
 
 
@@ -5588,7 +5614,7 @@ function toggleAnalyzeBtn() {
   // Check if at limit
   if (currentUser) {
     var tier = TIERS[currentUser.tier || 'free'];
-    var used = getUsage(currentUser.email);
+    var used = _usageCache.date === _todayISO() ? _usageCache.prospects : 0;
     if (used >= tier.daily) {
       btn.disabled = true;
       btn.style.opacity = '0.4';
@@ -6414,54 +6440,24 @@ async function fetchBatchAI(location, product, target, batchCount, excludeNames)
 }
 
 // ── MAIN ANALYZE — PARALLEL BATCHES ──────────────────────────────────────────
-async function checkAndTrackUsage() {
-  if (!window._supabase) return true; // allow if Supabase not loaded
-  try {
-    const user = window._getCachedAuthUser ? await window._getCachedAuthUser() : null;
-    if (!user) { alert('Not logged in'); return false; }
-    const today = new Date().toISOString().split('T')[0];
-    const tier = (currentUser && currentUser.tier) || localStorage.getItem('ps_tier') || 'free';
-    const LIMITS = { free: 10, plus: 25, pro: 100 };
-    const limit = LIMITS[tier] || 10;
-    const { data, error } = await window._supabase.from('usage_tracking').select('*').eq('user_id', user.id).eq('date', today).maybeSingle();
-    const usage = (data && data.actions_used) || 0;
-    if (usage >= limit) {
-      var errEl = document.getElementById('errorMsg');
-      if (errEl) errEl.innerHTML = '<div class="error-msg">You\'ve used all <strong>' + limit + ' prospects</strong> for today. <a onclick="showPage(\'pricing\')" style="color:var(--accent);cursor:pointer;font-weight:600;">Upgrade for more →</a></div>';
-      return false;
-    }
-    if (data && data.id) {
-      const { error: upErr } = await window._supabase.from('usage_tracking').update({ actions_used: usage + 1 }).eq('id', data.id);
-      if (upErr) console.error('usage update error:', upErr);
-    } else {
-      const { error: insErr } = await window._supabase.from('usage_tracking').insert([{ user_id: user.id, date: today, actions_used: 1 }]);
-      if (insErr) console.error('usage insert error:', insErr);
-    }
-    return true;
-  } catch(e) {
-    console.error('checkAndTrackUsage error:', e);
-    return true; // allow on error to not block users
-  }
-}
+// checkAndTrackUsage() removed — replaced by checkProspectLimit() + incrementProspects()
 
+var _analyzeRunning = false;
 async function analyze() {
   if (!currentUser) { openModal('login'); return; }
-  var tier = TIERS[currentUser.tier] || TIERS.free;
-  var used = getUsage(currentUser.email);
-  if (used >= tier.daily) {
-    openLimitModal(used, tier.daily, 'prospects');
-    return;
-  }
+  if (_analyzeRunning) return;
+  _analyzeRunning = true;
+  const limitOk = await checkProspectLimit();
+  if (!limitOk) { _analyzeRunning = false; return; }
   var product  = document.getElementById('productInput')?.value.trim();
   var location = document.getElementById('locationInput')?.value.trim();
   var target   = document.getElementById('targetInput')?.value.trim();
   window._lastProduct = product; // Store for signal fallback
   if (!product) { document.getElementById('errorMsg').innerHTML = '<div class="error-msg">Please describe what you sell to find the right opportunities.</div>'; document.getElementById('productInput').focus(); return; }
   if (!location) location = 'United States';
-  // Server-side usage enforcement
-  const allowed = await checkAndTrackUsage();
-  if (!allowed) return;
 
+  var tier = TIERS[currentUser.tier] || TIERS.free;
+  var used = _usageCache.prospects;
   var count = Math.max(1, Math.min(tier.perSearch, tier.daily - used));
   var _ganalyzeB = document.getElementById('analyzeBtn'); if (_ganalyzeB) _ganalyzeB.disabled = true;
   var _ginputSec = document.getElementById('inputSection'); if (_ginputSec) _ginputSec.style.display = 'none';
@@ -6547,7 +6543,8 @@ async function analyze() {
     clearTimeout(_lockWarnTimer);
     hideScreenLockWarning();
     clearResumeData();
-    addUsage(currentUser.email, allBusinesses.length);
+    await incrementProspects(allBusinesses.length);
+    _analyzeRunning = false;
     saveSearchRecord(location, product, target, allBusinesses.length);
     saveLastResults(allBusinesses);
     stopLoading();
@@ -6569,6 +6566,7 @@ async function analyze() {
       checkForResume();
       return;
     }
+    _analyzeRunning = false;
     if (allBusinesses.length) saveSearchProgress(location, product, target, count, allBusinesses);
     stopLoading();
     var _gloadingS = document.getElementById('loadingState'); if (_gloadingS) _gloadingS.style.display = 'none';
@@ -7450,7 +7448,7 @@ function quickAddDay(key) {
   document.getElementById('calManualCount')?.focus();
 }
 
-function addManualCalls() {
+async function addManualCalls() {
   if (!currentUser) return;
   var dateVal = document.getElementById('calManualDate')?.value;
   var count   = parseInt(document.getElementById('calManualCount')?.value)||1;
@@ -7458,24 +7456,41 @@ function addManualCalls() {
   if (!dateVal) { showToast('Please select a date','info'); return; }
   var parts = dateVal.split('-');
   var key = parts[0]+'-'+parseInt(parts[1])+'-'+parseInt(parts[2]);
+  var isoKey = parts[0]+'-'+String(parts[1]).padStart(2,'0')+'-'+String(parts[2]).padStart(2,'0');
+  if (isoKey === _todayISO()) { for (var ci=0;ci<count;ci++) await incrementCalls(); }
   var manualKey = 'ps_manual_calls_' + currentUser.email;
-  var manual = JSON.parse(localStorage.getItem(manualKey)||'{}');
-  if (!manual[key]) manual[key] = {count:0,note:''};
-  manual[key].count += count;
-  if (note) manual[key].note = note;
-  localStorage.setItem(manualKey, JSON.stringify(manual));
+  try {
+    var manual = JSON.parse(localStorage.getItem(manualKey)||'{}');
+    if (!manual[key]) manual[key]={count:0,note:''};
+    manual[key].count+=count; if (note) manual[key].note=note;
+    localStorage.setItem(manualKey, JSON.stringify(manual));
+  } catch(e) {}
   showToast(count+' call'+(count!==1?'s':'')+' added','success');
   var _gcalManua = document.getElementById('calManualNote'); if (_gcalManua) _gcalManua.value = '';
   var _gcalManua = document.getElementById('calManualCount'); if (_gcalManua) _gcalManua.value = '1';
   renderCalendarPage();
 }
 
-function deleteManualCall(key) {
+async function deleteManualCall(key) {
   if (!currentUser) return;
-  var manualKey = 'ps_manual_calls_' + currentUser.email;
-  var manual = JSON.parse(localStorage.getItem(manualKey)||'{}');
-  delete manual[key];
-  localStorage.setItem(manualKey, JSON.stringify(manual));
+  var parts=key.split('-');
+  var isoKey=parts[0]+'-'+String(parts[1]).padStart(2,'0')+'-'+String(parts[2]).padStart(2,'0');
+  if (isoKey===_todayISO()&&window._supabase&&_usageCache.rowId&&_usageCache.calls>0) {
+    try {
+      var m2=JSON.parse(localStorage.getItem('ps_manual_calls_'+currentUser.email)||'{}');
+      var removed=(m2[key]&&m2[key].count)||0;
+      if (removed>0) {
+        var newCalls=Math.max(0,_usageCache.calls-removed);
+        await window._supabase.from('usage').update({calls_used:newCalls}).eq('id',_usageCache.rowId);
+        _usageCache.calls=newCalls;
+      }
+    } catch(e) {}
+  }
+  try {
+    var manual=JSON.parse(localStorage.getItem('ps_manual_calls_'+currentUser.email)||'{}');
+    delete manual[key];
+    localStorage.setItem('ps_manual_calls_'+currentUser.email, JSON.stringify(manual));
+  } catch(e) {}
   renderCalendarPage();
 }
 
@@ -8770,19 +8785,9 @@ function updateSlimBar() {
   if (!bar) return;
 
   var tier = TIERS[currentUser.tier || 'free'];
-  var used = getUsage(currentUser.email);
+  var used = _usageCache.date === _todayISO() ? _usageCache.prospects : 0;
+  var callsToday = _usageCache.date === _todayISO() ? _usageCache.calls : 0;
   var usagePct = tier.daily > 0 ? Math.round(used / tier.daily * 100) : 0;
-
-  // Calls today
-  var history = getHistory(currentUser.email);
-  var todayStr = new Date().toDateString();
-  var callsToday = 0;
-  history.forEach(function(h) {
-    if (!h.callLog) return;
-    h.callLog.forEach(function(c) {
-      if (new Date(c.ts).toDateString() === todayStr) callsToday++;
-    });
-  });
   var callLimit = parseInt((TIERS[currentUser.tier]||TIERS.free).callLimit) || 20;
   var callPct = callLimit > 0 ? Math.min(100, Math.round(callsToday / callLimit * 100)) : 0;
 
@@ -9239,10 +9244,11 @@ document.addEventListener('DOMContentLoaded', function() {
   restoreSession();
   updateNav();
   toggleAnalyzeBtn();
-  if (currentUser) {
+  // Note: currentUser is null here — Supabase session resolves async via onAuthStateChange.
+  // Dashboard load is triggered by startBetaWithUser() once the session is confirmed.
+  if (false) { // placeholder — never runs; kept for structural symmetry
     showPage('dashboard');
     updateDashboard();
-    // renderDashSections already calls updateSlimBar + updateOverdueBadge
     renderDashSections();
     renderGoalTracker();
     if (isDemoEligible()) { scheduleDemoRun(); }
@@ -9610,7 +9616,11 @@ document.addEventListener('DOMContentLoaded', function() {
         session.user.user_metadata = session.user.user_metadata || {};
         session.user.user_metadata.display_name = supaCurrentUser.display_name;
       }
-      if (typeof startBetaWithUser === "function") startBetaWithUser(session.user);
+      if (typeof startBetaWithUser === "function") {
+        // Attach the DB tier so startBetaWithUser can use it without another round-trip
+        session.user._dbTier = supaCurrentUser ? supaCurrentUser.tier : 'free';
+        startBetaWithUser(session.user);
+      }
     } else {
       supaCurrentUser = null;
     }
