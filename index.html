@@ -9245,17 +9245,12 @@ document.addEventListener('visibilitychange', function() {
 document.addEventListener('DOMContentLoaded', function() {
   updateNav();
   toggleAnalyzeBtn();
-  // Do NOT call showPage() here.
-  // onAuthStateChange fires INITIAL_SESSION (async) and calls enterDashboard() if a
-  // session exists. We defer the home-page fallback until that event has had a chance
-  // to run — using a short idle timeout so we don't block on slow networks.
-  window._authBootTimer = setTimeout(function() {
-    // If onAuthStateChange already set currentUser, it has already called enterDashboard().
-    // Only land on home if we are genuinely unauthenticated after the async event.
-    if (!currentUser) {
-      showPage('home');
-    }
-  }, 600); // 600 ms gives INITIAL_SESSION time to complete even on slow 3G
+  // Show home immediately so the page is never blank.
+  // onAuthStateChange fires INITIAL_SESSION shortly after (async) and calls
+  // enterDashboard() if a session exists — replacing home with the dashboard.
+  // The _authBootTimer cancel in onAuthStateChange is removed; home is always
+  // shown first and replaced, never conditionally skipped.
+  showPage('home');
 });
 
 // ── PARALLEL STREAMING ENRICHMENT (fast mode) ────────────────────────────────
@@ -9710,12 +9705,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ── INITIAL_SESSION or first SIGNED_IN — full boot sequence ──────────
     console.log("[auth] User authenticated:", session.user.email, "| event:", event);
-
-    // Cancel the DOMContentLoaded home-page fallback — we have a session
-    if (window._authBootTimer) {
-      clearTimeout(window._authBootTimer);
-      window._authBootTimer = null;
-    }
 
     hideModal();
 
